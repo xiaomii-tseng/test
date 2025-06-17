@@ -1,0 +1,93 @@
+.shop-modal {
+  background-image: url("../images/index/backpackbg.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #dedede;
+}
+
+.shop-modal .modal-title {
+  font-weight: bold;
+}
+
+.shop-modal .modal-body {
+  font-size: 1rem;
+  background-color: #00000080;
+}
+
+.shop-chest {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+/* 跳出裝備卡片 */
+#equipmentGetCard {
+  width: 200px;
+  height: auto;
+}
+
+#equipmentGetCard .equipment-top {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+#equipmentGetCard .equipment-icon {
+  width: 60px;
+  height: 60px;
+}
+
+#equipmentGetCard .equipment-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+#equipmentGetCard .equipment-buffs {
+  text-align: left;
+  margin-left: 0.5rem;
+}
+
+#equipmentGetModal .modal-content {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  animation: pop-in 0.3s ease-out;
+  background-image: url("../images/index/chest2.gif"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #dadada;
+  border-radius: 12px;
+}
+
+.show-equip-modal {
+  width: 70%;
+  margin: auto;
+}
+
+.confirm-btn {
+  width: 100px;
+  margin: auto;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+@keyframes pop-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

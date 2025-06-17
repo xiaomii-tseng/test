@@ -1,0 +1,233 @@
+/* 裝備欄 */
+.equip-modal {
+  background-image: url("../images/index/backpackbg.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #dedede;
+}
+
+.character-panel {
+  background: #fff8e1;
+  border: 2px solid #794324;
+  border-radius: 8px;
+  padding: 0.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.character-level {
+  font-size: 0.8rem;
+  color: #202020;
+  margin-top: 0.1rem;
+}
+
+.equip-slots {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.slot {
+  background: #b9a790;
+  border: 2px dashed #794324;
+  border-radius: 8px;
+  padding: 0.3rem;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.owned-equipment-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.equip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 一排兩格 */
+  gap: 0.4rem;
+  max-height: 400px; /* 根據你的設計調整高度 */
+  overflow-y: auto;
+  padding-right: 4px; /* 留點空間給滾動條 */
+}
+
+.equip-card {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 6px;
+  padding: 0.5rem;
+  width: 120px;
+  text-align: center;
+}
+
+/* 卡片樣式 */
+.equipment-card {
+  border: 2px solid #794324;
+  border-radius: 15px;
+  padding: 10px;
+  background: #fff8e1;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  height: 115px;
+  width: 150px;
+}
+
+.equipment-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.equipment-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.equipment-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #202020;
+}
+
+.equipment-buffs {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.7rem;
+  color: #202020;
+}
+
+.modal-body {
+  background-color: #20202075;
+}
+
+.single-equip-modal {
+  max-width: 400px;
+  margin: auto;
+}
+.single-equip-modal .modal-content {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  animation: pop-in 0.3s ease-out;
+  background-image: url("../images/index/backpackbg.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #646464;
+  border-radius: 12px;
+  width: 80%;
+  margin: auto;
+}
+#equipActionCard,#currentlyEquippedCard{
+  display: flex;
+  justify-content: center;
+}
+
+.single-equip-btn {
+  width: 70px;
+  margin-inline: 5px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 5px 10px 5px 10px;
+  border-radius: 8px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.equip-compare-slot {
+  margin-bottom: 1rem;
+}
+
+.equip-compare-label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.equipment-card {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  text-align: left;
+  background: #fff;
+}
+
+.equipped-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.arrow-up{
+  width: 100%;
+}
+
+.arrow-up img {
+  width: 36px;
+  height: 36px;
+  margin: auto;
+}
+
+/* 目前裝備資訊 */
+.selected-equip-modal .modal-content{
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  animation: pop-in 0.3s ease-out;
+  background-image: url("../images/index/backpackbg.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #646464;
+  border-radius: 12px;
+  width: 80%;
+  margin: auto;
+}
+.equip-info-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+.equip-info-card img {
+  background-color: #dedede;
+  border: 4px solid #646464;
+  border-radius: 12px;
+  padding: 10px;
+  width: 80px;
+  height: 80px;
+}
+.equip-info-card .buffs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.cencel-equip-btn{
+  width: 70px;
+  margin-block: 10px ;
+  margin-inline: auto;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 5px 10px 5px 10px;
+  border-radius: 8px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.selected-equip-modal .modal-body{
+  display: flex;
+  justify-content: center;
+}

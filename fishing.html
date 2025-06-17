@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>釣魚</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/equip.css">
+    <link rel="stylesheet" href="./css/shop.css">
+    <link rel="stylesheet" href="./css/book.css">
+    <link rel="icon" type="image/png" href="images/icons/icon-192.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#4db8ff" />
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- firebase -->
+    <script type="module" src="./js/firebase.js"></script>
+    <script type="module" src="./js/main.js"></script>
+
+</head>
+
+<body>
+    <div class="game-container">
+
+        <!-- 背景圖片 -->
+        <div id="backgroundWrapper" class="background-wrapper auto-mode"></div>
+
+        <!-- 狀態顯示 -->
+        <div class="status-box">
+            <div class="level mt-1">等級: 5</div>
+            <div class="exp mt-1">經驗值: 33%</div>
+            <div class="d-flex align-items-center mt-1">
+                <img src="images/icons/coin.png" alt="金幣圖示" class="coin-icon">
+                <span id="coinCount">0</span>
+            </div>
+        </div>
+        <!-- 模式切換按鈕 -->
+        <div class="mode-toggle">
+            <button id="toggleModeBtn" class="mode-btn fnc-anm">點擊切換手動模式</button>
+            <div class="version-info">版本 : 3.0.0</div>
+        </div>
+        <!-- 釣魚中 -->
+        <div id="fishingStatus" class="fishing-status">自動釣魚中...</div>
+        <!-- 釣魚訊息 -->
+        <div id="bottomInfo" class="bottom-info"></div>
+
+        <!-- 顯示地圖 -->
+        <div id="currentMapDisplay" class="map-display">
+            目前地圖：清澈川流
+        </div>
+
+        <!-- 底部功能列 -->
+        <div class="bottom-menu d-flex justify-content-around">
+            <button class="fnc-btn fnc-anm" id="openEquip">
+                <img src="images/icons/equip.png" alt="角色" class="icon" />
+                <div>角色</div>
+            </button>
+
+            <button class="fnc-btn fnc-anm" id="openBackpack">
+                <img src="images/icons/backpack.png" alt="背包" class="icon" />
+                <div>背包</div>
+            </button>
+
+            <button class="fnc-btn fnc-anm" id="openShop">
+                <img src="images/icons/shop.png" alt="商店" class="icon" />
+                <div>商店</div>
+            </button>
+
+            <button class="fnc-btn fnc-anm" id="openFunctionMenu">
+                <img src="images/icons/menu.png" alt="功能" class="icon" />
+                <div>功能</div>
+            </button>
+        </div>
+
+
+        <!-- 手動釣魚精度條 UI：初始隱藏在畫面中央 -->
+        <div id="precisionBarContainer" class="precision-bar-container" style="display: none;">
+            <!-- 精度條槽 -->
+            <div id="precisionTrack" class="precision-track">
+                <div id="precisionIndicator" class="precision-indicator"></div>
+            </div>
+            <!-- 停止按鈕 -->
+            <button id="precisionStopBtn" class="precision-stop-btn heartbeat">點擊停止</button>
+        </div>
+    </div>
+
+    <!-- 背包 -->
+    <div class="modal fade" id="backpackModal" tabindex="-1" aria-labelledby="backpackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content backpack-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="backpackModalLabel">釣魚背包</h5>
+                    <div class="sort-controls text-center mt-1 ms-4">
+                        <select id="sortSelect" class="form-select form-select-sm w-auto d-inline-block">
+                            <option value="asc" selected>價格由低到高</option>
+                            <option value="desc">價格由高到低</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body select-body">
+                    <div id="inventory">
+                        <div class="inventory">
+                            載入中...
+                        </div>
+                    </div>
+                </div>
+                <!-- 多選操作按鈕 -->
+                <div id="multiSelectActions" class="d-flex justify-content-center gap-2 my-2" style="display: none;">
+                    <div id="selectAllBtn" class="sell-btn fnc-anm">全選</div>
+                    <div id="multiSellBtn" class="sell-btn fnc-anm">販售</div>
+                    <div id="cancelMultiSelectBtn" class="sell-btn fnc-anm">取消</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量販售結果 Modal -->
+    <div class="modal fade" id="multiSellResultModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered selled-modal">
+            <div class="modal-content text-center p-3">
+                <h5 class="mb-3">販售結果</h5>
+                <div>
+                    <div>原價總額：<span id="rawTotal"></span> G</div>
+                    <div>加成金額：<span id="bonusTotal"></span> G</div>
+                    <div><strong>總金額：<span id="finalTotal"></span> G</strong></div>
+                </div>
+                <button class="btn btn-primary mt-3" id="confirmMultiSellResult">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 裝備 Modal -->
+    <div class="modal fade" id="equipModal" tabindex="-1" aria-labelledby="equipModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content equip-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="equipModalLabel">角色資訊</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="關閉"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 角色資訊 -->
+                    <div class="character-panel d-flex justify-content-around">
+                        <div>
+                            <div class="increase-catch-rate character-level">增加上鉤率：5%</div>
+                            <div class="increase-rare-rate character-level">增加稀有率：10%</div>
+                        </div>
+                        <div>
+                            <div class="increase-big-fish-chance character-level">大體型機率：3%</div>
+                            <div class="increase-sellValue character-level">增加販售金額：5%</div>
+                        </div>
+                    </div>
+                    <!-- 裝備欄位 -->
+                    <div class="equip-slots gap-2">
+                        <div class="slot" data-slot="rod">釣竿</div>
+                        <div class="slot" data-slot="bait">魚餌</div>
+                        <div class="slot" data-slot="hat">帽子</div>
+                        <div class="slot" data-slot="outfit">衣服</div>
+                        <div class="slot" data-slot="shoes">鞋子</div>
+                    </div>
+                    <hr>
+                    <!-- 擁有裝備 -->
+                    <div class="owned-equipment-title">道具欄</div>
+                    <div id="ownedEquipList" class="equip-grid">
+                        <!-- 動態加入 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 當前裝備資訊 Modal -->
+    <div class="modal fade" id="equipInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered selected-equip-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">裝備資訊</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="關閉"></button>
+                </div>
+                <div class="modal-body" id="equipInfoBody">
+                    <!-- 動態插入裝備資訊 -->
+                </div>
+                <button id="" class="cencel-equip-btn fnc-anm">脫下</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 點擊裝備 -->
+    <div class="modal fade" id="equipActionModal" tabindex="-1" aria-labelledby="equipActionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered single-equip-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="equipActionModalLabel">裝備操作</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="關閉"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="equipCompareArea">
+                        <div class="equip-compare-slot">
+                            <div class="equip-compare-label">目前穿戴</div>
+                            <div id="currentlyEquippedCard"></div>
+                        </div>
+                        <div class="arrow-up mb-2">
+                            <img src="./images/icons/arrow-up.png" alt="">
+                        </div>
+                        <div class="equip-compare-slot">
+                            <div class="equip-compare-label">選擇的裝備</div>
+                            <div id="equipActionCard"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mt-3">
+                        <button id="equipBtn" class="single-equip-btn fnc-anm">裝備</button>
+                        <button id="dismantleBtn" class="single-equip-btn fnc-anm">拆解</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商城 Modal -->
+    <div class="modal fade" id="shopModal" tabindex="-1" aria-labelledby="shopModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shop-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shopModalLabel">商店</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="關閉"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-around">
+                        <div>
+                            <div class="text-center">點擊寶箱抽取</div>
+                            <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
+                            <div class="text-center">普通寶箱</div>
+                            <div class="text-center">3000 G</div>
+                        </div>
+                        <div>
+                            <div class="text-center">點擊寶箱抽取</div>
+                            <img class="shop-chest chest2 fnc-anm" src="./images/shop/chest2.png" alt="">
+                            <div class="text-center">高級寶箱</div>
+                            <div class="text-center">30000 G</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 抽到裝備後顯示的 Modal -->
+    <div class="modal fade" id="equipmentGetModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered show-equip-modal">
+            <div class="modal-content text-center p-4">
+                <h5 class="mb-3">你獲得了裝備！</h5>
+                <div id="equipmentGetCard" class="equipment-card m-auto"></div>
+                <button class="confirm-btn fnc-anm mt-4" data-bs-dismiss="modal">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📘 圖鑑 Modal -->
+    <div class="modal fade" id="fishBookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered fish-book-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">圖鑑 <span id="fishBookProgress"></span></h5>
+                    <select id="rarityFilter" class="form-select form-select w-auto mt-1 ms-4">
+                        <option value="all">全部</option>
+                        <option value="common">普通</option>
+                        <option value="uncommon">高級</option>
+                        <option value="rare">稀有</option>
+                        <option value="epic">史詩</option>
+                        <option value="legend">傳奇</option>
+                        <option value="mythic">神話</option>
+                    </select>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body fish-book-grid" id="fishBookGrid">
+                    <!-- 卡片將在這裡渲染 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⚙️ 功能選單 Modal -->
+    <div class="modal fade" id="functionMenuModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered menu-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">功能選單</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-2">
+                    <div class="d-flex justify-content-around">
+                        <button class="fnc-btn fnc-anm" id="openFishBook">
+                            <img src="images/icons/book.png" alt="圖鑑" class="icon" />
+                            <div>圖鑑</div>
+                        </button>
+                        <button class="fnc-btn fnc-anm" id="openMaps">
+                            <img src="images/icons/map.png" alt="地圖" class="icon" />
+                            <div>地圖</div>
+                        </button>
+                    </div>
+                    <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">雲端存檔</button>
+                    <button id="logoutBtn" class="cloud-btn fnc-anm">登出</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地圖切換 Modal -->
+    <div class="modal fade" id="mapSelectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered map-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">選擇地圖</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-3">
+                    <button class="map-btn map-btn1" onclick="switchMap('map1')" data-bs-dismiss="modal">
+                        清澈川流
+                    </button>
+                    <button class="map-btn map-btn2" onclick="switchMap('map2')" data-bs-dismiss="modal">
+                        機械城河
+                    </button>
+                    <button class="map-btn map-btn3" onclick="switchMap('map3')" data-bs-dismiss="modal">
+                        黃金之地
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Alert Modal -->
+    <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered alert-modal">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title">提醒</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="customAlertContent">這是一個提示訊息</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 版本更新 Modal -->
+    <div class="modal fade" id="versionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered info-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">版本更新資訊</h5>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        <li class="version">版本:Ver--3.0.0</li>
+                        <li>正式線上版上線!</li>
+                        <li>地圖已上線!</li>
+                        <li>存檔功能上線!</li>
+                        <br>
+                        <li class="version">版本:Ver--2.6.0</li>
+                        <li>等級系統上線!</li>
+                        <li>高級寶箱上線!</li>
+                        <li>系統平衡調整</li>
+                        <li>系統平衡調整</li>
+                        <br>
+                        <li class="version">版本:Ver--2.5.2</li>
+                        <li>修正圖鑑系統bug</li>
+                        <br>
+                        <li class="version">版本:Ver--2.5.1</li>
+                        <li>圖鑑系統上線!</li>
+                        <li>修正選取bug</li>
+                        <br>
+                        <li class="version">版本:Ver--2.4.6</li>
+                        <li>調整背包販售邏輯，進入背包可直接點選魚隻販售</li>
+                        <li>選取按鈕改為全選</li>
+                    </ul>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button id="versionConfirmBtn">不再顯示</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

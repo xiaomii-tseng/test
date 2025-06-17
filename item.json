@@ -1,0 +1,98 @@
+[
+    {
+        "name": "普通釣竿",
+        "probability": 50,
+        "image": "images/equip/rod1.png",
+        "type": "rod"
+    },
+    {
+        "name": "金屬釣竿",
+        "probability": 20,
+        "image": "images/equip/rod2.png",
+        "type": "rod"
+    },
+    {
+        "name": "黃金釣竿",
+        "probability": 5,
+        "image": "images/equip/rod3.png",
+        "type": "rod"
+    },
+    {
+        "name": "蚯蚓",
+        "probability": 5,
+        "image": "images/equip/bait1.png",
+        "type": "bait"
+    },
+    {
+        "name": "小蝦米",
+        "probability": 5,
+        "image": "images/equip/bait2.png",
+        "type": "bait"
+    },
+    {
+        "name": "大便",
+        "probability": 5,
+        "image": "images/equip/bait3.png",
+        "type": "bait"
+    },
+    {
+        "name": "黃金大便",
+        "probability": 5,
+        "image": "images/equip/bait4.png",
+        "type": "bait"
+    },
+    {
+        "name": "漁夫帽",
+        "probability": 5,
+        "image": "images/equip/hat1.png",
+        "type": "hat"
+    },
+    {
+        "name": "金屬頭盔",
+        "probability": 5,
+        "image": "images/equip/hat2.png",
+        "type": "hat"
+    },
+    {
+        "name": "黃金帽",
+        "probability": 5,
+        "image": "images/equip/hat3.png",
+        "type": "hat"
+    },
+    {
+        "name": "防風外套",
+        "probability": 5,
+        "image": "images/equip/outfit1.png",
+        "type": "outfit"
+    },
+    {
+        "name": "金屬盔甲",
+        "probability": 5,
+        "image": "images/equip/outfit2.png",
+        "type": "outfit"
+    },
+    {
+        "name": "黃金外套",
+        "probability": 5,
+        "image": "images/equip/outfit3.png",
+        "type": "outfit"
+    },
+    {
+        "name": "長靴",
+        "probability": 5,
+        "image": "images/equip/shoes1.png",
+        "type": "shoes"
+    },
+    {
+        "name": "金屬鞋",
+        "probability": 5,
+        "image": "images/equip/shoes2.png",
+        "type": "shoes"
+    },
+    {
+        "name": "黃金拖鞋",
+        "probability": 5,
+        "image": "images/equip/shoes3.png",
+        "type": "shoes"
+    }
+]

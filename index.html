@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <title>登入 - 放置釣魚遊戲</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="icon" type="image/png" href="images/icons/icon-192.png">
+    <script type="module" src="./js/login.js"></script>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#4db8ff" />
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        body {
+            background-image: url("../images/index/index3.jpg");
+            /* 可用木紋圖或純色背景 */
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background-color: rgba(0, 0, 0, 0.705);
+            padding: 2rem;
+            border-radius: 10px;
+            width: 280px;
+            text-align: center;
+        }
+
+        input {
+            width: 70%;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: none;
+        }
+
+        button {
+            box-shadow: 2px 2px 20px rgb(4, 49, 60);
+            color: #4c2c00;
+            border: 3px solid #4c2c00;
+            background-color: #d4b389;
+            margin-bottom: 10px;
+            width: 40%;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ff9f5f;
+        }
+
+        .title {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <div class="title">登入你的釣魚帳號</div>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="密碼">
+        <button id="loginBtn">登入</button>
+        <button id="registerBtn">註冊</button>
+        <div class="mt-2">
+            Ver 3.0.0
+        </div>
+    </div>
+</body>
+
+</html>
