@@ -30,13 +30,13 @@
         "type": "bait"
     },
     {
-        "name": "大便",
+        "name": "金屬餌",
         "probability": 5,
         "image": "images/equip/bait3.png",
         "type": "bait"
     },
     {
-        "name": "黃金大便",
+        "name": "黃金",
         "probability": 5,
         "image": "images/equip/bait4.png",
         "type": "bait"

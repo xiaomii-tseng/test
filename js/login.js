@@ -2,14 +2,14 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
   getDoc,
-  setDoc
+  setDoc,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { app } from "./firebase.js";
 
@@ -24,6 +24,11 @@ const firebaseConfig = {
 };
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+function showAlert(message) {
+  document.getElementById("customAlertContent").textContent = message;
+  new bootstrap.Modal(document.getElementById("customAlertModal")).show();
+}
 
 // ✅ 登入
 window.login = async function () {
@@ -40,18 +45,13 @@ window.login = async function () {
     showAlert("登入失敗：" + err.message);
   }
 };
-
-function showAlert(message) {
-  document.getElementById("customAlertContent").textContent = message;
-  new bootstrap.Modal(document.getElementById("customAlertModal")).show();
-}
 // ✅ 註冊
 window.register = async function () {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    showAlert("註冊成功，請重新登入");
+    showAlert("註冊成功，自動登入中");
   } catch (err) {
     showAlert("註冊失敗：" + err.message);
   }
@@ -83,6 +83,7 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem("fish-dex-v2", JSON.stringify(data.fishDex || []));
       localStorage.setItem("fishing-player-level-v1", data.level || "1");
       localStorage.setItem("fishing-player-exp-v1", data.exp || "0");
+      localStorage.setItem("fishing-money", data.money || "0");
     } else {
       // 🆕 是新帳號 → 給他一組初始資料
       const defaultSave = {
@@ -92,6 +93,7 @@ onAuthStateChanged(auth, async (user) => {
         fishDex: [],
         level: 1,
         exp: 0,
+        money: 500000,
       };
       await setDoc(userRef, defaultSave);
 
@@ -104,6 +106,7 @@ onAuthStateChanged(auth, async (user) => {
         fishDex: "fish-dex-v2",
         level: "fishing-player-level-v1",
         exp: "fishing-player-exp-v1",
+        money: "fishing-money",
       };
       for (const [k, v] of Object.entries(defaultSave)) {
         localStorage.setItem(

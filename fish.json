@@ -75,122 +75,122 @@
         "name": "秋刀魚",
         "probability": 40,
         "image": "images/fish/fish27.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "海螺",
         "probability": 50,
         "image": "images/fish/fish15.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "鯊魚",
         "probability": 0.7,
         "image": "images/fish/fish2.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "鮪魚",
         "probability": 0.15,
         "image": "images/fish/fish4.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "海鰻",
         "probability": 2,
         "image": "images/fish/fish6.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "河豚",
         "probability": 4,
         "image": "images/fish/fish7.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "螃蟹",
         "probability": 3.5,
         "image": "images/fish/fish8.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "帝王蟹",
         "probability": 0.6,
         "image": "images/fish/fish9.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "紅蝦子",
         "probability": 3,
         "image": "images/fish/fish10.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "龍蝦",
         "probability": 0.55,
         "image": "images/fish/fish11.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "深海燈籠魚",
         "probability": 0.06,
         "image": "images/fish/fish12.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
 
     {
         "name": "魷魚",
         "probability": 1.4,
         "image": "images/fish/fish16.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "章魚",
         "probability": 1.5,
         "image": "images/fish/fish17.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "海馬王",
         "probability": 0.2,
         "image": "images/fish/fish18.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "海馬",
         "probability": 1.2,
         "image": "images/fish/fish19.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "飛魚",
         "probability": 2.3,
         "image": "images/fish/fish21.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "深海鯊",
         "probability": 0.27,
         "image": "images/fish/fish22.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "鯨魚",
         "probability": 0.085,
         "image": "images/fish/fish23.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
 
     {
         "name": "水母",
         "probability": 0.41,
         "image": "images/fish/fish25.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     },
     {
         "name": "魟魚",
         "probability": 0.32,
         "image": "images/fish/fish26.png",
-        "maps": "深海水浴"
+        "maps": "清澈川流"
     }
 ]

@@ -513,13 +513,11 @@ body {
   position: fixed;
   top: 40%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
   background: gold;
   color: #ffffff;
   font-size: 1.2rem;
   padding: 1rem 2rem;
   text-shadow: 2px 2px 0 #000;
-  border-radius: 10px;
   opacity: 0;
   transition: all 0.3s ease;
   z-index: 9999;
@@ -528,12 +526,18 @@ body {
   background-repeat: no-repeat;
   border: 4px solid #6b4f30;
   border-radius: 12px;
+  width: 250px;
+  text-align: center;
 }
 .level-up-toast.show {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-
+.shop-title {
+  color: yellow;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
 .menu-modal .modal-content {
   background-image: url("../images/index/backpackbg.jpg"); /* 可用木紋圖或純色背景 */
   background-size: cover;
@@ -583,7 +587,19 @@ body {
 
 .map-display {
   position: absolute;
-  top: 70px;
+  top: 80px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 999;
+  text-shadow: 1px 1px 5px black;
+}
+
+.account-display {
+  position: absolute;
+  top: 57px;
   left: 12px;
   padding: 6px 12px;
   border-radius: 8px;
@@ -673,3 +689,17 @@ body {
   display: flex;
   justify-content: space-around;
 }
+
+#ticketTimer {
+  position: fixed;
+  left: 12px;
+  top: 100px;
+  padding: 8px 12px;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 20;
+  display: none;
+  text-shadow: 2px 2px 5px black;
+}
+

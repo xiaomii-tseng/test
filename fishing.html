@@ -64,6 +64,11 @@
             目前地圖：清澈川流
         </div>
 
+        <!-- 顯示帳號 -->
+        <div id="accountDisplay" class="account-display">
+            目前帳號：清澈川流
+        </div>
+
         <!-- 底部功能列 -->
         <div class="bottom-menu d-flex justify-content-around">
             <button class="fnc-btn fnc-anm" id="openEquip">
@@ -248,18 +253,32 @@
                         aria-label="關閉"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="text-center mt-4 shop-title">寶箱</div>
                     <div class="d-flex justify-content-around">
                         <div>
-                            <div class="text-center">點擊寶箱抽取</div>
                             <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
                             <div class="text-center">普通寶箱</div>
-                            <div class="text-center">600 G</div>
+                            <div class="text-center">1500 G</div>
                         </div>
                         <div>
-                            <div class="text-center">點擊寶箱抽取</div>
                             <img class="shop-chest chest2 fnc-anm" src="./images/shop/chest2.png" alt="">
                             <div class="text-center">高級寶箱</div>
-                            <div class="text-center">20000 G</div>
+                            <div class="text-center">10000 G</div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4 shop-title">通行證</div>
+                    <div class="d-flex justify-content-around mt-2">
+                        <div class="text-center">
+                            <img id="buyMap2Ticket" src="./images/shop/ticket1.png"
+                                class="ticket-icon shop-ticket shop-chest fnc-anm" data-map="map2" data-price="1000" />
+                            <div>機械城河通行證</div>
+                            <div>15000 G</div>
+                        </div>
+                        <div class="text-center">
+                            <img id="buyMap3Ticket" src="./images/shop/ticket2.png"
+                                class="ticket-icon shop-ticket shop-chest fnc-anm" data-map="map3" data-price="3000" />
+                            <div>黃金之地通行證</div>
+                            <div>70000 G</div>
                         </div>
                     </div>
                 </div>
@@ -284,7 +303,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">圖鑑 <span id="fishBookProgress"></span></h5>
-                    <select id="rarityFilter" class="form-select form-select w-auto mt-1 ms-4">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body fish-book-grid" id="fishBookGrid">
+                    <!-- 卡片將在這裡渲染 -->
+                </div>
+                <div class="select-list">
+                    <select id="mapFilter" class="form-select form-select-sm w-auto">
+                        <option value="all">全部地圖</option>
+                        <option value="map1">清澈川流</option>
+                        <option value="map2">機械城河</option>
+                        <option value="map3">黃金之地</option>
+                    </select>
+                    <select id="rarityFilter" class="form-select form-select-sm w-auto">
                         <option value="all">全部</option>
                         <option value="common">普通</option>
                         <option value="uncommon">高級</option>
@@ -293,10 +324,6 @@
                         <option value="legend">傳奇</option>
                         <option value="mythic">神話</option>
                     </select>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body fish-book-grid" id="fishBookGrid">
-                    <!-- 卡片將在這裡渲染 -->
                 </div>
             </div>
         </div>
@@ -321,7 +348,7 @@
                             <div>地圖</div>
                         </button>
                     </div>
-                    <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">雲端存檔</button>
+                    <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">手動存檔</button>
                     <button id="logoutBtn" class="cloud-btn fnc-anm">登出</button>
 
                 </div>
@@ -352,6 +379,7 @@
         </div>
     </div>
 
+    <div id="ticketTimer"></div>
 
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
