@@ -1,4 +1,4 @@
-const CACHE_NAME = "fishing-pwa-cache-v1";
+const CACHE_NAME = "fishing-pwa-cache-v3";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -11,8 +11,8 @@ const urlsToCache = [
   "/images/index/index3.jpg",
   "/images/maps/map2.jpg",
   "/images/maps/map3.jpg",
-  "/images/icons/icon-192-v2.jpg",
-  "/images/icons/icon-512-v2.jpg",
+  "/images/icons/icon-192-v2.png",
+  "/images/icons/icon-512-v2.png",
   "/images/shop/chest1.png",
   "/images/shop/chest2.png",
   "/images/index/chest2.gif",
