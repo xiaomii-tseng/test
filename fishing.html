@@ -146,7 +146,7 @@
         </div>
     </div>
 
-    <!-- 裝備 Modal -->
+    <!-- 角色 Modal -->
     <div class="modal fade" id="equipModal" tabindex="-1" aria-labelledby="equipModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content equip-modal">
@@ -161,6 +161,7 @@
                         <div>
                             <div class="increase-catch-rate character-level">增加上鉤率：5%</div>
                             <div class="increase-rare-rate character-level">增加稀有率：10%</div>
+                            <div class="increase-exp-gain character-level">經驗值加成：15%</div>
                         </div>
                         <div>
                             <div class="increase-big-fish-chance character-level">大體型機率：3%</div>
@@ -182,6 +183,7 @@
                         <!-- 動態加入 -->
                     </div>
                 </div>
+                <button id="dismantleAllBtn" class="btn btn-danger mt-3">全部拆解</button>
             </div>
         </div>
     </div>
@@ -251,13 +253,13 @@
                             <div class="text-center">點擊寶箱抽取</div>
                             <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
                             <div class="text-center">普通寶箱</div>
-                            <div class="text-center">3000 G</div>
+                            <div class="text-center">600 G</div>
                         </div>
                         <div>
                             <div class="text-center">點擊寶箱抽取</div>
                             <img class="shop-chest chest2 fnc-anm" src="./images/shop/chest2.png" alt="">
                             <div class="text-center">高級寶箱</div>
-                            <div class="text-center">30000 G</div>
+                            <div class="text-center">20000 G</div>
                         </div>
                     </div>
                 </div>
@@ -363,6 +365,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal fade" id="customConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered confirm-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">請確認</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="customConfirmMessage">
+                    你確定要執行這個操作嗎？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="sell-btn fnc-anm" id="customConfirmOK">確定</button>
+                    <button type="button" class="sell-btn fnc-anm" id="customConfirmCancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <!-- 版本更新 Modal -->

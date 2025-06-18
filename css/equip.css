@@ -54,7 +54,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 一排兩格 */
   gap: 0.4rem;
-  max-height: 400px; /* 根據你的設計調整高度 */
+  max-height: 300px; /* 根據你的設計調整高度 */
   overflow-y: auto;
   padding-right: 4px; /* 留點空間給滾動條 */
 }

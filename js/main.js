@@ -64,6 +64,30 @@ function saveToCloud() {
     }
   });
 }
+function autoSaveToCloud() {
+  onAuthStateChanged(auth, async (user) => {
+    const userId = user.uid;
+    const saveData = {
+      backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
+      ownedEquipment: JSON.parse(
+        localStorage.getItem("owned-equipment-v2") || "[]"
+      ),
+      equippedItems: JSON.parse(
+        localStorage.getItem("equipped-items-v2") || "{}"
+      ),
+      fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
+      level: parseInt(
+        localStorage.getItem("fishing-player-level-v1") || "1",
+        10
+      ),
+      exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
+    };
+
+    try {
+      await setDoc(doc(db, "saves", userId), saveData);
+    } catch (err) {}
+  });
+}
 // 📁 自動釣魚遊戲主邏輯
 
 const GAME_VERSION = "2.6.0"; // 每次更新請手動更改版本號
@@ -260,17 +284,21 @@ function getRarityClass(probability) {
 let precisionInterval = null;
 let pos = 0;
 let direction = 1;
-const speed = 6;
+const speed = 5;
 const intervalTime = 16;
+
 function startPrecisionBar() {
   if (precisionInterval) return;
-  pos = 0;
-  direction = 1;
   document.getElementById("precisionBarContainer").style.display = "flex";
   const track = document.getElementById("precisionTrack");
   const indicator = document.getElementById("precisionIndicator");
   const trackWidth = track.clientWidth;
   const indicatorWidth = indicator.clientWidth;
+
+  // 隨機起始位置與方向 👇
+  pos = Math.floor(Math.random() * (trackWidth - indicatorWidth));
+  direction = Math.random() < 0.5 ? 1 : -1;
+
   precisionInterval = setInterval(() => {
     pos += speed * direction;
     if (pos >= trackWidth - indicatorWidth) {
@@ -691,6 +719,7 @@ const BUFF_TYPES = [
   { type: "increaseRareRate", label: "增加稀有率" },
   { type: "increaseBigFishChance", label: "大體型魚機率" },
   { type: "increaseSellValue", label: "增加販售金額" },
+  { type: "increaseExpGain", label: "經驗獲得加成" },
 ];
 
 const RARITY_TABLE = [
@@ -704,7 +733,7 @@ const RARITY_PROBABILITIES = [
   { rarity: "高級", chance: 5.5 },
   { rarity: "稀有", chance: 0.5 },
 ];
-const CHEST_COST = 3000;
+const CHEST_COST = 600;
 
 document.querySelector(".shop-chest").addEventListener("click", () => {
   const currentMoney = parseInt(
@@ -736,6 +765,7 @@ document.querySelector(".shop-chest").addEventListener("click", () => {
         type: item.type,
         rarity: rarity.key,
         buffs: buffs,
+        isFavorite: false,
       };
 
       saveToOwnedEquipment(newEquip);
@@ -785,6 +815,8 @@ function getBuffValue(type) {
       return randomInt(1, 20);
     case "increaseSellValue":
       return randomInt(1, 7);
+    case "increaseExpGain":
+      return randomInt(1, 6);
     default:
       return 1;
   }
@@ -828,19 +860,25 @@ function updateOwnedEquipListUI() {
 
   const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
 
-  container.innerHTML = ""; // 清空現有內容
+  container.innerHTML = "";
 
   for (const equip of owned) {
     const card = document.createElement("div");
     card.className = "equipment-card";
 
-    // 裝備卡片結構
+    const isFav = equip.isFavorite ? "❤️" : "🤍";
+
     card.innerHTML = `
-      <div class="equipment-top">
-        <img src="${equip.image}" alt="裝備圖示" class="equipment-icon" />
-        <div class="equipment-name">${equip.name}</div>
+      <div class="equipment-top d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <img src="${equip.image}" alt="裝備圖示" class="equipment-icon" />
+          <div class="equipment-name">${equip.name}</div>
+        </div>
+        <button class="btn btn-sm btn-favorite" data-id="${
+          equip.id
+        }">${isFav}</button>
       </div>
-      <ul class="equipment-buffs">
+      <ul class="equipment-buffs mt-2">
         ${equip.buffs
           .map((buff) => `<li>${buff.label} +${buff.value}%</li>`)
           .join("")}
@@ -848,10 +886,30 @@ function updateOwnedEquipListUI() {
     `;
 
     container.appendChild(card);
+
+    // 點整張卡片 → 打開裝備操作 modal
     card.addEventListener("click", () => {
       selectedEquipForAction = equip;
       openEquipActionModal(equip);
     });
+
+    // 點愛心 → 收藏切換（停止冒泡避免觸發 card click）
+    const favBtn = card.querySelector(".btn-favorite");
+    favBtn?.addEventListener("click", (e) => {
+      e.stopPropagation(); // ✅ 避免觸發外層點擊
+      toggleFavoriteEquip(equip.id);
+    });
+  }
+}
+
+// 愛心
+function toggleFavoriteEquip(id) {
+  const list = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
+  const target = list.find((e) => e.id === id);
+  if (target) {
+    target.isFavorite = !target.isFavorite;
+    localStorage.setItem(ownedEquipment, JSON.stringify(list));
+    updateOwnedEquipListUI();
   }
 }
 
@@ -879,11 +937,18 @@ function openEquipActionModal(selectedEquip) {
   modal.show();
 }
 function generateEquipCardHTML(equip) {
+  const isFav = equip.isFavorite ? "❤️" : "🤍";
+
   return `
     <div class="equipment-card">
-      <div class="equipment-top d-flex align-items-center gap-2">
-        <img src="${equip.image}" class="equipment-icon" />
-        <div class="equipment-name">${equip.name}</div>
+      <div class="equipment-top d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <img src="${equip.image}" class="equipment-icon" />
+          <div class="equipment-name">${equip.name}</div>
+        </div>
+        <button class="btn btn-sm btn-favorite" data-id="${equip.id}">
+          ${isFav}
+        </button>
       </div>
       <ul class="equipment-buffs mt-2">
         ${equip.buffs.map((b) => `<li>${b.label} +${b.value}%</li>`).join("")}
@@ -891,6 +956,7 @@ function generateEquipCardHTML(equip) {
     </div>
   `;
 }
+
 // 取得穿戴的裝備
 function getEquippedItemByType(type) {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
@@ -907,6 +973,7 @@ function updateCharacterStats() {
     increaseRareRate: 0,
     increaseBigFishChance: 0,
     increaseSellValue: 0,
+    increaseExpGain: 0,
   };
 
   // 累加各裝備的 buff
@@ -922,18 +989,22 @@ function updateCharacterStats() {
   }
 
   // 更新畫面
-  document.querySelector(
-    ".increase-catch-rate"
-  ).textContent = `增加上鉤率：${stats.increaseCatchRate}%`;
-  document.querySelector(
-    ".increase-rare-rate"
-  ).textContent = `增加稀有率：${stats.increaseRareRate}%`;
+  // 顯示裝備 + 等級加成
+  document.querySelector(".increase-catch-rate").textContent = `增加上鉤率：${
+    stats.increaseCatchRate + levelBuff
+  }%`;
+  document.querySelector(".increase-rare-rate").textContent = `增加稀有率：${
+    stats.increaseRareRate + levelBuff
+  }%`;
   document.querySelector(
     ".increase-big-fish-chance"
-  ).textContent = `大體型機率：${stats.increaseBigFishChance}%`;
-  document.querySelector(
-    ".increase-sellValue"
-  ).textContent = `增加販售金額：${stats.increaseSellValue}%`;
+  ).textContent = `大體型機率：${stats.increaseBigFishChance + levelBuff}%`;
+  document.querySelector(".increase-sellValue").textContent = `增加販售金額：${
+    stats.increaseSellValue + levelBuff
+  }%`;
+  document.querySelector(".increase-exp-gain").textContent = `經驗值加成：${
+    stats.increaseExpGain + levelBuff
+  }%`;
 }
 
 // 脫下裝備
@@ -979,16 +1050,21 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
     if (item) {
       selectedEquippedSlot = slotKey;
 
+      const isFav = item.isFavorite ? "❤️" : "🤍";
+
       const modalBody = document.getElementById("equipInfoBody");
       modalBody.innerHTML = `
         <div class="equipment-card">
-          <div class="equipment-top">
-            <img src="${item.image}" class="equipment-icon" alt="${
+          <div class="equipment-top d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <img src="${item.image}" class="equipment-icon" alt="${
         item.name
       }" />
-            <div class="equipment-name">${item.name}</div>
+              <div class="equipment-name">${item.name}</div>
+            </div>
+            <div class="equipment-fav">${isFav}</div>
           </div>
-          <ul class="equipment-buffs">
+          <ul class="equipment-buffs mt-2">
             ${item.buffs
               .map((buff) => `<li>${buff.label} +${buff.value}%</li>`)
               .join("")}
@@ -1008,36 +1084,32 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
 function getTotalBuffs() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
 
-  return Object.values(equipped).reduce(
-    (buffs, item) => {
-      if (!item.buffs) return buffs;
-      for (const buff of item.buffs) {
-        if (buffs.hasOwnProperty(buff.type)) {
-          buffs[buff.type] += buff.value;
-        }
-      }
-      return buffs;
-    },
-    {
-      increaseCatchRate: 0,
-      increaseRareRate: 0,
-      increaseBigFishChance: 0,
-      increaseSellValue: 0,
-    }
-  );
-}
+  const buffs = {
+    increaseCatchRate: 0,
+    increaseRareRate: 0,
+    increaseBigFishChance: 0,
+    increaseSellValue: 0,
+    increaseExpGain: 0, // ✅ 新增
+  };
 
-function forceCloseModal(modalId) {
-  const modalEl = document.getElementById(modalId);
-  const modal = bootstrap.Modal.getInstance(modalEl);
-  if (modal) {
-    modal.hide();
+  for (const item of Object.values(equipped)) {
+    if (!item?.buffs) continue;
+    for (const buff of item.buffs) {
+      if (buffs.hasOwnProperty(buff.type)) {
+        buffs[buff.type] += buff.value;
+      }
+    }
   }
 
-  // 清理 backdrop 防卡死
-  document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
-  document.body.classList.remove("modal-open");
-  document.body.style = "";
+  // ✅ 加入等級加成
+  const level = loadLevel();
+  const levelBuff = level * 0.25;
+  for (const key in buffs) {
+    buffs[key] += levelBuff;
+    buffs[key] = Math.round(buffs[key] * 10) / 10;
+  }
+  buffs.increaseCatchRate = Math.min(buffs.increaseCatchRate, 99);
+  return buffs;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -1166,6 +1238,8 @@ function getHighTierBuffValue(type) {
       return randomInt(1, 40);
     case "increaseSellValue":
       return randomInt(1, 20);
+    case "increaseExpGain":
+      return randomInt(1, 12);
     default:
       return 1;
   }
@@ -1176,7 +1250,7 @@ document.querySelector(".chest2").addEventListener("click", () => {
     localStorage.getItem("fishing-money") || "0",
     10
   );
-  const chestCost = 30000; // 高級寶箱價格，可自由調整
+  const chestCost = 20000; // 高級寶箱價格，可自由調整
 
   if (currentMoney < chestCost) return;
 
@@ -1197,6 +1271,7 @@ document.querySelector(".chest2").addEventListener("click", () => {
         type: item.type,
         rarity: rarity.key,
         buffs: buffs,
+        isFavorite: false,
       };
 
       saveToOwnedEquipment(newEquip);
@@ -1234,7 +1309,9 @@ function getExpForLevel(level) {
 // 加經驗並檢查升等
 addExp(rawTotal);
 function addExp(gained) {
-  let exp = loadExp() + gained;
+  const buffs = getTotalBuffs();
+  const expBonus = Math.floor(gained * (buffs.increaseExpGain / 100));
+  let exp = loadExp() + gained + expBonus;
   let level = loadLevel();
   let required = getExpForLevel(level);
 
@@ -1273,8 +1350,63 @@ function showLevelUpModal(level) {
     }, 3500);
   }, 10);
 }
+setInterval(() => {
+  if (auth.currentUser) {
+    autoSaveToCloud();
+  }
+}, 30000);
+// 等級加成
+const level = loadLevel();
+const levelBuff = level * 0.25;
+
+function customConfirm(message) {
+  return new Promise((resolve) => {
+    const modal = new bootstrap.Modal(
+      document.getElementById("customConfirmModal")
+    );
+    document.getElementById("customConfirmMessage").textContent = message;
+
+    const okBtn = document.getElementById("customConfirmOK");
+    const cancelBtn = document.getElementById("customConfirmCancel");
+
+    const cleanup = () => {
+      okBtn.onclick = null;
+      cancelBtn.onclick = null;
+    };
+
+    okBtn.onclick = () => {
+      cleanup();
+      modal.hide();
+      resolve(true);
+    };
+
+    cancelBtn.onclick = () => {
+      cleanup();
+      modal.hide();
+      resolve(false);
+    };
+
+    modal.show();
+  });
+}
 
 // 下面是 document
+document
+  .getElementById("dismantleAllBtn")
+  .addEventListener("click", async () => {
+    const confirmed = await customConfirm("你確定要拆解所有未收藏的裝備嗎?");
+    if (!confirmed) return;
+
+    let list = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
+    const beforeCount = list.length;
+    list = list.filter((e) => e.isFavorite);
+
+    const removed = beforeCount - list.length;
+    localStorage.setItem(ownedEquipment, JSON.stringify(list));
+    updateOwnedEquipListUI();
+    showAlert(`已拆解 ${removed} 件裝備`);
+  });
+
 document.getElementById("openMaps").addEventListener("click", () => {
   const functionMenu = bootstrap.Modal.getInstance(
     document.getElementById("functionMenuModal")
@@ -1340,6 +1472,10 @@ document.getElementById("openEquip").addEventListener("click", () => {
 });
 document.getElementById("dismantleBtn").addEventListener("click", () => {
   if (!selectedEquipForAction) return;
+  if (selectedEquipForAction.isFavorite) {
+    showAlert("此裝備已收藏");
+    return;
+  }
   // 取得目前裝備列表
   let owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   // 根據 ID 過濾掉這件裝備
