@@ -1,4 +1,4 @@
-const CACHE_NAME = "fishing-pwa-cache-v2";
+const CACHE_NAME = "fishing-pwa-cache-v1";
 const urlsToCache = [
   "/",
   "/index.html",
