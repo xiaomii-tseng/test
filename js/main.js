@@ -1692,17 +1692,22 @@ function playMapMusic(musicPath) {
 
 // 下面是 document
 document.getElementById("bgmToggleBtn").addEventListener("click", () => {
-  isMuted = !isMuted;
+  const icon = document.getElementById("bgmIcon");
 
-  if (currentBgm) {
-    // ✅ 已有音樂 → 只切換靜音狀態
-    currentBgm.muted = isMuted;
-  } else if (currentMapConfig?.music) {
-    // ✅ 第一次播放 → 建立音樂並播放
+  // 如果還沒建立音樂 → 表示是第一次播放
+  if (!currentBgm && currentMapConfig?.music) {
+    isMuted = false; // 撥第一首時預設不靜音
     playMapMusic(currentMapConfig.music);
+    icon.src = "images/icons/voice.png";
+    return;
   }
 
-  const icon = document.getElementById("bgmIcon");
+  // 有音樂時 → 切換靜音狀態
+  isMuted = !isMuted;
+  if (currentBgm) {
+    currentBgm.muted = isMuted;
+  }
+
   icon.src = isMuted ? "images/icons/voice2.png" : "images/icons/voice.png";
 });
 
