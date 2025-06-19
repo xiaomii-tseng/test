@@ -110,7 +110,7 @@
             <div class="modal-content backpack-modal">
                 <div class="modal-header">
                     <h5 class="modal-title" id="backpackModalLabel">釣魚背包</h5>
-                    <div class="sort-controls text-center mt-1 ms-4">
+                    <div class="sort-controls text-center mt-1 ms-3">
                         <select id="sortSelect" class="form-select form-select-sm w-auto d-inline-block">
                             <option value="asc" selected>價格由低到高</option>
                             <option value="desc">價格由高到低</option>
@@ -253,7 +253,7 @@
                         aria-label="關閉"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="text-center mt-4 shop-title">寶箱</div>
+                    <div class="text-center shop-title">寶箱</div>
                     <div class="d-flex justify-content-around">
                         <div>
                             <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
@@ -277,7 +277,7 @@
                         <div class="text-center">
                             <img id="buyMap3Ticket" src="./images/shop/ticket2.png"
                                 class="ticket-icon shop-ticket shop-chest fnc-anm" data-map="map3" data-price="3000" />
-                            <div>黃金之地通行證</div>
+                            <div>黃金遺址通行證</div>
                             <div>150000 G</div>
                         </div>
                     </div>
@@ -309,13 +309,13 @@
                     <!-- 卡片將在這裡渲染 -->
                 </div>
                 <div class="select-list">
-                    <select id="mapFilter" class="form-select form-select-sm w-auto">
+                    <select id="mapFilter" class="form-select form-select2 form-select-sm w-auto">
                         <option value="all">全部地圖</option>
                         <option value="map1">清澈川流</option>
                         <option value="map2">機械城河</option>
-                        <option value="map3">黃金之地</option>
+                        <option value="map3">黃金遺址</option>
                     </select>
-                    <select id="rarityFilter" class="form-select form-select-sm w-auto">
+                    <select id="rarityFilter" class="form-select form-select2 form-select-sm w-auto">
                         <option value="all">全部</option>
                         <option value="common">普通</option>
                         <option value="uncommon">高級</option>
@@ -339,13 +339,17 @@
                 </div>
                 <div class="modal-body d-flex flex-column gap-2">
                     <div class="d-flex justify-content-around">
+                        <button class="fnc-btn fnc-anm" id="openMaps">
+                            <img src="images/icons/map.png" alt="地圖" class="icon" />
+                            <div>地圖</div>
+                        </button>
                         <button class="fnc-btn fnc-anm" id="openFishBook">
                             <img src="images/icons/book.png" alt="圖鑑" class="icon" />
                             <div>圖鑑</div>
                         </button>
-                        <button class="fnc-btn fnc-anm" id="openMaps">
-                            <img src="images/icons/map.png" alt="地圖" class="icon" />
-                            <div>地圖</div>
+                        <button class="fnc-btn fnc-anm" id="openLeaderboard">
+                            <img src="images/icons/leaderboard.png" alt="排行榜" class="icon" />
+                            <div>排行榜</div>
                         </button>
                     </div>
                     <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">手動存檔</button>
@@ -372,15 +376,36 @@
                         機械城河
                     </button>
                     <button class="map-btn map-btn3" onclick="switchMap('map3')" data-bs-dismiss="modal">
-                        黃金之地
+                        黃金遺址
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 排行榜 Modal -->
+    <div class="modal fade" id="leaderboardModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered leaderboard-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">排行榜</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="leaderboardContent">
+                    <!-- 排名內容會由 JS 塞入 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 倒數 -->
     <div id="ticketTimer"></div>
 
+    <!-- 🎵 音樂控制按鈕 -->
+    <div id="bgmToggleBtn" class="bgm-btn">
+        <img id="bgmIcon" src="images/icons/voice2.png" alt="音樂控制" />
+    </div>
+    
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered alert-modal">

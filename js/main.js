@@ -24,6 +24,8 @@ const ticket2Price = 150000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
+let currentBgm = null;
+let isMuted = false;
 
 import {
   getAuth,
@@ -34,11 +36,74 @@ import {
   getFirestore,
   doc,
   setDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  collection,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-import { app } from "../js/firebase.js";
+import { app } from "./firebase.js";
 
 const auth = getAuth();
 const db = getFirestore(app);
+async function getTopPlayersByLevel(limitCount = 10) {
+  const q = query(
+    collection(db, "saves"),
+    orderBy("level", "desc"),
+    limit(limitCount)
+  );
+  const querySnapshot = await getDocs(q);
+  const result = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    result.push({
+      uid: doc.id,
+      name: data.name || "匿名", // 👈 加這行
+      level: data.level || 1,
+      money: data.money || 0,
+      exp: data.exp || 0,
+    });
+  });
+  return result;
+}
+
+async function showLeaderboard() {
+  const topPlayers = await getTopPlayersByLevel();
+  const container = document.getElementById("leaderboardContent");
+  container.innerHTML = topPlayers
+    .map(
+      (p, i) => `
+    <div>${i + 1}. ${p.name} | Lv.${
+        p.level
+      } | 💰 ${p.money.toLocaleString()} G</div>
+  `
+    )
+    .join("");
+  new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
+}
+
+document
+  .getElementById("openLeaderboard")
+  .addEventListener("click", async () => {
+    const functionMenu = bootstrap.Modal.getInstance(
+      document.getElementById("functionMenuModal")
+    );
+    if (functionMenu) functionMenu.hide();
+
+    const topPlayers = await getTopPlayersByLevel(); // ← 你前面提供的 function
+    const content = document.getElementById("leaderboardContent");
+    content.innerHTML = topPlayers
+      .map(
+        (p, i) => `
+          <div>${i + 1}. ${p.name} | Lv.${
+          p.level
+        } | 💰 ${p.money.toLocaleString()} G</div>
+          `
+      )
+      .join("");
+
+    new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
+  });
 document.getElementById("logoutBtn").addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -66,6 +131,7 @@ function saveToCloud() {
     }
 
     const userId = user.uid;
+    const username = user.email.split("@")[0]; // 👈 取 email 前綴
     const saveData = {
       backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
       ownedEquipment: JSON.parse(
@@ -81,6 +147,7 @@ function saveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
+      name: username, // ✅ 存帳號名稱
     };
 
     try {
@@ -92,9 +159,12 @@ function saveToCloud() {
     }
   });
 }
+
 function autoSaveToCloud() {
   onAuthStateChanged(auth, async (user) => {
     const userId = user.uid;
+    const username = user.email.split("@")[0]; // ← 補這行！
+
     const saveData = {
       backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
       ownedEquipment: JSON.parse(
@@ -110,6 +180,7 @@ function autoSaveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
+      name: username,
     };
 
     try {
@@ -155,13 +226,14 @@ const MAP_CONFIG = {
     catchRateModifier: 1.0, // 正常上鉤率
     name: "清澈川流",
     background: "images/index/index3.jpg",
+    music: "sound/map1.mp3",
   },
   map2: {
     json: "fish2.json",
     baseValue: 600,
     priceFormula: (prob, base) => Math.floor(base * Math.pow(1 / prob, 1.04)),
     rarePenalty: 2.0,
-    catchRateModifier: 0.8, // 稍微難釣
+    catchRateModifier: 0.9, // 稍微難釣
     name: "機械城河",
     background: "images/maps/map2.jpg",
     requiredLevel: 35,
@@ -174,21 +246,23 @@ const MAP_CONFIG = {
     ],
     requiredTicketName: "機械通行證",
     disableEquip: true,
-    ticketDurationMs: 1 * 60 * 1000,
+    ticketDurationMs: 30 * 60 * 1000,
+    music: "sound/map1.mp3",
   },
   map3: {
     json: "fish3.json",
     baseValue: 3000,
     priceFormula: (prob, base) => Math.floor(base * Math.pow(1 / prob, 1.1)),
     rarePenalty: 3.0,
-    catchRateModifier: 0.6, // 較難上鉤
-    name: "黃金之地",
+    catchRateModifier: 0.75, // 較難上鉤
+    name: "黃金遺址",
     background: "images/maps/map3.jpg",
     requiredLevel: 70,
     requiredEquipNames: ["黃金釣竿", "黃金", "黃金帽", "黃金外套", "黃金拖鞋"],
     requiredTicketName: "黃金通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
+    music: "sound/map2.wav",
   },
 };
 
@@ -274,6 +348,12 @@ async function switchMap(mapKey) {
     "currentMapDisplay"
   ).textContent = `目前地圖：${config.name}`;
   updateBackpackUI?.();
+  // 清除原本音樂（不自動播放）
+  if (currentBgm) {
+    currentBgm.pause();
+    currentBgm = null;
+    playMapMusic(config.music);
+  }
 }
 
 window.switchMap = switchMap;
@@ -433,7 +513,7 @@ function logCatchCard(fishObj, fishType) {
 
   if (fishType && fishObj) {
     const card = document.createElement("div");
-    card.className = "fish-card";
+    card.className = "fish-card big-card";
 
     // 🪄 加上稀有度 class
     const rarityClass = getRarityClass(fishType.probability);
@@ -449,7 +529,7 @@ function logCatchCard(fishObj, fishType) {
     `;
     bottomInfo.appendChild(card);
   } else {
-    bottomInfo.textContent = "魚跑掉了...";
+    bottomInfo.innerHTML = `<div class="fish-escape">魚跑掉了...</div>`;
   }
 
   clearTimeout(bottomInfo._hideTimer);
@@ -1473,6 +1553,7 @@ function proceedToMap(config, mapKey) {
         "currentMapDisplay"
       ).textContent = `目前地圖：${config.name}`;
       updateBackpackUI?.();
+      playMapMusic(config.music);
     });
 }
 
@@ -1569,7 +1650,7 @@ function addTicketToInventory(ticketType) {
   // 判斷名稱與描述
   const isMap2 = ticketType === "ticket-map2";
   const name = isMap2 ? "機械通行證" : "黃金通行證";
-  const buffLabel = isMap2 ? "機械城河通關所需證明" : "黃金之地通關所需證明";
+  const buffLabel = isMap2 ? "機械城河通關所需證明" : "黃金遺址通關所需證明";
   const image = isMap2 ? "images/shop/ticket1.png" : "images/shop/ticket2.png";
 
   const item = {
@@ -1593,8 +1674,38 @@ function addTicketToInventory(ticketType) {
   updateOwnedEquipListUI();
   showAlert(`獲得 ${name}！`);
 }
+// 音樂
+function playMapMusic(musicPath) {
+  if (currentBgm) {
+    currentBgm.pause();
+    currentBgm.currentTime = 0;
+  }
+
+  currentBgm = new Audio(musicPath);
+  currentBgm.loop = true;
+  currentBgm.volume = 0.5;
+  currentBgm.muted = isMuted;
+  currentBgm.play().catch((e) => {
+    console.warn("音樂播放失敗：", e);
+  });
+}
 
 // 下面是 document
+document.getElementById("bgmToggleBtn").addEventListener("click", () => {
+  isMuted = !isMuted;
+
+  if (currentBgm) {
+    // ✅ 已有音樂 → 只切換靜音狀態
+    currentBgm.muted = isMuted;
+  } else if (currentMapConfig?.music) {
+    // ✅ 第一次播放 → 建立音樂並播放
+    playMapMusic(currentMapConfig.music);
+  }
+
+  const icon = document.getElementById("bgmIcon");
+  icon.src = isMuted ? "images/icons/voice2.png" : "images/icons/voice.png";
+});
+
 // 加入機械城河入場券
 document.getElementById("buyMap2Ticket").addEventListener("click", () => {
   const price = ticket1Price;
@@ -1612,7 +1723,7 @@ document.getElementById("buyMap2Ticket").addEventListener("click", () => {
   addTicketToInventory("ticket-map2");
 });
 
-// 加入黃金之地入場券
+// 加入黃金遺址入場券
 document.getElementById("buyMap3Ticket").addEventListener("click", () => {
   const price = ticket2Price;
   const currentMoney = parseInt(
@@ -1622,7 +1733,7 @@ document.getElementById("buyMap3Ticket").addEventListener("click", () => {
 
   if (currentMoney < price) return showAlert("金錢不足！");
   // if (hasTicketInInventory("ticket-map3"))
-  //   return showAlert("你已擁有黃金之地入場券");
+  //   return showAlert("你已擁有黃金遺址入場券");
 
   localStorage.setItem("fishing-money", currentMoney - price);
   updateMoneyUI();

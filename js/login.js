@@ -114,6 +114,10 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
+    // ✅ 自動儲存名稱（email 前綴）
+    const username = user.email.split("@")[0];
+    await setDoc(userRef, { name: username }, { merge: true });
+
     // ✅ 成功登入 → 導向
     location.href = "fishing.html";
   } else {

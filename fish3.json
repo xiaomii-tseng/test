@@ -1,260 +1,260 @@
 [
     {
-        "name": "蒸氣魚",
+        "name": "黃金魚",
         "probability": 40,
-        "image": "images/fish2/fish33.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish76.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "煉金魚",
+        "name": "黃金兵魚",
         "probability": 45,
-        "image": "images/fish2/fish34.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish77.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "鋼甲魚",
+        "name": "黃金后魚",
         "probability": 55,
-        "image": "images/fish2/fish35.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish78.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "警戒魚",
+        "name": "黃金王魚",
         "probability": 0.035,
-        "image": "images/fish2/fish36.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish79.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "齒輪魚",
+        "name": "黃金章魚",
         "probability": 30,
-        "image": "images/fish2/fish37.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish80.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅齒鯊",
+        "name": "獅頭魚",
         "probability": 0.73,
-        "image": "images/fish2/fish38.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish81.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅蝦",
+        "name": "龍蛇",
         "probability": 0.95,
-        "image": "images/fish2/fish39.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish82.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "巡邏魟",
+        "name": "蝠魟",
         "probability": 0.64,
-        "image": "images/fish2/fish40.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish83.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "偵查蟹",
+        "name": "紅君王",
         "probability": 0.3,
-        "image": "images/fish2/fish41.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish84.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅錘鯊",
+        "name": "幸龜",
         "probability": 0.15,
-        "image": "images/fish2/fish42.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish85.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "噴射梭",
+        "name": "錢龜",
         "probability": 0.096,
-        "image": "images/fish2/fish43.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish86.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "泰坦藍鯨",
+        "name": "鹿角魚",
         "probability": 0.015,
-        "image": "images/fish2/fish44.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish87.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "賽博魚",
+        "name": "將魷",
         "probability": 0.084,
-        "image": "images/fish2/fish45.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish88.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "流體金魚",
+        "name": "年魚",
         "probability": 0.52,
-        "image": "images/fish2/fish46.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish89.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銀魟",
+        "name": "獸魚",
         "probability": 0.042,
-        "image": "images/fish2/fish47.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish90.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "宇宙八爪魚",
+        "name": "流金",
         "probability": 0.02,
-        "image": "images/fish2/fish48.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish91.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "秘魷",
+        "name": "符文蟹",
         "probability": 0.071,
-        "image": "images/fish2/fish49.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish92.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅鐵魚",
+        "name": "鬚獸魚",
         "probability": 28,
-        "image": "images/fish2/fish50.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish93.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "秘銀魚",
+        "name": "玩具兵鯊",
         "probability": 15,
-        "image": "images/fish2/fish51.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish94.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅蝦蟹",
+        "name": "金旗",
         "probability": 3,
-        "image": "images/fish2/fish52.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish95.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "金環魚",
+        "name": "金祿魚",
         "probability": 8,
-        "image": "images/fish2/fish53.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish96.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "銅環章魚",
+        "name": "魅魚",
         "probability": 0.056,
-        "image": "images/fish2/fish54.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish97.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "科技海豚",
+        "name": "龍蛇妖",
         "probability": 0.041,
-        "image": "images/fish2/fish55.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish98.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "重甲蟹",
+        "name": "天使魚",
         "probability": 0.036,
-        "image": "images/fish2/fish56.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish99.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "紫母",
+        "name": "修羅魚",
         "probability": 0.41,
-        "image": "images/fish2/fish57.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish100.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "青鋼魚",
+        "name": "惡鬼",
         "probability": 0.83,
-        "image": "images/fish2/fish58.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish101.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "氫化魟",
+        "name": "靜謐鯨",
         "probability": 0.42,
-        "image": "images/fish2/fish59.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish102.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "氫氣魚",
+        "name": "僧河蟹",
         "probability": 0.33,
-        "image": "images/fish2/fish60.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish103.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "戰旗",
+        "name": "天王鯨",
         "probability": 0.027,
-        "image": "images/fish2/fish61.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish104.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "硫化甲魚",
+        "name": "祕寶蟹",
         "probability": 0.085,
-        "image": "images/fish2/fish62.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish105.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "噬人魚",
+        "name": "黃金羌魚",
         "probability": 0.41,
-        "image": "images/fish2/fish63.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish106.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "滄藍魷魚",
-        "probability": 1,
-        "image": "images/fish2/fish64.png",
-        "maps": "機械城河"
+        "name": "珠寶蟹",
+        "probability": 0.088,
+        "image": "images/fish3/fish107.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "偵測魷",
+        "name": "龍魚",
         "probability": 0.24,
-        "image": "images/fish2/fish65.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish108.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "潛魟",
+        "name": "冠鯊",
         "probability": 0.05,
-        "image": "images/fish2/fish66.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish109.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "機蟹魚",
-        "probability": 0.016,
-        "image": "images/fish2/fish67.png",
-        "maps": "機械城河"
+        "name": "金甲魚",
+        "probability": 1,
+        "image": "images/fish3/fish110.png",
+        "maps": "黃金遺址"
     },
     {
-        "name": "古代聖魚",
-        "probability": 0.005,
-        "image": "images/fish2/fish68.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "氫鯊",
-        "probability": 0.067,
-        "image": "images/fish2/fish69.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "綠甲魚",
-        "probability": 38,
-        "image": "images/fish2/fish70.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "吊梭",
-        "probability": 0.41,
-        "image": "images/fish2/fish71.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "魚章",
-        "probability": 0.063,
-        "image": "images/fish2/fish72.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "接地鯊",
-        "probability": 0.013,
-        "image": "images/fish2/fish73.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "翅甲蟹",
-        "probability": 2.5,
-        "image": "images/fish2/fish74.png",
-        "maps": "機械城河"
-    },
-    {
-        "name": "氫甲魚",
+        "name": "牛魚",
         "probability": 32,
-        "image": "images/fish2/fish75.png",
-        "maps": "機械城河"
+        "image": "images/fish3/fish111.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "拜神魚",
+        "probability": 38,
+        "image": "images/fish3/fish112.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "遣蟹",
+        "probability": 2.5,
+        "image": "images/fish3/fish113.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "奧德賽",
+        "probability": 0.067,
+        "image": "images/fish3/fish114.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "西肯",
+        "probability": 0.063,
+        "image": "images/fish3/fish115.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "海神王",
+        "probability": 0.005,
+        "image": "images/fish3/fish116.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "冥王",
+        "probability": 0.013,
+        "image": "images/fish3/fish117.png",
+        "maps": "黃金遺址"
+    },
+    {
+        "name": "君鯊",
+        "probability": 0.41,
+        "image": "images/fish3/fish118.png",
+        "maps": "黃金遺址"
     }
 ]
