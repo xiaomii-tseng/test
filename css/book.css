@@ -5,7 +5,7 @@
 }
 
 .book-card {
-  max-height: 240px;
+  max-height: 280px;
   /* border: 1px solid #ccc; */
   background: #0000008a;
   border-radius: 8px;
@@ -55,8 +55,8 @@
 
 .fish-icon2 {
   margin: 0 0 0.5rem 0;
-  width: 80px;
-  height: 80px;
+  width: 130px;
+  height: 130px;
   padding: 3px;
   margin-top: 5px;
   background-color: #ffffff;

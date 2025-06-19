@@ -29,7 +29,8 @@
             margin: 0;
         }
 
-        .login-box {
+        .login-box,
+        #loginLoading {
             background-color: #000000bc;
             padding: 2rem;
             border-radius: 10px;
@@ -82,20 +83,65 @@
         .font-ts {
             font-size: 0.8rem;
         }
+
+        .login-box-none {
+            display: none;
+        }
+
+        .login-loading {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 1.2rem;
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-text {
+            margin-top: 10px;
+        }
+
+        /* 轉圈圈動畫 */
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 6px solid #ccc;
+            border-top: 6px solid #ff8e4d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
 <body>
-
-    <div class="login-box">
+    <div id="loginLoading" class="login-loading">
+        <div class="spinner"></div>
+        <div class="loading-text">確認登入資訊中...</div>
+    </div>
+    <div class="login-box login-box-none">
         <div class="title">登入你的釣魚帳號</div>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="密碼">
+        <input type="email" id="email" autocomplete="off" placeholder="Email">
+        <input type="password" id="password" placeholder="密碼" autocomplete="new-password" name="new-password">
         <div class="font-ts">密碼最少要6位數</div>
         <button id="loginBtn">登入</button>
         <button id="registerBtn">註冊</button>
-        <div class="mt-2">
-            Ver 3.0.1
+        <div>
+            Ver 3.0.0
         </div>
     </div>
 

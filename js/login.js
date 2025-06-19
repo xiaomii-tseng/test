@@ -59,14 +59,15 @@ window.register = async function () {
 
 // 其他 import、firebase 初始化...（已經存在）
 
-// ✅ 放在 login.js 最底下
 onAuthStateChanged(auth, async (user) => {
+  const loginBox = document.querySelector(".login-box");
+  const loginLoading = document.getElementById("loginLoading");
+
   if (user) {
     const userRef = doc(db, "saves", user.uid);
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-      // ✅ 雲端已有存檔 → 載入並覆蓋 localStorage
       const data = userSnap.data();
       localStorage.setItem(
         "fishing-v3-backpack",
@@ -85,7 +86,6 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem("fishing-player-exp-v1", data.exp || "0");
       localStorage.setItem("fishing-money", data.money || "0");
     } else {
-      // 🆕 是新帳號 → 給他一組初始資料
       const defaultSave = {
         backpack: [],
         ownedEquipment: [],
@@ -93,11 +93,9 @@ onAuthStateChanged(auth, async (user) => {
         fishDex: [],
         level: 1,
         exp: 0,
-        money: 500000,
+        money: 0,
       };
       await setDoc(userRef, defaultSave);
-
-      // 清空 localStorage → 防止殘留資料
       localStorage.clear();
       const keyMap = {
         backpack: "fishing-v3-backpack",
@@ -116,8 +114,12 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // 導向遊戲主畫面
+    // ✅ 成功登入 → 導向
     location.href = "fishing.html";
+  } else {
+    // ✅ 沒登入 → 顯示登入表單
+    if (loginLoading) loginLoading.style.display = "none";
+    if (loginBox) loginBox.classList.remove("login-box-none");
   }
 });
 
