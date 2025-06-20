@@ -89,12 +89,12 @@ body {
   gap: 10px;
 }
 .fnc-btn {
+  width: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 15px;
   padding: 0.5rem;
-  width: 90px;
   font-weight: bold;
   font-size: 1.2rem;
   box-shadow: 2px 2px 20px rgb(4, 49, 60);
@@ -728,7 +728,7 @@ body {
   background-repeat: no-repeat;
   border: 4px solid #6b4f30;
   color: #fff;
-  width: 70%;
+  width: 85%;
   margin: auto;
 }
 

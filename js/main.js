@@ -1531,7 +1531,7 @@ function updateLevelUI() {
   const level = loadLevel();
   const exp = loadExp();
   const required = getExpForLevel(level);
-  const percent = ((exp / required) * 100).toFixed(1);
+  const percent = ((exp / required) * 100).toFixed(2);
 
   document.querySelector(".level").textContent = `等級: ${level}`;
   document.querySelector(".exp").textContent = `經驗值: ${percent}%`;
