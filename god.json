@@ -1,0 +1,37 @@
+[
+    {
+        "name": "天神釣竿",
+        "type": "rod",
+        "image": "images/equip/rod5.png",
+        "rarity": "rare",
+        "buffs": []
+    },
+    {
+        "name": "天神餌",
+        "type": "bait",
+        "image": "images/equip/bait5.png",
+        "rarity": "rare",
+        "buffs": []
+    },
+    {
+        "name": "天神盔",
+        "type": "hat",
+        "image": "images/equip/hat5.png",
+        "rarity": "rare",
+        "buffs": []
+    },
+    {
+        "name": "天神鎧",
+        "type": "outfit",
+        "image": "images/equip/outfit5.png",
+        "rarity": "rare",
+        "buffs": []
+    },
+    {
+        "name": "天神靴",
+        "type": "shoes",
+        "image": "images/equip/shoes5.png",
+        "rarity": "rare",
+        "buffs": []
+    }
+]

@@ -85,6 +85,14 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem("fishing-player-level-v1", data.level || "1");
       localStorage.setItem("fishing-player-exp-v1", data.exp || "0");
       localStorage.setItem("fishing-money", data.money || "0");
+      localStorage.setItem(
+        "refine-crystal",
+        (data.refineCrystal || 0).toString()
+      );
+      localStorage.setItem(
+        "divine-materials",
+        JSON.stringify(data.divineMaterials || {})
+      );
     } else {
       const defaultSave = {
         backpack: [],

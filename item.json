@@ -6,6 +6,12 @@
         "type": "rod"
     },
     {
+        "name": "魔劍釣竿",
+        "probability": 5,
+        "image": "images/equip/rod4.png",
+        "type": "rod"
+    },
+    {
         "name": "金屬釣竿",
         "probability": 20,
         "image": "images/equip/rod2.png",
@@ -24,7 +30,7 @@
         "type": "bait"
     },
     {
-        "name": "小蝦米",
+        "name": "魔法小蝦",
         "probability": 5,
         "image": "images/equip/bait2.png",
         "type": "bait"
@@ -48,6 +54,12 @@
         "type": "hat"
     },
     {
+        "name": "魔法帽",
+        "probability": 5,
+        "image": "images/equip/hat4.png",
+        "type": "hat"
+    },
+    {
         "name": "金屬頭盔",
         "probability": 5,
         "image": "images/equip/hat2.png",
@@ -66,6 +78,12 @@
         "type": "outfit"
     },
     {
+        "name": "魔法長袍",
+        "probability": 5,
+        "image": "images/equip/outfit4.png",
+        "type": "outfit"
+    },
+    {
         "name": "金屬盔甲",
         "probability": 5,
         "image": "images/equip/outfit2.png",
@@ -81,6 +99,12 @@
         "name": "長靴",
         "probability": 5,
         "image": "images/equip/shoes1.png",
+        "type": "shoes"
+    },
+    {
+        "name": "魔法長靴",
+        "probability": 5,
+        "image": "images/equip/shoes4.png",
         "type": "shoes"
     },
     {

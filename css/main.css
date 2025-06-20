@@ -89,12 +89,12 @@ body {
   gap: 10px;
 }
 .fnc-btn {
-  width: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 15px;
   padding: 0.5rem;
+  width: 30%;
   font-weight: bold;
   font-size: 1.2rem;
   box-shadow: 2px 2px 20px rgb(4, 49, 60);
@@ -193,7 +193,7 @@ body {
   font-size: 1rem;
   margin: 1px 0;
 }
-.big-card .fish-info{
+.big-card .fish-info {
   margin-bottom: 15px;
 }
 /* 點擊動畫 */
@@ -666,7 +666,11 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
 }
-
+.map-btn4 {
+  background-image: url("../images/maps/map4-btn.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 .equipment-top {
   position: relative;
 }
@@ -733,16 +737,77 @@ body {
 }
 
 .bgm-btn {
-    position: fixed;
-    top: 120px;
-    right: 2px;
-    border: none;
-    border-radius: 50%;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1;
+  position: fixed;
+  top: 120px;
+  right: 2px;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
 }
 .bgm-btn img {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 }
+
+.ref-btn {
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 5px rgb(0, 0, 0);
+  border: 2px solid #4c2c00;
+}
+
+.reff-btn {
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 5px rgb(101, 101, 101);
+  border: 2px solid #4c2c00;
+  width: 50%;
+  height: 80px;
+}
+
+@keyframes forge-success {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0px gold;
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px gold;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0px gold;
+  }
+}
+
+@keyframes forge-fail {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.forge-success {
+  animation: forge-success 0.6s ease;
+}
+
+.forge-fail {
+  animation: forge-fail 0.4s ease;
+}
+
