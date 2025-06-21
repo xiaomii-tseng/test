@@ -37,7 +37,7 @@
     },
     {
         "name": "機械鯉魚",
-        "probability": 0.17,
+        "probability": 0.017,
         "image": "images/fish/fish20.png",
         "maps": "清澈川流"
     },
@@ -133,7 +133,7 @@
     },
     {
         "name": "深海燈籠魚",
-        "probability": 0.06,
+        "probability": 0.006,
         "image": "images/fish/fish12.png",
         "maps": "清澈川流"
     },
@@ -176,7 +176,7 @@
     },
     {
         "name": "鯨魚",
-        "probability": 0.085,
+        "probability": 0.0085,
         "image": "images/fish/fish23.png",
         "maps": "清澈川流"
     },

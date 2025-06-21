@@ -94,7 +94,7 @@ body {
   align-items: center;
   border-radius: 15px;
   padding: 0.5rem;
-  width: 30%;
+  width: 35%;
   font-weight: bold;
   font-size: 1.2rem;
   box-shadow: 2px 2px 20px rgb(4, 49, 60);
@@ -115,7 +115,7 @@ body {
   background-repeat: no-repeat;
   border: 4px solid #6b4f30;
   border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.599);
   color: #dedede;
 }
 .backpack-modal .modal-header {
@@ -124,7 +124,7 @@ body {
 .backpack-modal .modal-body {
   height: 500px;
   overflow-y: auto;
-  background-color: rgba(62, 62, 62, 0.61); /* 半透明背景 */
+  background-color: rgba(53, 53, 53, 0.495); /* 半透明背景 */
   padding: 1rem;
 }
 .modal-title {
@@ -141,7 +141,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(29, 29, 29, 0.527);
+  background: rgba(29, 29, 29, 0.763);
   border: 2px solid #fff;
   border-radius: 10px;
   width: 100%;
@@ -563,7 +563,18 @@ body {
   background-repeat: no-repeat;
   border: 4px solid #6b4f30;
 }
-
+.search-modal .modal-content {
+  background-image: url("../images/index/search.jpg"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+}
+.search-modal h6 {
+  color: #50ff50;
+}
+.search-modal span {
+  color: #ffbc37;
+}
 .cloud-btn {
   font-weight: bold;
   font-size: 1rem;
@@ -810,4 +821,3 @@ body {
 .forge-fail {
   animation: forge-fail 0.4s ease;
 }
-

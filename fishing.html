@@ -251,7 +251,7 @@
 
     <!-- 🔧 提煉選擇 Modal -->
     <div class="modal fade" id="refineChoiceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered single-equip-modal">
+        <div class="modal-dialog modal-dialog-centered choose-equip-modal">
             <div class="modal-content text-center text-light bg-dark">
                 <div class="modal-header">
                     <h5 class="modal-title">選擇強化方式</h5>
@@ -267,7 +267,7 @@
 
     <!-- 精煉裝備 Modal -->
     <div class="modal fade" id="refineEquipModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered single-equip-modal">
+        <div class="modal-dialog modal-dialog-centered refine-equip-modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">裝備精煉</h5>
@@ -321,35 +321,40 @@
                     <div class="text-center shop-title">寶箱</div>
                     <div class="d-flex justify-content-around">
                         <div>
-                            <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
+                            <div class="chest-animate">
+                                <img class="shop-chest chest1 fnc-anm" src="./images/shop/chest1.png" alt="">
+                            </div>
                             <div class="text-center">普通寶箱</div>
-                            <div class="text-center">2000 G</div>
+                            <div class="text-center">1200 G</div>
                         </div>
                         <div>
-                            <img class="shop-chest chest2 fnc-anm" src="./images/shop/chest2.png" alt="">
+                            <div class="chest-animate">
+                                <img class="shop-chest chest2 fnc-anm" src="./images/shop/chest2.png"
+                                    alt="">
+                            </div>
                             <div class="text-center">高級寶箱</div>
-                            <div class="text-center">20000 G</div>
+                            <div class="text-center">6000 G</div>
                         </div>
                     </div>
                     <div class="text-center mt-4 shop-title">通行證</div>
-                    <div class="d-flex justify-content-around mt-2">
+                    <div class="d-flex justify-content-around mt-2 mb-4">
                         <div class="text-center">
                             <img id="buyMap4Ticket" src="./images/shop/ticket3.png"
                                 class="ticket-icon shop-ticket fnc-anm" data-map="map4" data-price="35000" />
                             <div>劍與魔法村</div>
-                            <div>35000 G</div>
+                            <div>15000 G</div>
                         </div>
                         <div class="text-center">
                             <img id="buyMap2Ticket" src="./images/shop/ticket1.png"
                                 class="ticket-icon shop-ticket fnc-anm" data-map="map2" data-price="150000" />
                             <div>機械城河</div>
-                            <div>150000 G</div>
+                            <div>35000 G</div>
                         </div>
                         <div class="text-center">
                             <img id="buyMap3Ticket" src="./images/shop/ticket2.png"
                                 class="ticket-icon shop-ticket fnc-anm" data-map="map3" data-price="600000" />
                             <div>黃金遺址</div>
-                            <div>600000 G</div>
+                            <div>75000 G</div>
                         </div>
                     </div>
                 </div>
@@ -410,7 +415,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body d-flex flex-column gap-2">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-around">
                         <button class="fnc-btn fnc-anm" id="openMaps">
                             <img src="images/icons/map.png" alt="地圖" class="icon" />
                             <div>地圖</div>
@@ -419,11 +424,18 @@
                             <img src="images/icons/book.png" alt="圖鑑" class="icon" />
                             <div>圖鑑</div>
                         </button>
+                    </div>
+                    <div class="d-flex justify-content-around mt-3">
                         <button class="fnc-btn fnc-anm" id="openLeaderboard">
                             <img src="images/icons/leaderboard.png" alt="排行榜" class="icon" />
                             <div>排行榜</div>
                         </button>
+                        <button class="fnc-btn fnc-anm" id="openTutorial">
+                            <img src="images/icons/search.png" alt="教學" class="icon" />
+                            <div>教學</div>
+                        </button>
                     </div>
+
                     <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">手動存檔</button>
                     <button id="logoutBtn" class="cloud-btn fnc-anm">登出</button>
 
@@ -468,6 +480,69 @@
                 </div>
                 <div class="modal-body" id="leaderboardContent">
                     <!-- 排名內容會由 JS 塞入 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎓 遊戲教學 Modal -->
+    <div class="modal fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered search-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">遊戲教學</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3" style="max-height: 70vh; overflow-y: auto;">
+                    <h6>🎣 釣魚模式</h6>
+                    <ul>
+                        <li>自動釣魚：每 17~23 秒自動釣魚一次</li>
+                        <li>手動釣魚：點擊精度條提高成功率與稀有魚機率</li>
+                    </ul>
+                    <h6>🎒 背包與販售</h6>
+                    <ul>
+                        <li>釣到的魚會進入背包，可多選販售換金幣</li>
+                        <li>根據裝備與等級會有販售金額加成</li>
+                    </ul>
+                    <h6>🛍️ 裝備與寶箱</h6>
+                    <ul>
+                        <li>從寶箱中獲得各種裝備，<span>隨機出現 1~3 條詞綴</span>，</li>
+                        <li>普通寶箱與高階寶箱有不同 buff 加成上限</li>
+                        <li>裝備可收藏、拆解、強化提升 Buff 效果</li>
+                        <li>裝備收藏後不可被拆解</li>
+                    </ul>
+                    <h6>⚒️ 精煉系統</h6>
+                    <ul>
+                        <li>裝備拆解會獲得提煉結晶，<span>依照詞綴數量給予相對應數量結晶</span></li>
+                        <li>使用提煉結晶可對裝備進行精煉<span>【最高+8】</span></li>
+                        <li>精煉有"機率失敗"，<span>不會消失</span>，只消耗提煉結晶</li>
+                    </ul>
+                    <h6>💫 神化系統</h6>
+                    <ul>
+                        <li><span>【清澈川流】【劍與魔法村】【機械城河】</span>，以極低機率釣到神化材料</li>
+                        <li>裝備神化後會變成<span>【天神裝】</span>，湊齊整套<span>【無視地圖裝備需求】</span></li>
+                    </ul>
+                    <h6>📈 等級系統</h6>
+                    <ul>
+                        <li>每次釣到魚獲得經驗值，升級可<span>增加所有加成</span></li>
+                        <li>部分地圖有等級限制</li>
+                    </ul>
+                    <h6>🗺️ 地圖與通行證</h6>
+                    <ul>
+                        <li>高級地圖需購買通行證才能進入，使用後<span>限時30分鐘</span></li>
+                        <li>高級地圖有等級、裝備需求</span></li>
+                        <li>高級地圖無法換裝，請事先準備好裝備</li>
+                    </ul>
+                    <h6>📘 圖鑑系統</h6>
+                    <ul>
+                        <li>每種魚會記錄最大尺寸、第一次釣到時間、售價與出沒地圖</li>
+                        <li>可依稀有度與地圖篩選圖鑑</li>
+                    </ul>
+                    <h6>☁️ 存檔與登入</h6>
+                    <ul>
+                        <li>帳號@之前是角色暱稱</li>
+                        <li>登入後每30秒自動存檔，可手動點擊存檔</li>
+                    </ul>
                 </div>
             </div>
         </div>

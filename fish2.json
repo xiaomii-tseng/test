@@ -91,7 +91,7 @@
     },
     {
         "name": "宇宙八爪魚",
-        "probability": 0.02,
+        "probability": 0.0038,
         "image": "images/fish2/fish48.png",
         "maps": "機械城河"
     },
@@ -146,7 +146,7 @@
     },
     {
         "name": "紫母",
-        "probability": 0.41,
+        "probability": 0.031,
         "image": "images/fish2/fish57.png",
         "maps": "機械城河"
     },
@@ -158,7 +158,7 @@
     },
     {
         "name": "氫化魟",
-        "probability": 0.42,
+        "probability": 0.0062,
         "image": "images/fish2/fish59.png",
         "maps": "機械城河"
     },
@@ -170,20 +170,20 @@
     },
     {
         "name": "戰旗",
-        "probability": 0.027,
+        "probability": 0.0027,
         "image": "images/fish2/fish61.png",
         "maps": "機械城河"
     },
     {
         "name": "硫化甲魚",
-        "probability": 0.085,
+        "probability": 0.035,
         "image": "images/fish2/fish62.png",
         "maps": "機械城河"
     },
 
     {
         "name": "噬人魚",
-        "probability": 0.41,
+        "probability": 0.021,
         "image": "images/fish2/fish63.png",
         "maps": "機械城河"
     },
@@ -213,7 +213,7 @@
     },
     {
         "name": "古代聖魚",
-        "probability": 0.005,
+        "probability": 0.0015,
         "image": "images/fish2/fish68.png",
         "maps": "機械城河"
     },
@@ -243,7 +243,7 @@
     },
     {
         "name": "接地鯊",
-        "probability": 0.013,
+        "probability": 0.0073,
         "image": "images/fish2/fish73.png",
         "maps": "機械城河"
     },
