@@ -27,7 +27,7 @@ const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
 let currentBgm = null;
-let isMuted = false;
+let isMuted = true;
 let userHasInteractedWithBgm = false;
 let isAutoFishing = false;
 let autoFishingTimeoutId = null;
@@ -783,8 +783,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  return 8000 + Math.random() * 5000;
-  // return 4500;
+  // return 8000 + Math.random() * 5000;
+  return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
@@ -1624,7 +1624,7 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  return Math.floor(1116 * Math.pow(1.07, level - 1));
+  return Math.floor(558 * Math.pow(1.07, level - 1));
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
@@ -1812,7 +1812,7 @@ function addTicketToInventory(ticketType) {
 }
 
 // 音樂
-function playMapMusic(musicPath) {
+function playMapMusic(musicPath, forcePlay = false) {
   if (currentBgm) {
     currentBgm.pause();
     currentBgm.currentTime = 0;
@@ -1823,13 +1823,22 @@ function playMapMusic(musicPath) {
   currentBgm.volume = 0.5;
   currentBgm.muted = isMuted;
 
-  // ⛔ 只有使用者手動開啟過音樂才播放
-  if (userHasInteractedWithBgm) {
-    currentBgm.play().catch((e) => {
-      console.warn("音樂播放失敗：", e);
-    });
+  const icon = document.getElementById("bgmIcon");
+
+  if (userHasInteractedWithBgm || forcePlay) {
+    currentBgm
+      .play()
+      .then(() => {
+        icon.src = "images/icons/voice.png";
+      })
+      .catch(() => {
+        icon.src = "images/icons/voice2.png";
+      });
+  } else {
+    icon.src = "images/icons/voice2.png";
   }
 }
+
 // 更新結晶
 // 更新結晶
 function updateCrystalUI() {
@@ -2158,23 +2167,26 @@ document.getElementById("refineBtn").onclick = () => {
 };
 
 document.getElementById("bgmToggleBtn").addEventListener("click", () => {
-  const icon = document.getElementById("bgmIcon");
   userHasInteractedWithBgm = true;
-  // 如果還沒建立音樂 → 表示是第一次播放
+
   if (!currentBgm && currentMapConfig?.music) {
-    isMuted = false; // 撥第一首時預設不靜音
-    playMapMusic(currentMapConfig.music);
-    icon.src = "images/icons/voice.png";
+    isMuted = false;
+    playMapMusic(currentMapConfig.music, true);
     return;
   }
 
-  // 有音樂時 → 切換靜音狀態
   isMuted = !isMuted;
   if (currentBgm) {
     currentBgm.muted = isMuted;
-  }
 
-  icon.src = isMuted ? "images/icons/voice2.png" : "images/icons/voice.png";
+    // ✅ 如果剛解除靜音，主動呼叫 play()
+    if (!isMuted && currentBgm.paused) {
+      currentBgm.play().catch((e) => console.warn("播放失敗", e));
+    }
+
+    const icon = document.getElementById("bgmIcon");
+    icon.src = isMuted ? "images/icons/voice2.png" : "images/icons/voice.png";
+  }
 });
 
 // 加入劍與魔法村入場券
@@ -2368,6 +2380,7 @@ document
     if (modal) modal.hide();
   });
 window.addEventListener("DOMContentLoaded", async () => {
+  switchMap("map1");
   updateMoneyUI();
   updateCrystalUI();
   patchLegacyEquipments();
@@ -2389,9 +2402,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // ✅ 載入所有魚種（供圖鑑使用）
   await loadAllFishTypes();
-
-  // ✅ 初始化地圖
-  switchMap("map1");
 
   // ✅ 顯示登入帳號資訊
   const auth = getAuth();
