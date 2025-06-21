@@ -11,7 +11,6 @@ const CRYSTAL_KEY = "refine-crystal";
 const DIVINE_STORAGE_KEY = "divine-materials";
 let backpack = loadBackpack();
 let money = loadMoney();
-let autoFishingInterval = null;
 let selectedEquippedSlot = null;
 let selectedEquipForAction = null;
 let manualFishingTimeout = null;
@@ -30,7 +29,6 @@ let allFishTypes = [];
 let currentBgm = null;
 let isMuted = false;
 let userHasInteractedWithBgm = false;
-let autoFishingIntervalId = null;
 let isAutoFishing = false;
 let autoFishingTimeoutId = null;
 const buffLabelMap = {
@@ -241,7 +239,7 @@ const MAP_CONFIG = {
   map1: {
     json: "fish.json",
     baseValue: 100,
-    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob)),
+    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.0,
     catchRateModifier: 1.0, // 正常上鉤率
     name: "清澈川流",
@@ -252,7 +250,7 @@ const MAP_CONFIG = {
   map4: {
     json: "fish4.json",
     baseValue: 200,
-    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob)),
+    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.1,
     catchRateModifier: 0.9,
     name: "劍與魔法村",
@@ -274,7 +272,7 @@ const MAP_CONFIG = {
   map2: {
     json: "fish2.json",
     baseValue: 400,
-    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob)),
+    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.2,
     catchRateModifier: 0.8, // 稍微難釣
     name: "機械城河",
@@ -778,12 +776,12 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 15000 + Math.random() * 5000;
+  // return 8000 + Math.random() * 5000;
   return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
-  const successRate = 0.75;
+  const successRate = 0.6;
 
   if (Math.random() < successRate) {
     const fishType = getRandomFish();
