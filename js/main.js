@@ -847,13 +847,31 @@ function getWeightedFishByPrecision(precisionRatio) {
 
 // 🎯 機率抽魚
 function getRandomFish() {
-  const total = fishTypes.reduce((sum, f) => sum + f.probability, 0);
+  const buffs = getTotalBuffs();
+  const rareRateBonus = 1 + buffs.increaseRareRate / 100;
+
+  // 加權處理每條魚的機率
+  const weightedFish = fishTypes.map((fish) => {
+    const rarityWeight = 1 / fish.probability;
+    const bias =
+      1 + (rarityWeight * 0.05 * rareRateBonus) / currentMapConfig.rarePenalty;
+
+    return {
+      ...fish,
+      weight: fish.probability * bias,
+    };
+  });
+
+  const total = weightedFish.reduce((sum, f) => sum + f.weight, 0);
   const rand = Math.random() * total;
+
   let sum = 0;
-  for (let f of fishTypes) {
-    sum += f.probability;
+  for (const f of weightedFish) {
+    sum += f.weight;
     if (rand < sum) return f;
   }
+
+  return weightedFish[0]; // fallback
 }
 
 // 打包卡片資訊
