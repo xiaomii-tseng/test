@@ -1617,7 +1617,7 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  return Math.floor(1300 * Math.pow(1.06, level - 1));
+  return Math.floor(2500 * Math.pow(1.07, level - 1));
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
