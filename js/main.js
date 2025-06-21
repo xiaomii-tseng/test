@@ -18,7 +18,7 @@ let isAutoMode = true;
 let isMultiSelectMode = false;
 let currentSort = "asc";
 let currentMapKey = "map1"; // 預設地圖
-const chestCost = 6000; // 高級寶箱
+const chestCost = 7000; // 高級寶箱
 const CHEST_COST = 1200; // 普通寶箱
 const ticket1Price = 30000;
 const ticket2Price = 70000;
@@ -200,6 +200,13 @@ function autoSaveToCloud() {
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
       name: username,
+      refineCrystal: parseInt(
+        localStorage.getItem("refine-crystal") || "0",
+        10
+      ),
+      divineMaterials: JSON.parse(
+        localStorage.getItem("divine-materials") || "{}"
+      ),
     };
 
     try {
@@ -776,8 +783,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
