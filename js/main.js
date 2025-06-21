@@ -20,9 +20,9 @@ let currentSort = "asc";
 let currentMapKey = "map1"; // 預設地圖
 const chestCost = 6000; // 高級寶箱
 const CHEST_COST = 1200; // 普通寶箱
-const ticket1Price = 15000;
-const ticket2Price = 35000;
-const ticket3Price = 75000;
+const ticket1Price = 30000;
+const ticket2Price = 70000;
+const ticket3Price = 150000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -776,8 +776,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
