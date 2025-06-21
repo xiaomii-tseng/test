@@ -561,7 +561,9 @@ function logCatchCard(fishObj, fishType) {
     card.className = "fish-card big-card";
 
     // 🪄 加上稀有度 class
-    const rarityClass = getRarityClass(fishType.probability);
+    const rarityClass = getRarityClass(
+      fishType.originalProbability ?? fishType.probability
+    );
     card.classList.add(rarityClass);
 
     card.innerHTML = `
@@ -717,6 +719,7 @@ function assignPriceByProbability(fishList, mapConfig) {
   return fishList.map((fish) => ({
     ...fish,
     price: mapConfig.priceFormula(fish.probability, mapConfig.baseValue),
+    originalProbability: fish.probability,
   }));
 }
 
@@ -999,7 +1002,10 @@ function updateBackpackUI() {
     const fishType = allFishTypes.find((f) => f.name === fish.name);
     if (!fishType) continue;
 
-    const rarityClass = getRarityClass(fishType.probability);
+    const rarityClass = getRarityClass(
+      fishType.originalProbability ?? fishType.probability
+    );
+
     const card = document.createElement("div");
     card.className = `fish-card ${rarityClass}`;
     card.dataset.id = fish.id;
