@@ -301,7 +301,7 @@ const MAP_CONFIG = {
   map3: {
     json: "fish3.json",
     baseValue: 800,
-    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob)),
+    priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.3,
     catchRateModifier: 0.7, // 較難上鉤
     name: "黃金遺址",
@@ -1628,9 +1628,9 @@ function saveExp(exp) {
 }
 function getExpForLevel(level) {
   const growth = Math.pow(1.05, level - 1);
-  if (level <= 40) return Math.floor(1315 * growth);
-  if (level <= 80) return Math.floor(1235 * growth);
-  return Math.floor(877 * growth);
+  if (level <= 40) return Math.floor(1400 * growth);
+  if (level <= 80) return Math.floor(1100 * growth);
+  return Math.floor(800 * growth);
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
