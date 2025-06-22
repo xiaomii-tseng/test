@@ -22,7 +22,7 @@ const chestCost = 12000; // 高級寶箱
 const CHEST_COST = 1500; // 普通寶箱
 const ticket1Price = 50000;
 const ticket2Price = 80000;
-const ticket3Price = 120000;
+const ticket3Price = 200000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -1167,7 +1167,26 @@ function updateOwnedEquipListUI() {
   const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   container.innerHTML = "";
 
-  for (const equip of owned) {
+  // 👉 讀取篩選值
+  const selectedType =
+    document.getElementById("equipTypeFilter")?.value || "all";
+
+  // 👉 過濾符合類型的裝備
+  const filtered = owned.filter((e) => {
+    if (selectedType === "all") return true;
+    if (selectedType === "other") {
+      return (
+        e.type !== "rod" &&
+        e.type !== "bait" &&
+        e.type !== "hat" &&
+        e.type !== "outfit" &&
+        e.type !== "shoes"
+      );
+    }
+    return e.type === selectedType;
+  });
+
+  for (const equip of filtered) {
     const card = document.createElement("div");
     card.className = "equipment-card";
 
@@ -1176,7 +1195,6 @@ function updateOwnedEquipListUI() {
     // 🔧 決定 buff 顯示方式
     const buffList = equip.buffs
       .map((buff) => {
-        // 如果是備註型（如通行證），就只顯示 label，不顯示 +x%
         if (buff.type === "note") return `<li>${buff.label}</li>`;
         return `<li>${buff.label} +${buff.value}%</li>`;
       })
@@ -1199,7 +1217,6 @@ function updateOwnedEquipListUI() {
 
     container.appendChild(card);
 
-    // 🧭 通行證不開啟 modal（避免誤操作）
     if (!equip.type.startsWith("ticket-")) {
       card.addEventListener("click", () => {
         selectedEquipForAction = equip;
@@ -1207,7 +1224,6 @@ function updateOwnedEquipListUI() {
       });
     }
 
-    // ❤️ 愛心收藏功能（仍可用）
     const favBtn = card.querySelector(".btn-favorite");
     favBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -2164,6 +2180,9 @@ function openDivineModal(equip) {
 }
 
 // 下面是 document
+document
+  .getElementById("equipTypeFilter")
+  ?.addEventListener("change", updateOwnedEquipListUI);
 document.getElementById("openTutorial").addEventListener("click", () => {
   const modal = new bootstrap.Modal(document.getElementById("tutorialModal"));
   modal.show();
