@@ -1,6 +1,6 @@
 // 📁 自動釣魚遊戲主邏輯
 
-const GAME_VERSION = "3.0.0"; // 每次更新請手動更改版本號
+const GAME_VERSION = "2.6.0"; // 每次更新請手動更改版本號
 const STORAGE_KEY = "fishing-v3-backpack";
 const ownedEquipment = "owned-equipment-v2";
 const EQUIPPED_KEY = "equipped-items-v2";
@@ -22,7 +22,7 @@ const chestCost = 12000; // 高級寶箱
 const CHEST_COST = 1500; // 普通寶箱
 const ticket1Price = 50000;
 const ticket2Price = 80000;
-const ticket3Price = 160000;
+const ticket3Price = 120000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -785,8 +785,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
@@ -1629,7 +1629,7 @@ function saveExp(exp) {
 function getExpForLevel(level) {
   const growth = Math.pow(1.05, level - 1);
   if (level <= 40) return Math.floor(1400 * growth);
-  if (level <= 80) return Math.floor(1100 * growth);
+  if (level <= 80) return Math.floor(1800 * growth);
   return Math.floor(800 * growth);
 }
 // 加經驗並檢查升等
@@ -1893,7 +1893,7 @@ function openRefineModal(equip) {
   const ownedRaw = parseInt(localStorage.getItem(CRYSTAL_KEY), 10);
   const owned = isNaN(ownedRaw) ? 0 : ownedRaw;
 
-  const buffIncrements = [0, 4, 5, 6, 7, 8, 10, 10, 15];
+  const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
   const previewIncrease = buffIncrements[refineLevel + 1];
 
   document.getElementById("refineEquipCard").innerHTML =
@@ -1917,7 +1917,7 @@ function openRefineModal(equip) {
   document.getElementById(
     "refineCrystalOwned"
   ).textContent = `目前擁有：${owned} 顆`;
-  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2];
+  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const currentRate = successRates[refineLevel] ?? 0;
   document.getElementById(
     "refineSuccessRate"
@@ -1952,7 +1952,7 @@ function refineEquipment(equip) {
   localStorage.setItem(CRYSTAL_KEY, crystals);
 
   // 成功率表
-  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2];
+  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const chance = successRates[refineLevel];
   const success = Math.random() < chance;
 
@@ -1961,7 +1961,7 @@ function refineEquipment(equip) {
     const index = Math.floor(Math.random() * equip.buffs.length);
 
     // 每級增加的數值表
-    const buffIncrements = [0, 4, 5, 6, 7, 8, 10, 10, 15]; // index = refineLevel
+    const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15]; // index = refineLevel
     const increase = buffIncrements[equip.refineLevel] ?? 5; // fallback: default +5
 
     equip.buffs[index].value += increase;
@@ -2011,7 +2011,7 @@ function refineEquipment(equip) {
     const nextCost = (equip.refineLevel + 2) * 2;
     costInfo.textContent = `消耗提煉結晶：${nextCost} 顆`;
   }
-  const buffIncrements = [0, 4, 5, 6, 7, 8, 10, 10, 15];
+  const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
   const previewIncrease = buffIncrements[equip.refineLevel + 1] ?? 0;
 
   const buffPreview = document.getElementById("refineBuffPreview");
@@ -2025,7 +2025,7 @@ function refineEquipment(equip) {
 
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2];
+    const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
     const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
