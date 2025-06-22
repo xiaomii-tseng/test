@@ -1468,6 +1468,7 @@ fishTypes.forEach((fishType) => {
 function getDiscoveredFishNames() {
   return [...new Set(backpack.map((f) => f.name))];
 }
+
 function renderFishBook() {
   const grid = document.getElementById("fishBookGrid");
   grid.innerHTML = "";
@@ -1477,11 +1478,22 @@ function renderFishBook() {
   const selectedMap = document.getElementById("mapFilter")?.value || "all";
   const dex = loadFishDex();
   const discoveredNames = dex.map((d) => d.name);
-  const total = allFishTypes.length;
 
-  document.getElementById(
-    "fishBookProgress"
-  ).textContent = `(${discoveredNames.length}/${total})`;
+  const mapName = selectedMap === "all" ? null : MAP_CONFIG[selectedMap].name;
+
+  // 🔍 篩出該地圖出現的所有魚種
+  const filteredFishTypes = allFishTypes.filter((fish) =>
+    !mapName || (fish.maps || []).includes(mapName)
+  );
+
+  // 🧮 計算該地圖中有幾種魚被發現
+  const filteredDiscoveredCount = filteredFishTypes.filter((fish) =>
+    discoveredNames.includes(fish.name)
+  ).length;
+
+  // 🧾 顯示進度 (目前地圖已發現 / 地圖總魚種)
+  document.getElementById("fishBookProgress").textContent =
+    `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
 
   for (const fishType of allFishTypes) {
     const data = dex.find((d) => d.name === fishType.name);
@@ -1506,14 +1518,13 @@ function renderFishBook() {
         <div class="fish-text">首次釣到：${new Date(
           data.firstCaught
         ).toLocaleDateString()}</div>
-        <div class="fish-text">出沒地圖：${(fishType.maps || []).join(
-          "、"
-        )}</div>
+        <div class="fish-text">出沒地圖：${(fishType.maps || []).join("、")}</div>
       </div>
     `;
     grid.appendChild(card);
   }
 }
+
 
 function loadFishDex() {
   return JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]");
