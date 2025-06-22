@@ -496,6 +496,7 @@ function normalizeFishProbabilities(fishList) {
   const total = fishList.reduce((sum, f) => sum + f.probability, 0);
   return fishList.map((fish) => ({
     ...fish,
+    rawProbability: fish.probability,
     probability: parseFloat(((fish.probability / total) * 100).toFixed(4)),
   }));
 }
@@ -508,12 +509,12 @@ function generateUUID() {
   });
 }
 // 魚的卡片邊框
-function getRarityClass(probability) {
-  if (probability > 2) return "rarity-common"; // 普通：白色
-  if (probability > 0.3) return "rarity-uncommon"; // 高級：藍色
-  if (probability > 0.08) return "rarity-rare"; // 稀有：黃色
-  if (probability > 0.04) return "rarity-epic"; // 史詩：紫色
-  if (probability > 0.01) return "rarity-legend"; // 神話：紅色
+function getRarityClass(rawProbability) {
+  if (rawProbability > 2) return "rarity-common"; // 普通：白色
+  if (rawProbability > 0.3) return "rarity-uncommon"; // 高級：藍色
+  if (rawProbability > 0.08) return "rarity-rare"; // 稀有：黃色
+  if (rawProbability > 0.04) return "rarity-epic"; // 史詩：紫色
+  if (rawProbability > 0.01) return "rarity-legend"; // 神話：紅色
   return "rarity-mythic"; // 傳奇：彩色邊框
 }
 // 🎯 精度條控制
@@ -561,9 +562,7 @@ function logCatchCard(fishObj, fishType) {
     card.className = "fish-card big-card";
 
     // 🪄 加上稀有度 class
-    const rarityClass = getRarityClass(
-      fishType.originalProbability ?? fishType.probability
-    );
+    const rarityClass = getRarityClass(fishType.rawProbability);
     card.classList.add(rarityClass);
 
     card.innerHTML = `
@@ -1002,9 +1001,7 @@ function updateBackpackUI() {
     const fishType = allFishTypes.find((f) => f.name === fish.name);
     if (!fishType) continue;
 
-    const rarityClass = getRarityClass(
-      fishType.originalProbability ?? fishType.probability
-    );
+    const rarityClass = getRarityClass(fishType.rawProbability);
 
     const card = document.createElement("div");
     card.className = `fish-card ${rarityClass}`;
@@ -1513,7 +1510,7 @@ function updateFishDex(fish) {
   const existing = dex.find((d) => d.name === fish.name);
   const fishType = fishTypes.find((f) => f.name === fish.name);
 
-  const rarity = getRarityClass(fishType.probability);
+  const rarity = getRarityClass(fishType.rawProbability);
   const maps = fishType.maps || "未知";
 
   if (!existing) {
