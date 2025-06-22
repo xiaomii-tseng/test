@@ -9,6 +9,10 @@
   color: #dedede;
 }
 
+.equip-modal .modal-body {
+  min-height: 542px;
+}
+
 .character-panel {
   background: #fff8e1;
   border: 2px solid #794324;
