@@ -295,3 +295,16 @@
   width: 80%;
   margin: auto;
 }
+
+#equipTypeFilter {
+  padding:  10px 30px 10px 15px;
+  border: 2px solid #3e2e1c;
+  border-radius: 15px;
+  background-color: #6d563f;
+  color: #eeeeee;
+}
+
+.equip-bottom{
+  display: flex;
+  justify-content: space-around;
+}
