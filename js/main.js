@@ -1,6 +1,6 @@
 // 📁 自動釣魚遊戲主邏輯
 
-const GAME_VERSION = "2.6.0"; // 每次更新請手動更改版本號
+const GAME_VERSION = "3.0.0"; // 每次更新請手動更改版本號
 const STORAGE_KEY = "fishing-v3-backpack";
 const ownedEquipment = "owned-equipment-v2";
 const EQUIPPED_KEY = "equipped-items-v2";
@@ -20,9 +20,9 @@ let currentSort = "asc";
 let currentMapKey = "map1"; // 預設地圖
 const chestCost = 12000; // 高級寶箱
 const CHEST_COST = 1500; // 普通寶箱
-const ticket1Price = 70000;
-const ticket2Price = 140000;
-const ticket3Price = 350000;
+const ticket1Price = 50000;
+const ticket2Price = 80000;
+const ticket3Price = 160000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -785,8 +785,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  return 8000 + Math.random() * 5000;
-  // return 4500;
+  // return 8000 + Math.random() * 5000;
+  return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
@@ -1627,7 +1627,10 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  return Math.floor(558 * Math.pow(1.07, level - 1));
+  const growth = Math.pow(1.05, level - 1);
+  if (level <= 40) return Math.floor(1315 * growth);
+  if (level <= 80) return Math.floor(1235 * growth);
+  return Math.floor(877 * growth);
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
