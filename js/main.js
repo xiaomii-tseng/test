@@ -88,20 +88,24 @@ async function showLeaderboard() {
   container.innerHTML = topPlayers
     .map(
       (p, i) => `
-    <div>${i + 1}. ${p.name} | Lv.${p.level} | 💰 ${p.money.toLocaleString()} G</div>
+    <div>${i + 1}. ${p.name} | Lv.${
+        p.level
+      } | 💰 ${p.money.toLocaleString()} G</div>
   `
     )
     .join("");
   new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
 }
 
-document.getElementById("openLeaderboard").addEventListener("click", async () => {
-  const functionMenu = bootstrap.Modal.getInstance(
-    document.getElementById("functionMenuModal")
-  );
-  if (functionMenu) functionMenu.hide();
-  await showLeaderboard();
-});
+document
+  .getElementById("openLeaderboard")
+  .addEventListener("click", async () => {
+    const functionMenu = bootstrap.Modal.getInstance(
+      document.getElementById("functionMenuModal")
+    );
+    if (functionMenu) functionMenu.hide();
+    await showLeaderboard();
+  });
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
   signOut(auth)
@@ -114,9 +118,11 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     });
 });
 
-document.getElementById("saveToCloudBtn").addEventListener("click", async () => {
-  saveToCloud();
-});
+document
+  .getElementById("saveToCloudBtn")
+  .addEventListener("click", async () => {
+    saveToCloud();
+  });
 
 /** 顯示提示訊息的自訂 Modal */
 function showAlert(message) {
@@ -135,7 +141,9 @@ function saveGameDataToCloud(silent = false) {
     const username = user.email.split("@")[0]; // 提取 Email 前綴作為使用者名稱
     const saveData = {
       backpack: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
-      ownedEquipment: JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]"),
+      ownedEquipment: JSON.parse(
+        localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]"
+      ),
       equippedItems: JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}"),
       fishDex: JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]"),
       level: parseInt(localStorage.getItem(LEVEL_KEY) || "1", 10),
@@ -143,7 +151,9 @@ function saveGameDataToCloud(silent = false) {
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
       name: username,
       refineCrystal: parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10),
-      divineMaterials: JSON.parse(localStorage.getItem(DIVINE_STORAGE_KEY) || "{}"),
+      divineMaterials: JSON.parse(
+        localStorage.getItem(DIVINE_STORAGE_KEY) || "{}"
+      ),
     };
     try {
       await setDoc(doc(db, "saves", userId), saveData);
@@ -210,7 +220,13 @@ const MAP_CONFIG = {
     name: "劍與魔法村",
     background: "images-webp/maps/map4.webp",
     requiredLevel: 40,
-    requiredEquipNames: ["魔劍釣竿", "魔法小蝦", "魔法帽", "魔法長袍", "魔法長靴"],
+    requiredEquipNames: [
+      "魔劍釣竿",
+      "魔法小蝦",
+      "魔法帽",
+      "魔法長袍",
+      "魔法長靴",
+    ],
     requiredTicketName: "魔法通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
@@ -226,7 +242,13 @@ const MAP_CONFIG = {
     name: "機械城河",
     background: "images-webp/maps/map2.webp",
     requiredLevel: 80,
-    requiredEquipNames: ["金屬釣竿", "金屬餌", "金屬頭盔", "金屬盔甲", "金屬鞋"],
+    requiredEquipNames: [
+      "金屬釣竿",
+      "金屬餌",
+      "金屬頭盔",
+      "金屬盔甲",
+      "金屬鞋",
+    ],
     requiredTicketName: "機械通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
@@ -282,7 +304,10 @@ async function switchMap(mapKey) {
 
   // 通行證時間檢查
   if (config.ticketDurationMs) {
-    const entryTime = parseInt(localStorage.getItem(`map-entry-${mapKey}`) || "0", 10);
+    const entryTime = parseInt(
+      localStorage.getItem(`map-entry-${mapKey}`) || "0",
+      10
+    );
     if (entryTime > 0) {
       const now = Date.now();
       const elapsed = now - entryTime;
@@ -567,7 +592,10 @@ function batchSellSelected() {
     return true;
   });
   // 更新金錢
-  const currentMoney = parseInt(localStorage.getItem("fishing-money") || "0", 10);
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
   const newMoney = currentMoney + finalTotal;
   localStorage.setItem("fishing-money", newMoney.toString());
   updateMoneyUI();
@@ -577,8 +605,11 @@ function batchSellSelected() {
   exitMultiSelectMode();
   // 顯示結算結果
   document.getElementById("rawTotal").textContent = rawTotal.toLocaleString();
-  document.getElementById("bonusTotal").textContent = (finalTotal - rawTotal).toLocaleString();
-  document.getElementById("finalTotal").textContent = finalTotal.toLocaleString();
+  document.getElementById("bonusTotal").textContent = (
+    finalTotal - rawTotal
+  ).toLocaleString();
+  document.getElementById("finalTotal").textContent =
+    finalTotal.toLocaleString();
   new bootstrap.Modal(document.getElementById("multiSellResultModal")).show();
 }
 
@@ -596,7 +627,9 @@ function logCatch(message) {
   }
 }
 
-document.getElementById("precisionStopBtn").addEventListener("click", stopPrecisionBar);
+document
+  .getElementById("precisionStopBtn")
+  .addEventListener("click", stopPrecisionBar);
 
 /** 停止精度條並判定釣魚結果 */
 function stopPrecisionBar() {
@@ -656,10 +689,14 @@ if (fishingStatus) {
 if (toggleBtn) {
   toggleBtn.addEventListener("click", () => {
     isAutoMode = !isAutoMode;
-    toggleBtn.textContent = isAutoMode ? "點擊進入手動模式" : "點擊進入自動模式";
+    toggleBtn.textContent = isAutoMode
+      ? "點擊進入手動模式"
+      : "點擊進入自動模式";
     // 更新狀態提示文字
     if (fishingStatus) {
-      fishingStatus.textContent = isAutoMode ? "自動釣魚中..." : "機率加成中...";
+      fishingStatus.textContent = isAutoMode
+        ? "自動釣魚中..."
+        : "機率加成中...";
     }
     // 停止當前釣魚並切換模式
     stopAutoFishing();
@@ -698,7 +735,7 @@ function addClickBounce(el) {
 /** 取得隨機的自動釣魚延遲時間（毫秒） */
 function getRandomAutoFishingDelay() {
   // return 8000 + Math.random() * 5000;
-  return 4500
+  return 4500;
 }
 
 /** 執行一次自動釣魚嘗試 */
@@ -724,7 +761,10 @@ function startAutoFishing() {
   const scheduleNext = () => {
     if (!isAutoFishing || !currentMapConfig) return;
     doFishing();
-    autoFishingTimeoutId = setTimeout(scheduleNext, getRandomAutoFishingDelay());
+    autoFishingTimeoutId = setTimeout(
+      scheduleNext,
+      getRandomAutoFishingDelay()
+    );
   };
   // 初始延遲後開始第一次釣魚
   autoFishingTimeoutId = setTimeout(scheduleNext, getRandomAutoFishingDelay());
@@ -746,7 +786,9 @@ function getWeightedFishByPrecision(precisionRatio) {
     const buffs = getTotalBuffs();
     const rareRateBonus = 1 + buffs.increaseRareRate / 100;
     const bias =
-      1 + (rarityWeight * precisionRatio * 0.1 * rareRateBonus) / currentMapConfig.rarePenalty;
+      1 +
+      (rarityWeight * precisionRatio * 0.1 * rareRateBonus) /
+        currentMapConfig.rarePenalty;
     return {
       ...fish,
       weight: fish.probability * bias,
@@ -767,7 +809,8 @@ function getRandomFish() {
   const rareRateBonus = 1 + buffs.increaseRareRate / 100;
   const weightedFish = fishTypes.map((fish) => {
     const rarityWeight = 1 / fish.probability;
-    const bias = 1 + (rarityWeight * 0.05 * rareRateBonus) / currentMapConfig.rarePenalty;
+    const bias =
+      1 + (rarityWeight * 0.05 * rareRateBonus) / currentMapConfig.rarePenalty;
     return {
       ...fish,
       weight: fish.probability * bias,
@@ -866,7 +909,10 @@ function loadBackpack() {
 function updateMoneyUI() {
   const el = document.getElementById("coinCount");
   if (el) {
-    el.textContent = parseInt(localStorage.getItem("fishing-money") || "0", 10).toLocaleString();
+    el.textContent = parseInt(
+      localStorage.getItem("fishing-money") || "0",
+      10
+    ).toLocaleString();
   }
 }
 
@@ -930,7 +976,8 @@ function getRandomRarity() {
     }
   }
   return RARITY_TABLE.find(
-    (r) => r.label === RARITY_PROBABILITIES[RARITY_PROBABILITIES.length - 1].rarity
+    (r) =>
+      r.label === RARITY_PROBABILITIES[RARITY_PROBABILITIES.length - 1].rarity
   );
 }
 
@@ -979,7 +1026,9 @@ function showEquipmentGetModal(equip) {
       ${equip.buffs.map((b) => `<li>${getBuffDisplay(b)}</li>`).join("")}
     </ul>
   `;
-  const modal = new bootstrap.Modal(document.getElementById("equipmentGetModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("equipmentGetModal")
+  );
   modal.show();
 }
 
@@ -998,7 +1047,8 @@ function updateOwnedEquipListUI() {
   const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
   container.innerHTML = "";
   // 取得當前篩選條件
-  const selectedType = document.getElementById("equipTypeFilter")?.value || "all";
+  const selectedType =
+    document.getElementById("equipTypeFilter")?.value || "all";
   // 過濾裝備類型
   const filtered = owned.filter((e) => {
     if (selectedType === "all") return true;
@@ -1030,7 +1080,9 @@ function updateOwnedEquipListUI() {
           <img src="${equip.image}" alt="裝備圖示" class="equipment-icon" />
           <div class="equipment-name">${getEquipDisplayName(equip)}</div>
         </div>
-        <button class="btn btn-sm btn-favorite" data-id="${equip.id}">${isFav}</button>
+        <button class="btn btn-sm btn-favorite" data-id="${
+          equip.id
+        }">${isFav}</button>
       </div>
       <ul class="equipment-buffs mt-2">
         ${buffList}
@@ -1064,7 +1116,9 @@ function toggleFavoriteEquip(id) {
 
 /** 打開裝備操作選單 Modal（裝備/精煉等） */
 function openEquipActionModal(selectedEquip) {
-  const modal = new bootstrap.Modal(document.getElementById("equipActionModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("equipActionModal")
+  );
   document.getElementById("refineBtn").onclick = () => {
     modal.hide();
     openRefineChoiceModal(selectedEquip);
@@ -1099,7 +1153,9 @@ function generateEquipCardHTML(equip) {
           <img src="${equip.image}" class="equipment-icon" />
           <div class="equipment-name">${getEquipDisplayName(equip)}</div>
         </div>
-        <button class="btn btn-sm btn-favorite" data-id="${equip.id}">${isFav}</button>
+        <button class="btn btn-sm btn-favorite" data-id="${
+          equip.id
+        }">${isFav}</button>
       </div>
       <ul class="equipment-buffs mt-2">
         ${equip.buffs.map((b) => `<li>${getBuffDisplay(b)}</li>`).join("")}
@@ -1142,7 +1198,9 @@ function updateCharacterStats() {
   document.querySelector(".increase-rare-rate").textContent = `增加稀有率：${(
     stats.increaseRareRate + levelBuff
   ).toFixed(2)}%`;
-  document.querySelector(".increase-big-fish-chance").textContent = `大體型機率：${(
+  document.querySelector(
+    ".increase-big-fish-chance"
+  ).textContent = `大體型機率：${(
     stats.increaseBigFishChance + levelBuff
   ).toFixed(2)}%`;
   document.querySelector(".increase-sellValue").textContent = `增加販售金額：${(
@@ -1175,7 +1233,9 @@ document.querySelector(".cencel-equip-btn").addEventListener("click", () => {
   updateOwnedEquipListUI();
   updateCharacterStats();
   // 關閉裝備資訊 Modal
-  const modal = bootstrap.Modal.getInstance(document.getElementById("equipInfoModal"));
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("equipInfoModal")
+  );
   if (modal) modal.hide();
   // 清除狀態
   selectedEquippedSlot = null;
@@ -1195,17 +1255,23 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
         <div class="equipment-card">
           <div class="equipment-top d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-              <img src="${item.image}" class="equipment-icon" alt="${item.name}" />
+              <img src="${item.image}" class="equipment-icon" alt="${
+        item.name
+      }" />
               <div class="equipment-name">${getEquipDisplayName(item)}</div>
             </div>
             <div class="equipment-fav">${isFav}</div>
           </div>
           <ul class="equipment-buffs mt-2">
-            ${item.buffs.map((buff) => `<li>${buff.label} +${buff.value}%</li>`).join("")}
+            ${item.buffs
+              .map((buff) => `<li>${buff.label} +${buff.value}%</li>`)
+              .join("")}
           </ul>
         </div>
       `;
-      const modal = new bootstrap.Modal(document.getElementById("equipInfoModal"));
+      const modal = new bootstrap.Modal(
+        document.getElementById("equipInfoModal")
+      );
       modal.show();
     }
   });
@@ -1255,7 +1321,8 @@ function getDiscoveredFishNames() {
 function renderFishBook() {
   const grid = document.getElementById("fishBookGrid");
   grid.innerHTML = "";
-  const selectedRarity = document.getElementById("rarityFilter")?.value || "all";
+  const selectedRarity =
+    document.getElementById("rarityFilter")?.value || "all";
   const selectedMap = document.getElementById("mapFilter")?.value || "all";
   const dex = loadFishDex();
   const discoveredNames = dex.map((d) => d.name);
@@ -1269,13 +1336,17 @@ function renderFishBook() {
     discoveredNames.includes(fish.name)
   ).length;
   // 顯示圖鑑收集進度 (已發現/總數)
-  document.getElementById("fishBookProgress").textContent = `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
+  document.getElementById(
+    "fishBookProgress"
+  ).textContent = `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
   for (const fishType of allFishTypes) {
     const data = dex.find((d) => d.name === fishType.name);
     if (!data) continue;
-    const matchesRarity = selectedRarity === "all" || data.rarity === `rarity-${selectedRarity}`;
+    const matchesRarity =
+      selectedRarity === "all" || data.rarity === `rarity-${selectedRarity}`;
     const matchesMap =
-      selectedMap === "all" || (fishType.maps || []).includes(MAP_CONFIG[selectedMap].name);
+      selectedMap === "all" ||
+      (fishType.maps || []).includes(MAP_CONFIG[selectedMap].name);
     if (!matchesRarity || !matchesMap) continue;
     const card = document.createElement("div");
     card.className = `fish-card book-card ${data.rarity}`;
@@ -1285,8 +1356,12 @@ function renderFishBook() {
         <div class="fish-name2">${fishType.name}</div>
         <div class="fish-text">最大尺寸：${data.maxSize.toFixed(1)} %</div>
         <div class="fish-text">最高售價：${data.maxPrice} G</div>
-        <div class="fish-text">首次釣到：${new Date(data.firstCaught).toLocaleDateString()}</div>
-        <div class="fish-text">出沒地圖：${(fishType.maps || []).join("、")}</div>
+        <div class="fish-text">首次釣到：${new Date(
+          data.firstCaught
+        ).toLocaleDateString()}</div>
+        <div class="fish-text">出沒地圖：${(fishType.maps || []).join(
+          "、"
+        )}</div>
       </div>
     `;
     grid.appendChild(card);
@@ -1323,7 +1398,9 @@ function updateFishDex(fish) {
     existing.maxSize = Math.max(existing.maxSize, fish.size);
     existing.maxPrice = Math.max(existing.maxPrice, fish.finalPrice);
     existing.firstCaught =
-      new Date(fish.caughtAt) < new Date(existing.firstCaught) ? fish.caughtAt : existing.firstCaught;
+      new Date(fish.caughtAt) < new Date(existing.firstCaught)
+        ? fish.caughtAt
+        : existing.firstCaught;
     existing.rarity = rarity;
     existing.maps = maps;
   }
@@ -1367,7 +1444,10 @@ function getHighTierBuffValue(type) {
 
 /** 開啟寶箱並取得隨機裝備 */
 function openChest(cost, getRarityFn, generateBuffsFn) {
-  const currentMoney = parseInt(localStorage.getItem("fishing-money") || "0", 10);
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
   if (currentMoney < cost) return;
   localStorage.setItem("fishing-money", (currentMoney - cost).toString());
   updateMoneyUI();
@@ -1393,7 +1473,7 @@ function openChest(cost, getRarityFn, generateBuffsFn) {
 }
 
 // 綁定寶箱按鈕事件
-document.querySelector(".shop-chest").addEventListener("click", () => {
+document.querySelector(".chest1").addEventListener("click", () => {
   openChest(NORMAL_CHEST_COST, getRandomRarity, generateBuffs);
 });
 document.querySelector(".chest2").addEventListener("click", () => {
@@ -1479,9 +1559,14 @@ function proceedToMap(config, mapKey) {
   fetch(config.json)
     .then((res) => res.json())
     .then((data) => {
-      fishTypes = assignPriceByProbability(normalizeFishProbabilities(data), config);
+      fishTypes = assignPriceByProbability(
+        normalizeFishProbabilities(data),
+        config
+      );
       updateBackground(config.background);
-      document.getElementById("currentMapDisplay").textContent = `目前地圖：${config.name}`;
+      document.getElementById(
+        "currentMapDisplay"
+      ).textContent = `目前地圖：${config.name}`;
       updateBackpackUI?.();
       playMapMusic(config.music);
     });
@@ -1510,7 +1595,10 @@ setInterval(() => {
     if (timerEl) timerEl.style.display = "none";
     return;
   }
-  const entryTime = parseInt(localStorage.getItem(`map-entry-${currentMapKey}`) || "0", 10);
+  const entryTime = parseInt(
+    localStorage.getItem(`map-entry-${currentMapKey}`) || "0",
+    10
+  );
   if (!entryTime) {
     timerEl.style.display = "none";
     return;
@@ -1524,7 +1612,9 @@ setInterval(() => {
   } else {
     const mins = Math.floor(remainingMs / 60000);
     const secs = Math.floor((remainingMs % 60000) / 1000);
-    timerEl.textContent = `通行證剩餘 ${mins}:${secs.toString().padStart(2, "0")}`;
+    timerEl.textContent = `通行證剩餘 ${mins}:${secs
+      .toString()
+      .padStart(2, "0")}`;
     timerEl.style.display = "block";
   }
 }, 1000);
@@ -1539,7 +1629,9 @@ setInterval(() => {
 /** 自訂確認對話框（Modal），返回使用者選擇的結果 */
 function customConfirm(message) {
   return new Promise((resolve) => {
-    const modal = new bootstrap.Modal(document.getElementById("customConfirmModal"));
+    const modal = new bootstrap.Modal(
+      document.getElementById("customConfirmModal")
+    );
     document.getElementById("customConfirmMessage").textContent = message;
     const okBtn = document.getElementById("customConfirmOK");
     const cancelBtn = document.getElementById("customConfirmCancel");
@@ -1644,7 +1736,9 @@ function updateCrystalUI() {
 
 /** 打開精煉方式選擇 Modal */
 function openRefineChoiceModal(equip) {
-  const modal = new bootstrap.Modal(document.getElementById("refineChoiceModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("refineChoiceModal")
+  );
   modal.show();
   // 綁定選項按鈕行為
   document.getElementById("refineForgeBtn").onclick = () => {
@@ -1660,7 +1754,9 @@ function openRefineChoiceModal(equip) {
 /** 打開鍛造精煉 Modal，顯示裝備資訊 */
 function openRefineModal(equip) {
   selectedEquipForAction = equip;
-  const modal = new bootstrap.Modal(document.getElementById("refineEquipModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("refineEquipModal")
+  );
   modal.show();
   const refineLevel = equip.refineLevel ?? 0;
   const cost = (refineLevel + 2) * 2;
@@ -1668,20 +1764,34 @@ function openRefineModal(equip) {
   const owned = isNaN(ownedRaw) ? 0 : ownedRaw;
   const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
   const previewIncrease = buffIncrements[refineLevel + 1];
-  document.getElementById("refineEquipCard").innerHTML = generateEquipCardHTML(equip);
-  document.getElementById("refineLevelInfo").textContent = `目前等級：+${refineLevel}`;
+  document.getElementById("refineEquipCard").innerHTML =
+    generateEquipCardHTML(equip);
+  document.getElementById(
+    "refineLevelInfo"
+  ).textContent = `目前等級：+${refineLevel}`;
   if (previewIncrease !== undefined) {
-    document.getElementById("refineBuffPreview").textContent = `效果：隨機 Buff 提升 ${previewIncrease}%`;
-    document.getElementById("refineCrystalCost").textContent = `消耗提煉結晶：${cost} 顆`;
+    document.getElementById(
+      "refineBuffPreview"
+    ).textContent = `效果：隨機 Buff 提升 ${previewIncrease}%`;
+    document.getElementById(
+      "refineCrystalCost"
+    ).textContent = `消耗提煉結晶：${cost} 顆`;
   } else {
     document.getElementById("refineBuffPreview").textContent = `效果：-`;
-    document.getElementById("refineCrystalCost").textContent = `消耗提煉結晶：-`;
+    document.getElementById(
+      "refineCrystalCost"
+    ).textContent = `消耗提煉結晶：-`;
   }
-  document.getElementById("refineCrystalOwned").textContent = `目前擁有：${owned} 顆`;
+  document.getElementById(
+    "refineCrystalOwned"
+  ).textContent = `目前擁有：${owned} 顆`;
   const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const currentRate = successRates[refineLevel] ?? 0;
-  document.getElementById("refineSuccessRate").textContent = `成功率：${Math.round(currentRate * 100)}%`;
-  document.getElementById("confirmRefineBtn").onclick = () => refineEquipment(equip);
+  document.getElementById(
+    "refineSuccessRate"
+  ).textContent = `成功率：${Math.round(currentRate * 100)}%`;
+  document.getElementById("confirmRefineBtn").onclick = () =>
+    refineEquipment(equip);
 }
 
 /** 執行裝備精煉的邏輯 */
@@ -1819,7 +1929,8 @@ function openDivineModal(equip) {
       `;
     })
     .join("");
-  document.getElementById("divineEquipCard").innerHTML = generateEquipCardHTML(equip);
+  document.getElementById("divineEquipCard").innerHTML =
+    generateEquipCardHTML(equip);
   document.getElementById("divineMaterialReqs").innerHTML = listHtml;
   const modal = new bootstrap.Modal(document.getElementById("divineModal"));
   modal.show();
@@ -1887,7 +1998,9 @@ function openDivineModal(equip) {
 }
 
 // 綁定裝備篩選下拉選單事件
-document.getElementById("equipTypeFilter")?.addEventListener("change", updateOwnedEquipListUI);
+document
+  .getElementById("equipTypeFilter")
+  ?.addEventListener("change", updateOwnedEquipListUI);
 document.getElementById("openTutorial").addEventListener("click", () => {
   const modal = new bootstrap.Modal(document.getElementById("tutorialModal"));
   modal.show();
@@ -1909,13 +2022,18 @@ document.getElementById("bgmToggleBtn").addEventListener("click", () => {
       currentBgm.play().catch((e) => console.warn("播放失敗", e));
     }
     const icon = document.getElementById("bgmIcon");
-    icon.src = isMuted ? "images-webp/icons/voice2.webp" : "images-webp/icons/voice.webp";
+    icon.src = isMuted
+      ? "images-webp/icons/voice2.webp"
+      : "images-webp/icons/voice.webp";
   }
 });
 
 /** 購買地圖通行證（入場券）並執行相關操作 */
 function buyTicket(ticketType, price) {
-  const currentMoney = parseInt(localStorage.getItem("fishing-money") || "0", 10);
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
   if (currentMoney < price) return showAlert("金錢不足！");
   localStorage.setItem("fishing-money", (currentMoney - price).toString());
   updateMoneyUI();
@@ -1933,42 +2051,59 @@ document.getElementById("buyMap3Ticket").addEventListener("click", () => {
   buyTicket("ticket-map3", TICKET3_PRICE);
 });
 
-document.getElementById("dismantleAllBtn").addEventListener("click", async () => {
-  const confirmed = await customConfirm("你確定要拆解所有未收藏的裝備嗎?");
-  if (!confirmed) return;
-  let list = loadOwnedEquipments();
-  const beforeCount = list.length;
-  const nonFavorite = list.filter((e) => !e.isFavorite);
-  const gainedCrystals = nonFavorite.reduce((sum, item) => {
-    const count = (item.buffs || []).filter((b) => b.type !== "note").length;
-    return sum + count;
-  }, 0);
-  list = list.filter((e) => e.isFavorite);
-  saveOwnedEquipments(list);
-  // 更新結晶數量
-  const oldCrystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
-  localStorage.setItem(CRYSTAL_KEY, (oldCrystals + gainedCrystals).toString());
-  updateOwnedEquipListUI();
-  showAlert(`已拆解 ${beforeCount - list.length} 件裝備，獲得 ${gainedCrystals} 顆提煉結晶！`);
-  updateCrystalUI?.();
-});
+document
+  .getElementById("dismantleAllBtn")
+  .addEventListener("click", async () => {
+    const confirmed = await customConfirm("你確定要拆解所有未收藏的裝備嗎?");
+    if (!confirmed) return;
+    let list = loadOwnedEquipments();
+    const beforeCount = list.length;
+    const nonFavorite = list.filter((e) => !e.isFavorite);
+    const gainedCrystals = nonFavorite.reduce((sum, item) => {
+      const count = (item.buffs || []).filter((b) => b.type !== "note").length;
+      return sum + count;
+    }, 0);
+    list = list.filter((e) => e.isFavorite);
+    saveOwnedEquipments(list);
+    // 更新結晶數量
+    const oldCrystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
+    localStorage.setItem(
+      CRYSTAL_KEY,
+      (oldCrystals + gainedCrystals).toString()
+    );
+    updateOwnedEquipListUI();
+    showAlert(
+      `已拆解 ${
+        beforeCount - list.length
+      } 件裝備，獲得 ${gainedCrystals} 顆提煉結晶！`
+    );
+    updateCrystalUI?.();
+  });
 
 document.getElementById("openMaps").addEventListener("click", () => {
-  const functionMenu = bootstrap.Modal.getInstance(document.getElementById("functionMenuModal"));
+  const functionMenu = bootstrap.Modal.getInstance(
+    document.getElementById("functionMenuModal")
+  );
   if (functionMenu) functionMenu.hide();
   new bootstrap.Modal(document.getElementById("mapSelectModal")).show();
 });
 document.getElementById("openFunctionMenu").addEventListener("click", () => {
-  const modal = new bootstrap.Modal(document.getElementById("functionMenuModal"));
+  const modal = new bootstrap.Modal(
+    document.getElementById("functionMenuModal")
+  );
   modal.show();
 });
 document.getElementById("openFishBook").addEventListener("click", () => {
-  const functionMenu = bootstrap.Modal.getInstance(document.getElementById("functionMenuModal"));
+  const functionMenu = bootstrap.Modal.getInstance(
+    document.getElementById("functionMenuModal")
+  );
   if (functionMenu) functionMenu.hide();
   renderFishBook();
   new bootstrap.Modal(document.getElementById("fishBookModal")).show();
 });
-document.getElementById("rarityFilter").addEventListener("change", renderFishBook);
+document
+  .getElementById("rarityFilter")
+  .addEventListener("change", renderFishBook);
 document.getElementById("mapFilter").addEventListener("change", renderFishBook);
 document.getElementById("openShop").addEventListener("click", () => {
   const modal = new bootstrap.Modal(document.getElementById("shopModal"));
@@ -1985,10 +2120,12 @@ document.getElementById("multiSellBtn").addEventListener("click", () => {
   exitMultiSelectMode();
   enterMultiSelectMode();
 });
-document.getElementById("cancelMultiSelectBtn").addEventListener("click", () => {
-  exitMultiSelectMode();
-  enterMultiSelectMode();
-});
+document
+  .getElementById("cancelMultiSelectBtn")
+  .addEventListener("click", () => {
+    exitMultiSelectMode();
+    enterMultiSelectMode();
+  });
 document.getElementById("sortSelect").addEventListener("change", (e) => {
   currentSort = e.target.value;
   updateBackpackUI();
@@ -2011,7 +2148,9 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
     return;
   }
   // 計算該裝備可獲得的提煉結晶數量
-  const gained = (selectedEquipForAction.buffs || []).filter((b) => b.type !== "note").length;
+  const gained = (selectedEquipForAction.buffs || []).filter(
+    (b) => b.type !== "note"
+  ).length;
   // 更新結晶數量
   const current = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
   localStorage.setItem(CRYSTAL_KEY, (current + gained).toString());
@@ -2023,7 +2162,9 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
   updateOwnedEquipListUI();
   updateCrystalUI?.();
   // 關閉裝備操作 Modal
-  const modal = bootstrap.Modal.getInstance(document.getElementById("equipActionModal"));
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("equipActionModal")
+  );
   if (modal) modal.hide();
   // 清除選擇狀態
   selectedEquipForAction = null;
@@ -2031,10 +2172,14 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
   updateCrystalUI();
 });
 
-document.getElementById("confirmMultiSellResult").addEventListener("click", () => {
-  const modal = bootstrap.Modal.getInstance(document.getElementById("multiSellResultModal"));
-  if (modal) modal.hide();
-});
+document
+  .getElementById("confirmMultiSellResult")
+  .addEventListener("click", () => {
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("multiSellResultModal")
+    );
+    if (modal) modal.hide();
+  });
 
 window.addEventListener("DOMContentLoaded", async () => {
   switchMap("map1");
@@ -2044,12 +2189,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   // 顯示版本資訊 Modal（若首次執行）
   const seenVersion = localStorage.getItem("seen-version");
   if (seenVersion !== GAME_VERSION) {
-    const versionModal = new bootstrap.Modal(document.getElementById("versionModal"));
+    const versionModal = new bootstrap.Modal(
+      document.getElementById("versionModal")
+    );
     versionModal.show();
-    document.getElementById("versionConfirmBtn").addEventListener("click", () => {
-      localStorage.setItem("seen-version", GAME_VERSION);
-      versionModal.hide();
-    });
+    document
+      .getElementById("versionConfirmBtn")
+      .addEventListener("click", () => {
+        localStorage.setItem("seen-version", GAME_VERSION);
+        versionModal.hide();
+      });
   }
   // 載入所有魚種資料（供圖鑑使用）
   await loadAllFishTypes();
