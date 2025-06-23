@@ -197,7 +197,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.0,
     catchRateModifier: 1.0, // 正常上鉤率
     name: "清澈川流",
-    background: "images/index/index3.jpg",
+    background: "images-webp/index/index3.webp",
     music: "sound/map1.mp3",
     autoFishingAllowed: true,
   },
@@ -208,7 +208,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.1,
     catchRateModifier: 0.9,
     name: "劍與魔法村",
-    background: "images/maps/map4.jpg",
+    background: "images-webp/maps/map4.webp",
     requiredLevel: 40,
     requiredEquipNames: ["魔劍釣竿", "魔法小蝦", "魔法帽", "魔法長袍", "魔法長靴"],
     requiredTicketName: "魔法通行證",
@@ -224,7 +224,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.2,
     catchRateModifier: 0.8, // 稍微難釣
     name: "機械城河",
-    background: "images/maps/map2.jpg",
+    background: "images-webp/maps/map2.webp",
     requiredLevel: 80,
     requiredEquipNames: ["金屬釣竿", "金屬餌", "金屬頭盔", "金屬盔甲", "金屬鞋"],
     requiredTicketName: "機械通行證",
@@ -240,7 +240,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.3,
     catchRateModifier: 0.7, // 較難上鉤
     name: "黃金遺址",
-    background: "images/maps/map3.jpg",
+    background: "images-webp/maps/map3.webp",
     requiredLevel: 120,
     requiredEquipNames: ["黃金釣竿", "黃金", "黃金帽", "黃金外套", "黃金拖鞋"],
     requiredTicketName: "黃金通行證",
@@ -1570,15 +1570,15 @@ function addTicketToInventory(ticketType) {
   if (ticketType === "ticket-map2") {
     name = "機械通行證";
     buffLabel = "機械城河通關所需證明";
-    image = "images/shop/ticket1.png";
+    image = "images-webp/shop/ticket1.webp";
   } else if (ticketType === "ticket-map3") {
     name = "黃金通行證";
     buffLabel = "黃金遺址通關所需證明";
-    image = "images/shop/ticket2.png";
+    image = "images-webp/shop/ticket2.webp";
   } else if (ticketType === "ticket-map4") {
     name = "魔法通行證";
     buffLabel = "劍與魔法村通關所需證明";
-    image = "images/shop/ticket3.png";
+    image = "images-webp/shop/ticket3.webp";
   } else {
     console.warn("未知的 ticketType：", ticketType);
     return;
@@ -1619,13 +1619,13 @@ function playMapMusic(musicPath, forcePlay = false) {
     currentBgm
       .play()
       .then(() => {
-        icon.src = "images/icons/voice.png";
+        icon.src = "images-webp/icons/voice.webp";
       })
       .catch(() => {
-        icon.src = "images/icons/voice2.png";
+        icon.src = "images-webp/icons/voice2.webp";
       });
   } else {
-    icon.src = "images/icons/voice2.png";
+    icon.src = "images-webp/icons/voice2.webp";
   }
 }
 
@@ -1803,9 +1803,9 @@ function getEquipDisplayName(equip) {
 function openDivineModal(equip) {
   selectedEquipForAction = equip;
   const reqs = {
-    隕石碎片: { count: 1, icon: "images/icons/ore2.png" },
-    黃銅礦: { count: 1, icon: "images/icons/ore3.png" },
-    核廢料: { count: 1, icon: "images/icons/ore4.png" },
+    隕石碎片: { count: 1, icon: "images-webp/icons/ore2.webp" },
+    黃銅礦: { count: 1, icon: "images-webp/icons/ore3.webp" },
+    核廢料: { count: 1, icon: "images-webp/icons/ore4.webp" },
   };
   // 動態更新神化材料需求清單 UI
   const listHtml = Object.entries(reqs)
@@ -1909,7 +1909,7 @@ document.getElementById("bgmToggleBtn").addEventListener("click", () => {
       currentBgm.play().catch((e) => console.warn("播放失敗", e));
     }
     const icon = document.getElementById("bgmIcon");
-    icon.src = isMuted ? "images/icons/voice2.png" : "images/icons/voice.png";
+    icon.src = isMuted ? "images-webp/icons/voice2.webp" : "images-webp/icons/voice.webp";
   }
 });
 

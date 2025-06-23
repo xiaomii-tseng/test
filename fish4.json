@@ -2,265 +2,265 @@
     {
         "name": "盾章",
         "probability": 40,
-        "image": "images/fish4/fish119.png",
+        "image": "images-webp/fish4/fish119.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "斧鯊兵",
         "probability": 45,
-        "image": "images/fish4/fish120.png",
+        "image": "images-webp/fish4/fish120.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "警衛螯蝦",
         "probability": 55,
-        "image": "images/fish4/fish121.png",
+        "image": "images-webp/fish4/fish121.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "冰魔魷魚",
         "probability": 0.035,
-        "image": "images/fish4/fish122.png",
+        "image": "images-webp/fish4/fish122.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "督察鯊",
         "probability": 30,
-        "image": "images/fish4/fish123.png",
+        "image": "images-webp/fish4/fish123.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "初級魔鯊",
         "probability": 0.73,
-        "image": "images/fish4/fish124.png",
+        "image": "images-webp/fish4/fish124.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "火炬章魚",
         "probability": 0.95,
-        "image": "images/fish4/fish125.png",
+        "image": "images-webp/fish4/fish125.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "企鵝",
         "probability": 0.64,
-        "image": "images/fish4/fish126.png",
+        "image": "images-webp/fish4/fish126.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "初階魔章",
         "probability": 0.3,
-        "image": "images/fish4/fish127.png",
+        "image": "images-webp/fish4/fish127.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "戰斧蝦",
         "probability": 0.15,
-        "image": "images/fish4/fish128.png",
+        "image": "images-webp/fish4/fish128.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "賊鯊",
         "probability": 0.096,
-        "image": "images/fish4/fish129.png",
+        "image": "images-webp/fish4/fish129.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "冰魔章",
         "probability": 0.015,
-        "image": "images/fish4/fish130.png",
+        "image": "images-webp/fish4/fish130.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "魚騎兵",
         "probability": 0.084,
-        "image": "images/fish4/fish131.png",
+        "image": "images-webp/fish4/fish131.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "刺鯊",
         "probability": 0.52,
-        "image": "images/fish4/fish132.png",
+        "image": "images-webp/fish4/fish132.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "冰火魔章",
         "probability": 0.042,
-        "image": "images/fish4/fish133.png",
+        "image": "images-webp/fish4/fish133.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "閃光魔章",
         "probability": 0.02,
-        "image": "images/fish4/fish134.png",
+        "image": "images-webp/fish4/fish134.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "水獨角鯨",
         "probability": 0.071,
-        "image": "images/fish4/fish135.png",
+        "image": "images-webp/fish4/fish135.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "忍鯊",
         "probability": 0.045,
-        "image": "images/fish4/fish136.png",
+        "image": "images-webp/fish4/fish136.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "海馬槍兵",
         "probability": 15,
-        "image": "images/fish4/fish137.png",
+        "image": "images-webp/fish4/fish137.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "斧備蟹",
         "probability": 3,
-        "image": "images/fish4/fish138.png",
+        "image": "images-webp/fish4/fish138.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "盾甲龜",
         "probability": 8,
-        "image": "images/fish4/fish139.png",
+        "image": "images-webp/fish4/fish139.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "戟章",
         "probability": 20,
-        "image": "images/fish4/fish140.png",
+        "image": "images-webp/fish4/fish140.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "克蘇魯",
         "probability": 0.041,
-        "image": "images/fish4/fish141.png",
+        "image": "images-webp/fish4/fish141.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "斧甲蟹",
         "probability": 0.036,
-        "image": "images/fish4/fish142.png",
+        "image": "images-webp/fish4/fish142.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "劍蟹",
         "probability": 0.41,
-        "image": "images/fish4/fish143.png",
+        "image": "images-webp/fish4/fish143.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "長戟鯊",
         "probability": 0.83,
-        "image": "images/fish4/fish144.png",
+        "image": "images-webp/fish4/fish144.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "盾戟魚",
         "probability": 0.42,
-        "image": "images/fish4/fish145.png",
+        "image": "images-webp/fish4/fish145.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "中階斧章",
         "probability": 0.085,
-        "image": "images/fish4/fish146.png",
+        "image": "images-webp/fish4/fish146.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "高階斧章",
         "probability": 0.027,
-        "image": "images/fish4/fish147.png",
+        "image": "images-webp/fish4/fish147.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "斧章",
         "probability": 0.33,
-        "image": "images/fish4/fish148.png",
+        "image": "images-webp/fish4/fish148.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "守衛龍蝦",
         "probability": 25 ,
-        "image": "images/fish4/fish149.png",
+        "image": "images-webp/fish4/fish149.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "守衛蟹",
         "probability": 0.088,
-        "image": "images/fish4/fish150.png",
+        "image": "images-webp/fish4/fish150.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "長槍海馬",
         "probability": 0.24,
-        "image": "images/fish4/fish151.png",
+        "image": "images-webp/fish4/fish151.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "戰斧鯊",
         "probability": 0.05,
-        "image": "images/fish4/fish152.png",
+        "image": "images-webp/fish4/fish152.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "魔槍蝦",
         "probability": 1,
-        "image": "images/fish4/fish153.png",
+        "image": "images-webp/fish4/fish153.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "偃月魚",
         "probability": 0.068,
-        "image": "images/fish4/fish154.png",
+        "image": "images-webp/fish4/fish154.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "魔法小蝦",
         "probability": 38,
-        "image": "images/fish4/fish155.png",
+        "image": "images-webp/fish4/fish155.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "地獄王",
         "probability": 0.0019,
-        "image": "images/fish4/fish156.png",
+        "image": "images-webp/fish4/fish156.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "寶藏鯊",
         "probability": 0.0067,
-        "image": "images/fish4/fish157.png",
+        "image": "images-webp/fish4/fish157.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "魔王冰蟹",
         "probability": 0.0063,
-        "image": "images/fish4/fish158.png",
+        "image": "images-webp/fish4/fish158.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "深海蛞蝓王",
         "probability": 0.005,
-        "image": "images/fish4/fish159.png",
+        "image": "images-webp/fish4/fish159.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "城隍蟹",
         "probability": 0.0037,
-        "image": "images/fish4/fish160.png",
+        "image": "images-webp/fish4/fish160.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "碎岩鯊王",
         "probability": 0.0045,
-        "image": "images/fish4/fish161.png",
+        "image": "images-webp/fish4/fish161.webp",
         "maps": "劍與魔法村"
     },
     {
         "name": "魔王章魚",
         "probability": 0.0041,
-        "image": "images/fish4/fish162.png",
+        "image": "images-webp/fish4/fish162.webp",
         "maps": "劍與魔法村"
     }
 ]

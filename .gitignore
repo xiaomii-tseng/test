@@ -1,0 +1,17 @@
+# 圖片原始資料夾（若不打算上傳）
+images/
+
+# node.js modules
+node_modules/
+
+# 暫存、快取檔
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# VSCode 設定（可視需要保留）
+.vscode/
+
+# 轉檔工具
+convert-webp.js
+replace-image-paths.js

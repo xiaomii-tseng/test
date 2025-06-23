@@ -1,5 +1,5 @@
 .shop-modal {
-  background-image: url("../images/index/shop.jpg"); /* 可用木紋圖或純色背景 */
+  background-image: url("../images-webp/index/shop.webp"); /* 可用木紋圖或純色背景 */
   background-size: cover;
   background-repeat: no-repeat;
   border: 4px solid #6b4f30;
@@ -63,7 +63,7 @@
   text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   color: #ffffff;
   animation: pop-in 0.3s ease-out;
-  background-image: url("../images/index/chest2.gif"); /* 可用木紋圖或純色背景 */
+  background-image: url("../images-webp/index/chest2.gif"); /* 可用木紋圖或純色背景 */
   background-size: cover;
   background-repeat: no-repeat;
   border: 4px solid #dadada;

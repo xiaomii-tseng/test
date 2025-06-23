@@ -2,261 +2,261 @@
     {
         "name": "蒸氣魚",
         "probability": 40,
-        "image": "images/fish2/fish33.png",
+        "image": "images-webp/fish2/fish33.webp",
         "maps": "機械城河"
     },
     {
         "name": "煉金魚",
         "probability": 45,
-        "image": "images/fish2/fish34.png",
+        "image": "images-webp/fish2/fish34.webp",
         "maps": "機械城河"
     },
     {
         "name": "鋼甲魚",
         "probability": 55,
-        "image": "images/fish2/fish35.png",
+        "image": "images-webp/fish2/fish35.webp",
         "maps": "機械城河"
     },
     {
         "name": "警戒魚",
         "probability": 0.035,
-        "image": "images/fish2/fish36.png",
+        "image": "images-webp/fish2/fish36.webp",
         "maps": "機械城河"
     },
     {
         "name": "齒輪魚",
         "probability": 30,
-        "image": "images/fish2/fish37.png",
+        "image": "images-webp/fish2/fish37.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅齒鯊",
         "probability": 0.73,
-        "image": "images/fish2/fish38.png",
+        "image": "images-webp/fish2/fish38.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅蝦",
         "probability": 0.95,
-        "image": "images/fish2/fish39.png",
+        "image": "images-webp/fish2/fish39.webp",
         "maps": "機械城河"
     },
     {
         "name": "巡邏魟",
         "probability": 0.64,
-        "image": "images/fish2/fish40.png",
+        "image": "images-webp/fish2/fish40.webp",
         "maps": "機械城河"
     },
     {
         "name": "偵查蟹",
         "probability": 0.3,
-        "image": "images/fish2/fish41.png",
+        "image": "images-webp/fish2/fish41.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅錘鯊",
         "probability": 0.15,
-        "image": "images/fish2/fish42.png",
+        "image": "images-webp/fish2/fish42.webp",
         "maps": "機械城河"
     },
     {
         "name": "噴射梭",
         "probability": 0.096,
-        "image": "images/fish2/fish43.png",
+        "image": "images-webp/fish2/fish43.webp",
         "maps": "機械城河"
     },
     {
         "name": "泰坦藍鯨",
         "probability": 0.015,
-        "image": "images/fish2/fish44.png",
+        "image": "images-webp/fish2/fish44.webp",
         "maps": "機械城河"
     },
     {
         "name": "賽博魚",
         "probability": 0.084,
-        "image": "images/fish2/fish45.png",
+        "image": "images-webp/fish2/fish45.webp",
         "maps": "機械城河"
     },
     {
         "name": "流體金魚",
         "probability": 0.52,
-        "image": "images/fish2/fish46.png",
+        "image": "images-webp/fish2/fish46.webp",
         "maps": "機械城河"
     },
     {
         "name": "銀魟",
         "probability": 0.042,
-        "image": "images/fish2/fish47.png",
+        "image": "images-webp/fish2/fish47.webp",
         "maps": "機械城河"
     },
     {
         "name": "宇宙八爪魚",
         "probability": 0.0038,
-        "image": "images/fish2/fish48.png",
+        "image": "images-webp/fish2/fish48.webp",
         "maps": "機械城河"
     },
     {
         "name": "秘魷",
         "probability": 0.071,
-        "image": "images/fish2/fish49.png",
+        "image": "images-webp/fish2/fish49.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅鐵魚",
         "probability": 28,
-        "image": "images/fish2/fish50.png",
+        "image": "images-webp/fish2/fish50.webp",
         "maps": "機械城河"
     },
     {
         "name": "秘銀魚",
         "probability": 15,
-        "image": "images/fish2/fish51.png",
+        "image": "images-webp/fish2/fish51.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅蝦蟹",
         "probability": 3,
-        "image": "images/fish2/fish52.png",
+        "image": "images-webp/fish2/fish52.webp",
         "maps": "機械城河"
     },
     {
         "name": "金環魚",
         "probability": 8,
-        "image": "images/fish2/fish53.png",
+        "image": "images-webp/fish2/fish53.webp",
         "maps": "機械城河"
     },
     {
         "name": "銅環章魚",
         "probability": 0.056,
-        "image": "images/fish2/fish54.png",
+        "image": "images-webp/fish2/fish54.webp",
         "maps": "機械城河"
     },
     {
         "name": "科技海豚",
         "probability": 0.041,
-        "image": "images/fish2/fish55.png",
+        "image": "images-webp/fish2/fish55.webp",
         "maps": "機械城河"
     },
 
     {
         "name": "重甲蟹",
         "probability": 0.036,
-        "image": "images/fish2/fish56.png",
+        "image": "images-webp/fish2/fish56.webp",
         "maps": "機械城河"
     },
     {
         "name": "紫母",
         "probability": 0.031,
-        "image": "images/fish2/fish57.png",
+        "image": "images-webp/fish2/fish57.webp",
         "maps": "機械城河"
     },
     {
         "name": "青鋼魚",
         "probability": 0.83,
-        "image": "images/fish2/fish58.png",
+        "image": "images-webp/fish2/fish58.webp",
         "maps": "機械城河"
     },
     {
         "name": "氫化魟",
         "probability": 0.0062,
-        "image": "images/fish2/fish59.png",
+        "image": "images-webp/fish2/fish59.webp",
         "maps": "機械城河"
     },
     {
         "name": "氫氣魚",
         "probability": 0.33,
-        "image": "images/fish2/fish60.png",
+        "image": "images-webp/fish2/fish60.webp",
         "maps": "機械城河"
     },
     {
         "name": "戰旗",
         "probability": 0.0027,
-        "image": "images/fish2/fish61.png",
+        "image": "images-webp/fish2/fish61.webp",
         "maps": "機械城河"
     },
     {
         "name": "硫化甲魚",
         "probability": 0.035,
-        "image": "images/fish2/fish62.png",
+        "image": "images-webp/fish2/fish62.webp",
         "maps": "機械城河"
     },
 
     {
         "name": "噬人魚",
         "probability": 0.021,
-        "image": "images/fish2/fish63.png",
+        "image": "images-webp/fish2/fish63.webp",
         "maps": "機械城河"
     },
     {
         "name": "滄藍魷魚",
         "probability": 1,
-        "image": "images/fish2/fish64.png",
+        "image": "images-webp/fish2/fish64.webp",
         "maps": "機械城河"
     },
     {
         "name": "偵測魷",
         "probability": 0.24,
-        "image": "images/fish2/fish65.png",
+        "image": "images-webp/fish2/fish65.webp",
         "maps": "機械城河"
     },
     {
         "name": "潛魟",
         "probability": 0.05,
-        "image": "images/fish2/fish66.png",
+        "image": "images-webp/fish2/fish66.webp",
         "maps": "機械城河"
     },
     {
         "name": "機蟹魚",
         "probability": 0.016,
-        "image": "images/fish2/fish67.png",
+        "image": "images-webp/fish2/fish67.webp",
         "maps": "機械城河"
     },
     {
         "name": "古代聖魚",
         "probability": 0.0015,
-        "image": "images/fish2/fish68.png",
+        "image": "images-webp/fish2/fish68.webp",
         "maps": "機械城河"
     },
     {
         "name": "氫鯊",
         "probability": 0.067,
-        "image": "images/fish2/fish69.png",
+        "image": "images-webp/fish2/fish69.webp",
         "maps": "機械城河"
     },
     {
         "name": "綠甲魚",
         "probability": 38,
-        "image": "images/fish2/fish70.png",
+        "image": "images-webp/fish2/fish70.webp",
         "maps": "機械城河"
     },
     {
         "name": "吊梭",
         "probability": 0.41,
-        "image": "images/fish2/fish71.png",
+        "image": "images-webp/fish2/fish71.webp",
         "maps": "機械城河"
     },
     {
         "name": "魚章",
         "probability": 0.063,
-        "image": "images/fish2/fish72.png",
+        "image": "images-webp/fish2/fish72.webp",
         "maps": "機械城河"
     },
     {
         "name": "接地鯊",
         "probability": 0.0073,
-        "image": "images/fish2/fish73.png",
+        "image": "images-webp/fish2/fish73.webp",
         "maps": "機械城河"
     },
     {
         "name": "翅甲蟹",
         "probability": 2.5,
-        "image": "images/fish2/fish74.png",
+        "image": "images-webp/fish2/fish74.webp",
         "maps": "機械城河"
     },
     {
         "name": "氫甲魚",
         "probability": 32,
-        "image": "images/fish2/fish75.png",
+        "image": "images-webp/fish2/fish75.webp",
         "maps": "機械城河"
     }
 ]

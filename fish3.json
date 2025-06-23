@@ -2,259 +2,259 @@
     {
         "name": "黃金魚",
         "probability": 40,
-        "image": "images/fish3/fish76.png",
+        "image": "images-webp/fish3/fish76.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "黃金兵魚",
         "probability": 45,
-        "image": "images/fish3/fish77.png",
+        "image": "images-webp/fish3/fish77.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "黃金后魚",
         "probability": 55,
-        "image": "images/fish3/fish78.png",
+        "image": "images-webp/fish3/fish78.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "黃金王魚",
         "probability": 0.035,
-        "image": "images/fish3/fish79.png",
+        "image": "images-webp/fish3/fish79.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "黃金章魚",
         "probability": 30,
-        "image": "images/fish3/fish80.png",
+        "image": "images-webp/fish3/fish80.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "獅頭魚",
         "probability": 0.73,
-        "image": "images/fish3/fish81.png",
+        "image": "images-webp/fish3/fish81.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "龍蛇",
         "probability": 0.95,
-        "image": "images/fish3/fish82.png",
+        "image": "images-webp/fish3/fish82.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "蝠魟",
         "probability": 0.64,
-        "image": "images/fish3/fish83.png",
+        "image": "images-webp/fish3/fish83.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "紅君王",
         "probability": 0.3,
-        "image": "images/fish3/fish84.png",
+        "image": "images-webp/fish3/fish84.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "幸龜",
         "probability": 0.15,
-        "image": "images/fish3/fish85.png",
+        "image": "images-webp/fish3/fish85.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "錢龜",
         "probability": 0.096,
-        "image": "images/fish3/fish86.png",
+        "image": "images-webp/fish3/fish86.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "鹿角魚",
         "probability": 0.015,
-        "image": "images/fish3/fish87.png",
+        "image": "images-webp/fish3/fish87.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "將魷",
         "probability": 0.0084,
-        "image": "images/fish3/fish88.png",
+        "image": "images-webp/fish3/fish88.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "年魚",
         "probability": 0.052,
-        "image": "images/fish3/fish89.png",
+        "image": "images-webp/fish3/fish89.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "獸魚",
         "probability": 0.042,
-        "image": "images/fish3/fish90.png",
+        "image": "images-webp/fish3/fish90.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "流金",
         "probability": 0.02,
-        "image": "images/fish3/fish91.png",
+        "image": "images-webp/fish3/fish91.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "符文蟹",
         "probability": 0.071,
-        "image": "images/fish3/fish92.png",
+        "image": "images-webp/fish3/fish92.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "鬚獸魚",
         "probability": 0.025,
-        "image": "images/fish3/fish93.png",
+        "image": "images-webp/fish3/fish93.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "玩具兵鯊",
         "probability": 15,
-        "image": "images/fish3/fish94.png",
+        "image": "images-webp/fish3/fish94.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "金旗",
         "probability": 3,
-        "image": "images/fish3/fish95.png",
+        "image": "images-webp/fish3/fish95.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "金祿魚",
         "probability": 8,
-        "image": "images/fish3/fish96.png",
+        "image": "images-webp/fish3/fish96.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "魅魚",
         "probability": 0.056,
-        "image": "images/fish3/fish97.png",
+        "image": "images-webp/fish3/fish97.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "龍蛇妖",
         "probability": 0.041,
-        "image": "images/fish3/fish98.png",
+        "image": "images-webp/fish3/fish98.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "天使魚",
         "probability": 0.036,
-        "image": "images/fish3/fish99.png",
+        "image": "images-webp/fish3/fish99.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "修羅魚",
         "probability": 0.41,
-        "image": "images/fish3/fish100.png",
+        "image": "images-webp/fish3/fish100.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "惡鬼",
         "probability": 0.083,
-        "image": "images/fish3/fish101.png",
+        "image": "images-webp/fish3/fish101.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "靜謐鯨",
         "probability": 0.042,
-        "image": "images/fish3/fish102.png",
+        "image": "images-webp/fish3/fish102.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "僧河蟹",
         "probability": 0.033,
-        "image": "images/fish3/fish103.png",
+        "image": "images-webp/fish3/fish103.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "天王鯨",
         "probability": 0.0027,
-        "image": "images/fish3/fish104.png",
+        "image": "images-webp/fish3/fish104.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "祕寶蟹",
         "probability": 0.085,
-        "image": "images/fish3/fish105.png",
+        "image": "images-webp/fish3/fish105.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "黃金羌魚",
         "probability": 0.41,
-        "image": "images/fish3/fish106.png",
+        "image": "images-webp/fish3/fish106.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "珠寶蟹",
         "probability": 0.088,
-        "image": "images/fish3/fish107.png",
+        "image": "images-webp/fish3/fish107.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "龍魚",
         "probability": 0.24,
-        "image": "images/fish3/fish108.png",
+        "image": "images-webp/fish3/fish108.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "冠鯊",
         "probability": 0.05,
-        "image": "images/fish3/fish109.png",
+        "image": "images-webp/fish3/fish109.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "金甲魚",
         "probability": 1,
-        "image": "images/fish3/fish110.png",
+        "image": "images-webp/fish3/fish110.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "牛魚",
         "probability": 32,
-        "image": "images/fish3/fish111.png",
+        "image": "images-webp/fish3/fish111.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "拜神魚",
         "probability": 38,
-        "image": "images/fish3/fish112.png",
+        "image": "images-webp/fish3/fish112.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "遣蟹",
         "probability": 2.5,
-        "image": "images/fish3/fish113.png",
+        "image": "images-webp/fish3/fish113.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "奧德賽",
         "probability": 0.0067,
-        "image": "images/fish3/fish114.png",
+        "image": "images-webp/fish3/fish114.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "西肯",
         "probability": 0.0063,
-        "image": "images/fish3/fish115.png",
+        "image": "images-webp/fish3/fish115.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "海神王",
         "probability": 0.005,
-        "image": "images/fish3/fish116.png",
+        "image": "images-webp/fish3/fish116.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "冥王",
         "probability": 0.007,
-        "image": "images/fish3/fish117.png",
+        "image": "images-webp/fish3/fish117.webp",
         "maps": "黃金遺址"
     },
     {
         "name": "君鯊",
         "probability": 0.41,
-        "image": "images/fish3/fish118.png",
+        "image": "images-webp/fish3/fish118.webp",
         "maps": "黃金遺址"
     }
 ]
