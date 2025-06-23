@@ -1,8 +1,8 @@
-// 自動釣魚遊戲主邏輯
+// 📁 自動釣魚遊戲主邏輯
 
 const GAME_VERSION = "2.6.0"; // 每次更新請手動更改版本號
 const STORAGE_KEY = "fishing-v3-backpack";
-const OWNED_EQUIPMENT_KEY = "owned-equipment-v2";
+const ownedEquipment = "owned-equipment-v2";
 const EQUIPPED_KEY = "equipped-items-v2";
 const FISH_DEX_KEY = "fish-dex-v2";
 const LEVEL_KEY = "fishing-player-level-v1";
@@ -10,7 +10,7 @@ const EXP_KEY = "fishing-player-exp-v1";
 const CRYSTAL_KEY = "refine-crystal";
 const DIVINE_STORAGE_KEY = "divine-materials";
 let backpack = loadBackpack();
-// （移除未使用的 money 全域變數）
+let money = loadMoney();
 let selectedEquippedSlot = null;
 let selectedEquipForAction = null;
 let manualFishingTimeout = null;
@@ -18,11 +18,11 @@ let isAutoMode = true;
 let isMultiSelectMode = false;
 let currentSort = "desc";
 let currentMapKey = "map1"; // 預設地圖
-const NORMAL_CHEST_COST = 1500; // 普通寶箱
-const HIGH_CHEST_COST = 12000; // 高級寶箱
-const TICKET1_PRICE = 50000;
-const TICKET2_PRICE = 80000;
-const TICKET3_PRICE = 200000;
+const chestCost = 12000; // 高級寶箱
+const CHEST_COST = 1500; // 普通寶箱
+const ticket1Price = 50000;
+const ticket2Price = 80000;
+const ticket3Price = 200000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -58,8 +58,6 @@ import { app } from "./firebase.js";
 
 const auth = getAuth();
 const db = getFirestore(app);
-
-/** 取得排行榜前幾名玩家資料（預設10名） */
 async function getTopPlayersByLevel(limitCount = 10) {
   const q = query(
     collection(db, "saves"),
@@ -72,7 +70,7 @@ async function getTopPlayersByLevel(limitCount = 10) {
     const data = doc.data();
     result.push({
       uid: doc.id,
-      name: data.name || "匿名",
+      name: data.name || "匿名", // 👈 加這行
       level: data.level || 1,
       money: data.money || 0,
       exp: data.exp || 0,
@@ -81,7 +79,6 @@ async function getTopPlayersByLevel(limitCount = 10) {
   return result;
 }
 
-/** 顯示排行榜 Modal，列出前幾名玩家 */
 async function showLeaderboard() {
   const topPlayers = await getTopPlayersByLevel();
   const container = document.getElementById("leaderboardContent");
@@ -104,9 +101,21 @@ document
       document.getElementById("functionMenuModal")
     );
     if (functionMenu) functionMenu.hide();
-    await showLeaderboard();
-  });
 
+    const topPlayers = await getTopPlayersByLevel(); // ← 你前面提供的 function
+    const content = document.getElementById("leaderboardContent");
+    content.innerHTML = topPlayers
+      .map(
+        (p, i) => `
+          <div>${i + 1}. ${p.name} | Lv.${
+          p.level
+        } | 💰 ${p.money.toLocaleString()} G</div>
+          `
+      )
+      .join("");
+
+    new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
+  });
 document.getElementById("logoutBtn").addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -117,68 +126,100 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
       console.error("登出失敗", error);
     });
 });
-
 document
   .getElementById("saveToCloudBtn")
   .addEventListener("click", async () => {
     saveToCloud();
   });
-
-/** 顯示提示訊息的自訂 Modal */
 function showAlert(message) {
   document.getElementById("customAlertContent").textContent = message;
   new bootstrap.Modal(document.getElementById("customAlertModal")).show();
 }
-
-/** 將遊戲存檔資料上傳至雲端（silent 為 true 時不顯示提示） */
-function saveGameDataToCloud(silent = false) {
+function saveToCloud() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      if (!silent) showAlert("請先登入");
+      showAlert("請先登入");
       return;
     }
+
     const userId = user.uid;
-    const username = user.email.split("@")[0]; // 提取 Email 前綴作為使用者名稱
+    const username = user.email.split("@")[0]; // 👈 取 email 前綴
     const saveData = {
-      backpack: JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"),
+      backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
       ownedEquipment: JSON.parse(
-        localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]"
+        localStorage.getItem("owned-equipment-v2") || "[]"
       ),
-      equippedItems: JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}"),
-      fishDex: JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]"),
-      level: parseInt(localStorage.getItem(LEVEL_KEY) || "1", 10),
-      exp: parseInt(localStorage.getItem(EXP_KEY) || "0", 10),
+      equippedItems: JSON.parse(
+        localStorage.getItem("equipped-items-v2") || "{}"
+      ),
+      fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
+      level: parseInt(
+        localStorage.getItem("fishing-player-level-v1") || "1",
+        10
+      ),
+      exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      name: username,
-      refineCrystal: parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10),
+      name: username, // ✅ 存帳號名稱
+      refineCrystal: parseInt(
+        localStorage.getItem("refine-crystal") || "0",
+        10
+      ),
       divineMaterials: JSON.parse(
-        localStorage.getItem(DIVINE_STORAGE_KEY) || "{}"
+        localStorage.getItem("divine-materials") || "{}"
       ),
     };
+
     try {
       await setDoc(doc(db, "saves", userId), saveData);
-      if (!silent) showAlert("存檔成功！");
+      showAlert("存檔成功！");
     } catch (err) {
       console.error("❌ 存檔失敗", err);
-      if (!silent) showAlert("存檔失敗");
+      showAlert("存檔失敗");
     }
   });
 }
 
-/** 手動存檔（顯示提示訊息） */
-function saveToCloud() {
-  saveGameDataToCloud(false);
-}
-
-/** 自動存檔（不顯示提示訊息） */
 function autoSaveToCloud() {
-  saveGameDataToCloud(true);
+  onAuthStateChanged(auth, async (user) => {
+    const userId = user.uid;
+    const username = user.email.split("@")[0]; // ← 補這行！
+
+    const saveData = {
+      backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
+      ownedEquipment: JSON.parse(
+        localStorage.getItem("owned-equipment-v2") || "[]"
+      ),
+      equippedItems: JSON.parse(
+        localStorage.getItem("equipped-items-v2") || "{}"
+      ),
+      fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
+      level: parseInt(
+        localStorage.getItem("fishing-player-level-v1") || "1",
+        10
+      ),
+      exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
+      money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
+      name: username,
+      refineCrystal: parseInt(
+        localStorage.getItem("refine-crystal") || "0",
+        10
+      ),
+      divineMaterials: JSON.parse(
+        localStorage.getItem("divine-materials") || "{}"
+      ),
+    };
+
+    try {
+      await setDoc(doc(db, "saves", userId), saveData);
+    } catch (err) {}
+  });
 }
 
-/** 載入所有地圖的魚種資料（供圖鑑使用） */
+// 更新圖鑑數量
 async function loadAllFishTypes() {
   const mapKeys = Object.keys(MAP_CONFIG);
   const fishMap = new Map();
+
   for (const key of mapKeys) {
     const config = MAP_CONFIG[key];
     const res = await fetch(config.json);
@@ -187,6 +228,7 @@ async function loadAllFishTypes() {
       normalizeFishProbabilities(data),
       config
     );
+
     for (const fish of processed) {
       if (!fishMap.has(fish.name)) {
         fishMap.set(fish.name, { ...fish, maps: [config.name] });
@@ -196,6 +238,7 @@ async function loadAllFishTypes() {
       }
     }
   }
+
   allFishTypes = Array.from(fishMap.values());
 }
 
@@ -275,7 +318,7 @@ const MAP_CONFIG = {
 
 let currentMapConfig = MAP_CONFIG[currentMapKey];
 
-/** 切換到指定地圖，檢查條件並初始化地圖資料 */
+// 🎣 讀取 fish.json 並開始自動釣魚
 async function switchMap(mapKey) {
   const config = MAP_CONFIG[mapKey];
   if (!config) return showAlert("無此地圖");
@@ -287,12 +330,15 @@ async function switchMap(mapKey) {
   }
 
   // 裝備檢查
-  const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+  const equipped = JSON.parse(
+    localStorage.getItem("equipped-items-v2") || "{}"
+  );
   const equippedNames = Object.values(equipped).map((e) => e?.name || "");
   const requiredParts = ["rod", "bait", "hat", "shoes", "outfit"];
   const isFullDivineSet = requiredParts.every((part) =>
     equipped[part]?.name?.startsWith("天神")
   );
+
   if (config.requiredEquipNames && !isFullDivineSet) {
     const missing = config.requiredEquipNames.filter(
       (name) => !equippedNames.includes(name)
@@ -312,47 +358,50 @@ async function switchMap(mapKey) {
       const now = Date.now();
       const elapsed = now - entryTime;
       if (elapsed <= config.ticketDurationMs) {
-        // 在有效時間內，允許進入且不再要求通行證
+        // ✅ 在有效時間內 → 允許進入，不再要求通行證
         proceedToMap(config, mapKey);
         return;
       }
     }
   }
 
-  // 通行證檢查與使用
+  // 通行證檢查 + 提示 + 移除
   if (config.requiredTicketName) {
-    let owned = loadOwnedEquipments();
-    const index = owned.findIndex((e) => e.name === config.requiredTicketName);
+    let ownedEquipments = JSON.parse(
+      localStorage.getItem("owned-equipment-v2") || "[]"
+    );
+    const index = ownedEquipments.findIndex(
+      (e) => e.name === config.requiredTicketName
+    );
     if (index === -1) {
       return showAlert(`缺少通行證：${config.requiredTicketName}`);
     }
+
     const confirm = await customConfirm(
-      `即將消耗${config.requiredTicketName}，是否繼續？提醒: 此地圖無法更換裝備`
+      `即將消耗【${config.requiredTicketName}】，是否繼續？提醒: 此地圖無法更換裝備`
     );
     if (!confirm) return;
-    // 移除通行證並記錄入場時間
-    owned.splice(index, 1);
-    saveOwnedEquipments(owned);
+
+    // 移除通行證
+    ownedEquipments.splice(index, 1);
+    localStorage.setItem("owned-equipment-v2", JSON.stringify(ownedEquipments));
     localStorage.setItem(`map-entry-${mapKey}`, Date.now().toString());
   }
 
-  // 清除舊地圖的自動釣魚循環
+  // ✅ 清除舊地圖釣魚循環
   stopAutoFishing();
   clearTimeout(manualFishingTimeout);
 
-  // 切換地圖
+  // ✅ 切換地圖
   proceedToMap(config, mapKey);
 
-  // 僅在自動模式下啟動自動釣魚
+  // ✅ 僅在玩家選擇自動模式時啟動
   if (config.autoFishingAllowed && isAutoMode) {
     startAutoFishing();
   }
 }
 
-// 將 switchMap 函數暴露到全域（供 HTML inline 使用）
 window.switchMap = switchMap;
-
-/** 更新背景圖片 */
 function updateBackground(imagePath) {
   const wrapper = document.getElementById("backgroundWrapper");
   if (wrapper) {
@@ -360,69 +409,71 @@ function updateBackground(imagePath) {
   }
 }
 
-/** 載入目前已裝備的物品資料 */
+// 載入目前已裝備的資料
 function loadEquippedItems() {
   return JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
 }
-
-/** 裝備指定物品，若原本同欄位有裝備則卸下 */
 function equipItem(item) {
   const equipped = loadEquippedItems();
   let owned = loadOwnedEquipments();
-  // 1. 卸下原裝備，放回背包
+
+  // 1. 卸下原裝備 → 加回背包
   const prevEquipped = equipped[item.type];
   if (prevEquipped) {
     owned.push(prevEquipped);
   }
-  // 2. 從背包移除要裝備的新裝備（依據 id）
+
+  // 2. 從背包移除要穿的新裝備（根據 id）
   owned = owned.filter((e) => e.id !== item.id);
-  // 3. 裝備新物品到對應欄位
+
+  // 3. 設定新的裝備到該欄位
   equipped[item.type] = item;
-  // 4. 保存最新的裝備和背包清單
+
+  // 4. 儲存
   saveEquippedItems(equipped);
   saveOwnedEquipments(owned);
-  // 5. 更新介面
+
+  // 5. 更新畫面
   updateEquippedUI();
   updateOwnedEquipListUI();
 }
 
-/** 載入已擁有的裝備清單 */
 function loadOwnedEquipments() {
-  return JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  return JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
 }
-
-/** 保存已擁有的裝備清單至本地存儲 */
 function saveOwnedEquipments(data) {
-  localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(data));
+  localStorage.setItem(ownedEquipment, JSON.stringify(data));
 }
 
-/** 保存當前裝備的資料至本地存儲 */
+// 儲存裝備
 function saveEquippedItems(data) {
   localStorage.setItem(EQUIPPED_KEY, JSON.stringify(data));
 }
 
-/** 更新裝備欄位的 UI 顯示 */
+// 穿裝備
 function updateEquippedUI() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+
   document.querySelectorAll(".slot").forEach((slotEl) => {
     const type = slotEl.dataset.slot;
     const item = equipped[type];
-    // 清空欄位內容
+
+    // 清空內容
     slotEl.innerHTML = "";
+
     if (item && item.image) {
       const img = document.createElement("img");
       img.src = item.image;
       img.alt = item.name;
-      img.classList.add("equipped-icon");
+      img.classList.add("equipped-icon"); // 可加 CSS 控制尺寸
       slotEl.appendChild(img);
     } else {
-      // 顯示欄位預設名稱
+      // 顯示預設欄位名稱
       slotEl.textContent = getSlotLabel(type);
     }
   });
 }
 
-/** 取得裝備欄位的預設名稱 */
 function getSlotLabel(type) {
   switch (type) {
     case "rod":
@@ -440,7 +491,7 @@ function getSlotLabel(type) {
   }
 }
 
-/** 正規化魚的出現機率總和為 100% */
+// 正規化魚的機率100%
 function normalizeFishProbabilities(fishList) {
   const total = fishList.reduce((sum, f) => sum + f.probability, 0);
   return fishList.map((fish) => ({
@@ -449,8 +500,7 @@ function normalizeFishProbabilities(fishList) {
     probability: parseFloat(((fish.probability / total) * 100).toFixed(4)),
   }));
 }
-
-/** 生成一個隨機 UUID 字串 */
+// UUID
 function generateUUID() {
   return "xxxx-xxxx-4xxx-yxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -458,8 +508,7 @@ function generateUUID() {
     return v.toString(16);
   });
 }
-
-/** 根據魚種出現機率取得對應的稀有度樣式 */
+// 魚的卡片邊框
 function getRarityClass(rawProbability) {
   if (rawProbability > 2) return "rarity-common"; // 普通：白色
   if (rawProbability > 0.3) return "rarity-uncommon"; // 高級：藍色
@@ -468,15 +517,13 @@ function getRarityClass(rawProbability) {
   if (rawProbability > 0.01) return "rarity-legend"; // 神話：紅色
   return "rarity-mythic"; // 傳奇：彩色邊框
 }
-
-// 精度條控制相關變數
+// 🎯 精度條控制
 let precisionInterval = null;
 let pos = 0;
 let direction = 1;
 const speed = 5;
 const intervalTime = 16;
 
-/** 開始精度條（手動釣魚瞄準條） */
 function startPrecisionBar() {
   if (precisionInterval) return;
   document.getElementById("precisionBarContainer").style.display = "flex";
@@ -484,9 +531,11 @@ function startPrecisionBar() {
   const indicator = document.getElementById("precisionIndicator");
   const trackWidth = track.clientWidth;
   const indicatorWidth = indicator.clientWidth;
-  // 隨機設定初始位置與方向
+
+  // 隨機起始位置與方向 👇
   pos = Math.floor(Math.random() * (trackWidth - indicatorWidth));
   direction = Math.random() < 0.5 ? 1 : -1;
+
   precisionInterval = setInterval(() => {
     pos += speed * direction;
     if (pos >= trackWidth - indicatorWidth) {
@@ -500,18 +549,22 @@ function startPrecisionBar() {
   }, intervalTime);
 }
 
-/** 在底部顯示捕獲結果卡片（魚資訊或逃脫） */
+// 釣魚資訊
 function logCatchCard(fishObj, fishType) {
   const bottomInfo = document.getElementById("bottomInfo");
   if (!bottomInfo) return;
-  bottomInfo.innerHTML = "";
-  bottomInfo.className = "bottom-info show";
+
+  bottomInfo.innerHTML = ""; // 清空
+  bottomInfo.className = "bottom-info show"; // 重設 class
+
   if (fishType && fishObj) {
     const card = document.createElement("div");
     card.className = "fish-card big-card";
-    // 套用對應的稀有度樣式
+
+    // 🪄 加上稀有度 class
     const rarityClass = getRarityClass(fishType.rawProbability);
     card.classList.add(rarityClass);
+
     card.innerHTML = `
       <img src="${fishType.image}" class="fish-icon" alt="${fishType.name}">
       <div class="fish-info">
@@ -524,21 +577,19 @@ function logCatchCard(fishObj, fishType) {
   } else {
     bottomInfo.innerHTML = `<div class="fish-escape">魚跑掉了...</div>`;
   }
+
   clearTimeout(bottomInfo._hideTimer);
   bottomInfo._hideTimer = setTimeout(() => {
     bottomInfo.classList.remove("show");
   }, 3000);
 }
-
-/** 進入背包多選模式 */
+// 多選與單選的function
 function enterMultiSelectMode() {
   isMultiSelectMode = true;
   selectedFishIds.clear();
   document.getElementById("multiSelectActions").style.display = "flex";
   updateBackpackUI();
 }
-
-/** 切換單條魚卡片的選取狀態 */
 function toggleFishSelection(id) {
   if (selectedFishIds.has(id)) {
     selectedFishIds.delete(id);
@@ -547,26 +598,21 @@ function toggleFishSelection(id) {
   }
   updateCardSelectionUI();
 }
-
-/** 更新魚卡片選取狀態的 UI */
 function updateCardSelectionUI() {
   document.querySelectorAll(".fish-card").forEach((card) => {
     const id = card.dataset.id;
     card.classList.toggle("selected", selectedFishIds.has(id));
   });
 }
-
-/** 為魚卡片元素添加事件處理（點擊選取） */
+// 多選與單選
 function handleFishCardEvents(cardEl, fishObj) {
   cardEl.addEventListener("click", () => {
     if (isMultiSelectMode) {
       toggleFishSelection(fishObj.id);
-      // （多選模式下切換選取狀態後自動更新 UI）
+      updateCardSelectionUI();
     }
   });
 }
-
-/** 退出背包多選模式 */
 function exitMultiSelectMode() {
   isMultiSelectMode = false;
   selectedFishIds.clear();
@@ -574,13 +620,14 @@ function exitMultiSelectMode() {
   updateBackpackUI();
 }
 
-/** 批量出售選取的魚並更新資源 */
 function batchSellSelected() {
-  if (selectedFishIds.size === 0) return; // 若沒有選取任何魚則不執行
+  if (selectedFishIds.size === 0) return; // ⛔ 若沒選取，直接不處理
+
   const buffs = getTotalBuffs();
   let rawTotal = 0;
   let finalTotal = 0;
-  // 統計選中的魚價值並從背包移除
+
+  // 統計價格與刪除背包內的魚
   backpack = backpack.filter((f) => {
     if (selectedFishIds.has(f.id)) {
       const base = f.finalPrice;
@@ -591,19 +638,21 @@ function batchSellSelected() {
     }
     return true;
   });
-  // 更新金錢
+
+  // 更新資料
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
     10
   );
   const newMoney = currentMoney + finalTotal;
-  localStorage.setItem("fishing-money", newMoney.toString());
+  localStorage.setItem("fishing-money", newMoney);
   updateMoneyUI();
-  // 保存背包變化並更新UI
   saveBackpack();
   updateBackpackUI();
+  updateMoneyUI();
   exitMultiSelectMode();
-  // 顯示結算結果
+
+  // 顯示結果 Modal
   document.getElementById("rawTotal").textContent = rawTotal.toLocaleString();
   document.getElementById("bonusTotal").textContent = (
     finalTotal - rawTotal
@@ -613,46 +662,49 @@ function batchSellSelected() {
   new bootstrap.Modal(document.getElementById("multiSellResultModal")).show();
 }
 
-/** 在底部顯示提示訊息（短暫顯示） */
 function logCatch(message) {
   const bottomInfo = document.getElementById("bottomInfo");
   if (bottomInfo) {
     bottomInfo.textContent = message;
     bottomInfo.classList.add("show");
-    // 清除先前的計時器，避免重複觸發隱藏
+
+    // 清除先前計時器（避免多次觸發）
     clearTimeout(bottomInfo._hideTimer);
     bottomInfo._hideTimer = setTimeout(() => {
       bottomInfo.classList.remove("show");
     }, 3000);
   }
 }
-
 document
   .getElementById("precisionStopBtn")
   .addEventListener("click", stopPrecisionBar);
 
-/** 停止精度條並判定釣魚結果 */
+// 關閉指示器
 function stopPrecisionBar() {
   if (!precisionInterval) return;
   clearInterval(precisionInterval);
   precisionInterval = null;
+
   const track = document.getElementById("precisionTrack");
   const indicator = document.getElementById("precisionIndicator");
   const trackWidth = track.clientWidth;
   const indicatorWidth = indicator.clientWidth;
   const precisionRatio = pos / (trackWidth - indicatorWidth);
+
   const buffs = getTotalBuffs();
   const successChance =
     Math.min(50 + precisionRatio * 25) *
     ((buffs.increaseCatchRate * 0.3 + 100) / 100) *
     currentMapConfig.catchRateModifier;
   const isSuccess = Math.random() * 100 < successChance;
+
   if (isSuccess) {
     const fishType = getWeightedFishByPrecision(precisionRatio);
     addFishToBackpack(fishType);
   } else {
     logCatch("魚跑掉了...");
   }
+
   document.getElementById("precisionBarContainer").style.display = "none";
   if (!isAutoMode) {
     manualFishingTimeout = setTimeout(() => {
@@ -661,7 +713,7 @@ function stopPrecisionBar() {
   }
 }
 
-/** 依照機率計算每條魚的售價 */
+// 計算魚的價值
 function assignPriceByProbability(fishList, mapConfig) {
   return fishList.map((fish) => ({
     ...fish,
@@ -670,19 +722,22 @@ function assignPriceByProbability(fishList, mapConfig) {
   }));
 }
 
+// 👜 點擊背包按鈕打開 Modal
 const openBackpackBtn = document.getElementById("openBackpack");
 if (openBackpackBtn) {
   openBackpackBtn.addEventListener("click", () => {
     const modal = new bootstrap.Modal(document.getElementById("backpackModal"));
     modal.show();
+
+    // 新增這兩行 👇
     enterMultiSelectMode();
   });
 }
 
-// 模式切換按鈕邏輯
+// 🔁 模式切換邏輯
 const toggleBtn = document.getElementById("toggleModeBtn");
 const fishingStatus = document.getElementById("fishingStatus");
-// 初始化釣魚狀態顯示
+// 初始化狀態
 if (fishingStatus) {
   fishingStatus.textContent = isAutoMode ? "自動釣魚中..." : "機率加成中...";
 }
@@ -692,16 +747,16 @@ if (toggleBtn) {
     toggleBtn.textContent = isAutoMode
       ? "點擊進入手動模式"
       : "點擊進入自動模式";
-    // 更新狀態提示文字
+    // 🐟 更新狀態提示文字
     if (fishingStatus) {
       fishingStatus.textContent = isAutoMode
         ? "自動釣魚中..."
         : "機率加成中...";
     }
-    // 停止當前釣魚並切換模式
     stopAutoFishing();
     clearTimeout(manualFishingTimeout);
     hidePrecisionBar();
+
     if (isAutoMode) {
       startAutoFishing();
     } else {
@@ -711,16 +766,14 @@ if (toggleBtn) {
     }
   });
 }
-
-/** 隱藏精度條 UI */
+// 關閉精度條
 function hidePrecisionBar() {
   clearInterval(precisionInterval);
   precisionInterval = null;
   const container = document.getElementById("precisionBarContainer");
   if (container) container.style.display = "none";
 }
-
-/** 為按鈕添加點擊彈跳動畫效果 */
+// ✨ 點擊動畫效果
 function addClickBounce(el) {
   el.classList.add("click-bounce");
   el.addEventListener(
@@ -731,17 +784,14 @@ function addClickBounce(el) {
     { once: true }
   );
 }
-
-/** 取得隨機的自動釣魚延遲時間（毫秒） */
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
-
-/** 執行一次自動釣魚嘗試 */
 function doFishing() {
-  // 自動釣魚的成功率 (60%)
+  // 自動釣魚固定機率（例如 50% 成功）
   const successRate = 0.6;
+
   if (Math.random() < successRate) {
     const fishType = getRandomFish();
     if (fishType) {
@@ -753,24 +803,22 @@ function doFishing() {
     logCatch("魚跑掉了...");
   }
 }
-
-/** 開始自動釣魚循環 */
+// ⏳ 自動釣魚主迴圈
 function startAutoFishing() {
   if (autoFishingTimeoutId !== null) return; // 防止重複啟動
   isAutoFishing = true;
   const scheduleNext = () => {
     if (!isAutoFishing || !currentMapConfig) return;
-    doFishing();
+    doFishing(false); // 執行一次釣魚
     autoFishingTimeoutId = setTimeout(
       scheduleNext,
       getRandomAutoFishingDelay()
     );
   };
-  // 初始延遲後開始第一次釣魚
+  // 初始延遲觸發第一次釣魚
   autoFishingTimeoutId = setTimeout(scheduleNext, getRandomAutoFishingDelay());
 }
 
-/** 停止自動釣魚循環 */
 function stopAutoFishing() {
   isAutoFishing = false;
   if (autoFishingTimeoutId !== null) {
@@ -779,8 +827,9 @@ function stopAutoFishing() {
   }
 }
 
-/** 根據精度條位置加權隨機選擇魚種（手動釣魚專用） */
+// 手動釣魚增加稀有度
 function getWeightedFishByPrecision(precisionRatio) {
+  // 建立一個新的魚池，加權機率會隨 precisionRatio 提升而往稀有魚偏移
   const weightedFish = fishTypes.map((fish) => {
     const rarityWeight = 1 / fish.probability;
     const buffs = getTotalBuffs();
@@ -789,11 +838,13 @@ function getWeightedFishByPrecision(precisionRatio) {
       1 +
       (rarityWeight * precisionRatio * 0.1 * rareRateBonus) /
         currentMapConfig.rarePenalty;
+
     return {
       ...fish,
       weight: fish.probability * bias,
     };
   });
+
   const total = weightedFish.reduce((sum, f) => sum + f.weight, 0);
   const rand = Math.random() * total;
   let sum = 0;
@@ -803,37 +854,44 @@ function getWeightedFishByPrecision(precisionRatio) {
   }
 }
 
-/** 隨機抽取魚種（自動釣魚） */
+// 🎯 機率抽魚
 function getRandomFish() {
   const buffs = getTotalBuffs();
   const rareRateBonus = 1 + buffs.increaseRareRate / 100;
+
+  // 加權處理每條魚的機率
   const weightedFish = fishTypes.map((fish) => {
     const rarityWeight = 1 / fish.probability;
     const bias =
       1 + (rarityWeight * 0.05 * rareRateBonus) / currentMapConfig.rarePenalty;
+
     return {
       ...fish,
       weight: fish.probability * bias,
     };
   });
+
   const total = weightedFish.reduce((sum, f) => sum + f.weight, 0);
   const rand = Math.random() * total;
+
   let sum = 0;
   for (const f of weightedFish) {
     sum += f.weight;
     if (rand < sum) return f;
   }
-  return weightedFish[0]; // 如果未選中則回傳第一個
+
+  return weightedFish[0]; // fallback
 }
 
-/** 創建一條魚的實例（隨機體型和計算價格） */
+// 打包卡片資訊
 function createFishInstance(fishType) {
-  // 隨機產生體型，四捨五入至小數點一位
+  // 隨機產生體型並四捨五入至小數點一位
   const size = parseFloat((Math.random() * 100).toFixed(1));
-  // 根據體型計算最終價格（最大提升35%）
+  // 根據體型計算最終價格（最高增加35%）
   const buffs = getTotalBuffs();
   const bigFishBonus = 1 + buffs.increaseBigFishChance / 600;
-  const adjustedSize = Math.min(size * bigFishBonus, 100); // 體型最大不超過100%
+  const adjustedSize = Math.min(size * bigFishBonus, 100); // 限制不超過100%
+
   const rawPrice = fishType.price * (1 + (adjustedSize / 100) * 0.35);
   const finalPrice = Math.floor(rawPrice);
   return {
@@ -845,7 +903,7 @@ function createFishInstance(fishType) {
   };
 }
 
-/** 將捕獲的魚加入背包並更新相關狀態 */
+// 🧳 新增魚到背包並保存
 function addFishToBackpack(fishType) {
   const fishObj = createFishInstance(fishType);
   backpack.push(fishObj);
@@ -856,18 +914,14 @@ function addFishToBackpack(fishType) {
   addExp(fishObj.finalPrice);
   maybeDropDivineItem();
 }
-
-/** 從本地存儲載入神話素材數據 */
+// 神話道具存本地
 function loadDivineMaterials() {
   return JSON.parse(localStorage.getItem(DIVINE_STORAGE_KEY) || "{}");
 }
-
-/** 保存神話素材數據到本地存儲 */
 function saveDivineMaterials(materials) {
   localStorage.setItem(DIVINE_STORAGE_KEY, JSON.stringify(materials));
 }
-
-/** 可能掉落神話素材（依據當前地圖設定） */
+// 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
     map1: { name: "隕石碎片", chance: 0.0001 },
@@ -876,60 +930,63 @@ function maybeDropDivineItem() {
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
+
   const materials = loadDivineMaterials();
   materials[drop.name] = (materials[drop.name] || 0) + 1;
   saveDivineMaterials(materials);
-  showAlert(`你撿到了一個 ${drop.name}！`);
-  updateDivineUI?.();
-}
 
-/** 更新神話素材清單的 UI 顯示 */
+  showAlert(`你撿到了一個 ${drop.name}！`);
+  updateDivineUI?.(); // 若有 UI 更新函數就呼叫
+}
 function updateDivineUI() {
   const materials = loadDivineMaterials();
   const container = document.getElementById("divineItemList");
   if (!container) return;
+
   const items = Object.entries(materials)
     .map(([name, count]) => `<div>${name} x ${count}</div>`)
     .join("");
+
   container.innerHTML = items || "(目前尚未收集)";
 }
-
-/** 保存背包內容到本地存儲 */
+// 💾 LocalStorage 儲存 & 載入
 function saveBackpack() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(backpack));
 }
-
-/** 載入背包資料（如無則回傳空陣列） */
 function loadBackpack() {
   const data = localStorage.getItem(STORAGE_KEY);
   return data ? JSON.parse(data) : [];
 }
-
-/** 更新畫面上的金幣數量顯示 */
 function updateMoneyUI() {
   const el = document.getElementById("coinCount");
-  if (el) {
+  if (el)
     el.textContent = parseInt(
       localStorage.getItem("fishing-money") || "0",
       10
     ).toLocaleString();
-  }
+}
+function saveMoney() {
+  localStorage.setItem("fishing-money", money);
+}
+function loadMoney() {
+  return parseInt(localStorage.getItem("fishing-money") || "0", 10);
 }
 
-// （移除未使用的 saveMoney 和 loadMoney 函數）
-
-/** 更新背包物品的 UI 列表 */
+// 📦 更新背包畫面
 function updateBackpackUI() {
   const inventory = document.getElementById("inventory");
   if (!inventory) return;
   inventory.innerHTML = "";
+
   if (backpack.length === 0) {
     inventory.textContent = "(目前背包是空的)";
     return;
   }
+
   const grid = document.createElement("div");
   grid.className = "fish-grid";
-  // 排序背包內容
+
+  // ✨ 排序處理
   let entries = [...backpack];
   if (currentSort) {
     entries.sort((a, b) => {
@@ -938,11 +995,14 @@ function updateBackpackUI() {
       return currentSort === "asc" ? priceA - priceB : priceB - priceA;
     });
   }
-  // 建立魚卡片元素並附加事件
+
+  // 🔁 建立卡片（用排序後的 entries）
   for (const fish of entries) {
     const fishType = allFishTypes.find((f) => f.name === fish.name);
     if (!fishType) continue;
+
     const rarityClass = getRarityClass(fishType.rawProbability);
+
     const card = document.createElement("div");
     card.className = `fish-card ${rarityClass}`;
     card.dataset.id = fish.id;
@@ -957,15 +1017,76 @@ function updateBackpackUI() {
     handleFishCardEvents(card, fish);
     grid.appendChild(card);
   }
+
   inventory.appendChild(grid);
 }
 
-/** 從裝備列表中隨機抽取一個裝備 */
+// 抽寶箱
+const BUFF_TYPES = [
+  { type: "increaseCatchRate", label: "增加上鉤率" },
+  { type: "increaseRareRate", label: "增加稀有率" },
+  { type: "increaseBigFishChance", label: "大體型魚機率" },
+  { type: "increaseSellValue", label: "增加販售金額" },
+  { type: "increaseExpGain", label: "經驗獲得加成" },
+];
+
+const RARITY_TABLE = [
+  { key: "common", label: "普通", buffCount: 1 },
+  { key: "uncommon", label: "高級", buffCount: 2 },
+  { key: "rare", label: "稀有", buffCount: 3 },
+];
+
+const RARITY_PROBABILITIES = [
+  { rarity: "普通", chance: 83.5 },
+  { rarity: "高級", chance: 15 },
+  { rarity: "稀有", chance: 1.5 },
+];
+
+document.querySelector(".shop-chest").addEventListener("click", () => {
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
+
+  if (currentMoney < CHEST_COST) {
+    return;
+  }
+
+  // 扣錢
+  const updatedMoney = currentMoney - CHEST_COST;
+  localStorage.setItem("fishing-money", updatedMoney.toString());
+  updateMoneyUI(); // 若有即時更新顯示金額的 function
+
+  // 正常抽裝備
+  fetch("item.json")
+    .then((res) => res.json())
+    .then((items) => {
+      const item = getRandomItem(items);
+      const rarity = getRandomRarity();
+      const buffs = generateBuffs(rarity.buffCount);
+
+      const newEquip = {
+        id: crypto.randomUUID(),
+        name: item.name,
+        image: item.image,
+        type: item.type,
+        rarity: rarity.key,
+        buffs: buffs,
+        isFavorite: false,
+        refineLevel: 0,
+      };
+
+      saveToOwnedEquipment(newEquip);
+      showEquipmentGetModal(newEquip);
+    });
+});
+
+// 從 item.json 抽一個
 function getRandomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-/** 隨機取得裝備稀有度（依據定義的機率） */
+// 隨機稀有度（可機率控制）
 function getRandomRarity() {
   const rand = Math.random() * 100;
   let sum = 0;
@@ -981,7 +1102,7 @@ function getRandomRarity() {
   );
 }
 
-/** 隨機生成指定數量的 Buff */
+// 給對應數量 buff
 function generateBuffs(count) {
   const shuffled = [...BUFF_TYPES].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count).map((buff) => ({
@@ -991,7 +1112,7 @@ function generateBuffs(count) {
   }));
 }
 
-/** 根據 Buff 類型產生對應範圍的隨機值 */
+// 可根據 buff 類型定義不同範圍
 function getBuffValue(type) {
   switch (type) {
     case "increaseCatchRate":
@@ -1009,12 +1130,11 @@ function getBuffValue(type) {
   }
 }
 
-/** 取得 [min, max] 範圍內的隨機整數 */
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/** 顯示取得裝備的彈出卡片 Modal */
+// 跳出卡片
 function showEquipmentGetModal(equip) {
   const card = document.getElementById("equipmentGetCard");
   card.innerHTML = `
@@ -1026,30 +1146,32 @@ function showEquipmentGetModal(equip) {
       ${equip.buffs.map((b) => `<li>${getBuffDisplay(b)}</li>`).join("")}
     </ul>
   `;
+
   const modal = new bootstrap.Modal(
     document.getElementById("equipmentGetModal")
   );
   modal.show();
 }
 
-/** 保存新獲得的裝備到擁有清單 */
+// 儲存到 localStorage
 function saveToOwnedEquipment(item) {
-  const list = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  const list = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   list.push(item);
-  localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(list));
+  localStorage.setItem(ownedEquipment, JSON.stringify(list));
   updateOwnedEquipListUI();
 }
-
-/** 更新擁有裝備清單的 UI 列表 */
 function updateOwnedEquipListUI() {
   const container = document.getElementById("ownedEquipList");
   if (!container) return;
-  const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+
+  const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   container.innerHTML = "";
-  // 取得當前篩選條件
+
+  // 👉 讀取篩選值
   const selectedType =
     document.getElementById("equipTypeFilter")?.value || "all";
-  // 過濾裝備類型
+
+  // 👉 過濾符合類型的裝備
   const filtered = owned.filter((e) => {
     if (selectedType === "all") return true;
     if (selectedType === "other") {
@@ -1063,17 +1185,21 @@ function updateOwnedEquipListUI() {
     }
     return e.type === selectedType;
   });
+
   for (const equip of filtered) {
     const card = document.createElement("div");
     card.className = "equipment-card";
+
     const isFav = equip.isFavorite ? "❤️" : "🤍";
-    // 決定 Buff 顯示內容
+
+    // 🔧 決定 buff 顯示方式
     const buffList = equip.buffs
       .map((buff) => {
         if (buff.type === "note") return `<li>${buff.label}</li>`;
         return `<li>${buff.label} +${buff.value}%</li>`;
       })
       .join("");
+
     card.innerHTML = `
       <div class="equipment-top d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-2">
@@ -1088,13 +1214,16 @@ function updateOwnedEquipListUI() {
         ${buffList}
       </ul>
     `;
+
     container.appendChild(card);
+
     if (!equip.type.startsWith("ticket-")) {
       card.addEventListener("click", () => {
         selectedEquipForAction = equip;
         openEquipActionModal(equip);
       });
     }
+
     const favBtn = card.querySelector(".btn-favorite");
     favBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1103,18 +1232,18 @@ function updateOwnedEquipListUI() {
   }
 }
 
-/** 切換裝備的收藏狀態 */
+// 愛心
 function toggleFavoriteEquip(id) {
-  const list = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  const list = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   const target = list.find((e) => e.id === id);
   if (target) {
     target.isFavorite = !target.isFavorite;
-    localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(list));
+    localStorage.setItem(ownedEquipment, JSON.stringify(list));
     updateOwnedEquipListUI();
   }
 }
 
-/** 打開裝備操作選單 Modal（裝備/精煉等） */
+// 選取的裝備
 function openEquipActionModal(selectedEquip) {
   const modal = new bootstrap.Modal(
     document.getElementById("equipActionModal")
@@ -1125,27 +1254,32 @@ function openEquipActionModal(selectedEquip) {
   };
   const selectedCardHTML = generateEquipCardHTML(selectedEquip);
   document.getElementById("equipActionCard").innerHTML = selectedCardHTML;
+
   const equippedItem = getEquippedItemByType(selectedEquip.type);
   const equippedCardHTML = equippedItem
     ? generateEquipCardHTML(equippedItem)
     : `<div class="text-light">尚未裝備</div>`;
   document.getElementById("currentlyEquippedCard").innerHTML = equippedCardHTML;
+
   document.getElementById("equipBtn").onclick = () => {
     const isEquipLocked = localStorage.getItem("disable-equip") === "1";
     if (isEquipLocked) {
       showAlert("此地圖禁止更換裝備");
       return;
     }
+
     equipItem(selectedEquip);
     updateCharacterStats();
     modal.hide();
   };
+
   modal.show();
 }
 
-/** 生成裝備資訊卡片的 HTML */
+// 顯示裝備能力
 function generateEquipCardHTML(equip) {
   const isFav = equip.isFavorite ? "❤️" : "🤍";
+
   return `
     <div class="equipment-card">
       <div class="equipment-top d-flex align-items-center justify-content-between">
@@ -1153,9 +1287,9 @@ function generateEquipCardHTML(equip) {
           <img src="${equip.image}" class="equipment-icon" />
           <div class="equipment-name">${getEquipDisplayName(equip)}</div>
         </div>
-        <button class="btn btn-sm btn-favorite" data-id="${
-          equip.id
-        }">${isFav}</button>
+        <button class="btn btn-sm btn-favorite" data-id="${equip.id}">
+          ${isFav}
+        </button>
       </div>
       <ul class="equipment-buffs mt-2">
         ${equip.buffs.map((b) => `<li>${getBuffDisplay(b)}</li>`).join("")}
@@ -1164,15 +1298,16 @@ function generateEquipCardHTML(equip) {
   `;
 }
 
-/** 取得指定類型欄位目前裝備的物品 */
+// 取得穿戴的裝備
 function getEquippedItemByType(type) {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
   return equipped[type] || null;
 }
 
-/** 更新角色的裝備屬性加成顯示 */
+// 取得裝備數值
 function updateCharacterStats() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+
   let stats = {
     increaseCatchRate: 0,
     increaseRareRate: 0,
@@ -1180,18 +1315,22 @@ function updateCharacterStats() {
     increaseSellValue: 0,
     increaseExpGain: 0,
   };
+
   for (const slot in equipped) {
     const item = equipped[slot];
     if (!item || !item.buffs) continue;
+
     for (const buff of item.buffs) {
       if (stats.hasOwnProperty(buff.type)) {
         stats[buff.type] += buff.value;
       }
     }
   }
-  // 動態取得等級加成
+
+  // ✅ 動態取得最新等級加成
   const level = loadLevel();
   const levelBuff = level * 0.25;
+
   document.querySelector(".increase-catch-rate").textContent = `增加上鉤率：${(
     stats.increaseCatchRate + levelBuff
   ).toFixed(2)}%`;
@@ -1211,6 +1350,7 @@ function updateCharacterStats() {
   ).toFixed(2)}%`;
 }
 
+// 脫下裝備
 document.querySelector(".cencel-equip-btn").addEventListener("click", () => {
   const isEquipLocked = localStorage.getItem("disable-equip") === "1";
   if (isEquipLocked) {
@@ -1218,38 +1358,48 @@ document.querySelector(".cencel-equip-btn").addEventListener("click", () => {
     return;
   }
   if (!selectedEquippedSlot) return;
+
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
-  const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
+
   const item = equipped[selectedEquippedSlot];
   if (!item) return;
+
   // 移除裝備並放回背包
   delete equipped[selectedEquippedSlot];
   owned.push(item);
-  // 更新本地存儲
+
+  // 更新 localStorage
   localStorage.setItem(EQUIPPED_KEY, JSON.stringify(equipped));
-  localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(owned));
+  localStorage.setItem(ownedEquipment, JSON.stringify(owned));
+
   // 更新畫面
   updateEquippedUI();
   updateOwnedEquipListUI();
   updateCharacterStats();
-  // 關閉裝備資訊 Modal
+
+  // 關閉 Modal
   const modal = bootstrap.Modal.getInstance(
     document.getElementById("equipInfoModal")
   );
   if (modal) modal.hide();
+
   // 清除狀態
   selectedEquippedSlot = null;
 });
 
-/** 點擊裝備欄位顯示該裝備資訊 Modal */
+// 顯示當前裝備資訊
 document.querySelectorAll(".slot").forEach((slotDiv) => {
   slotDiv.addEventListener("click", () => {
     const slotKey = slotDiv.dataset.slot;
     const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
     const item = equipped[slotKey];
+
     if (item) {
       selectedEquippedSlot = slotKey;
+
       const isFav = item.isFavorite ? "❤️" : "🤍";
+
       const modalBody = document.getElementById("equipInfoBody");
       modalBody.innerHTML = `
         <div class="equipment-card">
@@ -1269,6 +1419,7 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
           </ul>
         </div>
       `;
+
       const modal = new bootstrap.Modal(
         document.getElementById("equipInfoModal")
       );
@@ -1277,16 +1428,18 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
   });
 });
 
-/** 計算所有已裝備 Buff 的總加成（含等級加成） */
+// buff實裝
 function getTotalBuffs() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+
   const buffs = {
     increaseCatchRate: 0,
     increaseRareRate: 0,
     increaseBigFishChance: 0,
     increaseSellValue: 0,
-    increaseExpGain: 0,
+    increaseExpGain: 0, // ✅ 新增
   };
+
   for (const item of Object.values(equipped)) {
     if (!item?.buffs) continue;
     for (const buff of item.buffs) {
@@ -1295,7 +1448,8 @@ function getTotalBuffs() {
       }
     }
   }
-  // 加入等級加成並取一位小數
+
+  // ✅ 加入等級加成
   const level = loadLevel();
   const levelBuff = level * 0.25;
   for (const key in buffs) {
@@ -1306,48 +1460,53 @@ function getTotalBuffs() {
   return buffs;
 }
 
-// 魚圖鑑資料初始化（佔位操作，實際圖鑑在 Modal 開啟時更新）
+// 魚圖鑑
 fishTypes.forEach((fishType) => {
   const records = backpack.filter((f) => f.name === fishType.name);
   if (records.length === 0) return;
 });
-
-/** 取得已發現的魚種名稱列表 */
 function getDiscoveredFishNames() {
   return [...new Set(backpack.map((f) => f.name))];
 }
 
-/** 根據選擇的篩選條件渲染魚類圖鑑 */
 function renderFishBook() {
   const grid = document.getElementById("fishBookGrid");
   grid.innerHTML = "";
+
   const selectedRarity =
     document.getElementById("rarityFilter")?.value || "all";
   const selectedMap = document.getElementById("mapFilter")?.value || "all";
   const dex = loadFishDex();
   const discoveredNames = dex.map((d) => d.name);
+
   const mapName = selectedMap === "all" ? null : MAP_CONFIG[selectedMap].name;
-  // 篩選該地圖出現的魚種列表
-  const filteredFishTypes = allFishTypes.filter(
-    (fish) => !mapName || (fish.maps || []).includes(mapName)
+
+  // 🔍 篩出該地圖出現的所有魚種
+  const filteredFishTypes = allFishTypes.filter((fish) =>
+    !mapName || (fish.maps || []).includes(mapName)
   );
-  // 計算該地圖中已被發現的魚種數量
+
+  // 🧮 計算該地圖中有幾種魚被發現
   const filteredDiscoveredCount = filteredFishTypes.filter((fish) =>
     discoveredNames.includes(fish.name)
   ).length;
-  // 顯示圖鑑收集進度 (已發現/總數)
-  document.getElementById(
-    "fishBookProgress"
-  ).textContent = `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
+
+  // 🧾 顯示進度 (目前地圖已發現 / 地圖總魚種)
+  document.getElementById("fishBookProgress").textContent =
+    `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
+
   for (const fishType of allFishTypes) {
     const data = dex.find((d) => d.name === fishType.name);
     if (!data) continue;
+
     const matchesRarity =
       selectedRarity === "all" || data.rarity === `rarity-${selectedRarity}`;
     const matchesMap =
       selectedMap === "all" ||
       (fishType.maps || []).includes(MAP_CONFIG[selectedMap].name);
+
     if (!matchesRarity || !matchesMap) continue;
+
     const card = document.createElement("div");
     card.className = `fish-card book-card ${data.rarity}`;
     card.innerHTML = `
@@ -1359,32 +1518,28 @@ function renderFishBook() {
         <div class="fish-text">首次釣到：${new Date(
           data.firstCaught
         ).toLocaleDateString()}</div>
-        <div class="fish-text">出沒地圖：${(fishType.maps || []).join(
-          "、"
-        )}</div>
+        <div class="fish-text">出沒地圖：${(fishType.maps || []).join("、")}</div>
       </div>
     `;
     grid.appendChild(card);
   }
 }
 
-/** 載入本地存儲的魚圖鑑資料 */
+
 function loadFishDex() {
   return JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]");
 }
-
-/** 保存魚圖鑑資料到本地存儲 */
 function saveFishDex(dexList) {
   localStorage.setItem(FISH_DEX_KEY, JSON.stringify(dexList));
 }
-
-/** 更新魚圖鑑資料（新增或更新記錄） */
 function updateFishDex(fish) {
   const dex = JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]");
   const existing = dex.find((d) => d.name === fish.name);
   const fishType = fishTypes.find((f) => f.name === fish.name);
+
   const rarity = getRarityClass(fishType.rawProbability);
   const maps = fishType.maps || "未知";
+
   if (!existing) {
     dex.push({
       name: fish.name,
@@ -1401,20 +1556,19 @@ function updateFishDex(fish) {
       new Date(fish.caughtAt) < new Date(existing.firstCaught)
         ? fish.caughtAt
         : existing.firstCaught;
-    existing.rarity = rarity;
-    existing.maps = maps;
+    existing.rarity = rarity; // 確保更新稀有度（若機率資料更新）
+    existing.maps = maps; // ✅ 加入/更新 maps 欄位
   }
+
   localStorage.setItem(FISH_DEX_KEY, JSON.stringify(dex));
 }
 
-// 高級寶箱設定
+// 新增高級寶箱
 const HIGH_TIER_RARITY_PROBABILITIES = [
   { rarity: "普通", chance: 83.5 },
   { rarity: "高級", chance: 15 },
   { rarity: "稀有", chance: 1.5 },
 ];
-
-/** 隨機生成高級寶箱對應數量的 Buff */
 function generateHighTierBuffs(count) {
   const shuffled = [...BUFF_TYPES].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count).map((buff) => ({
@@ -1424,7 +1578,6 @@ function generateHighTierBuffs(count) {
   }));
 }
 
-/** 根據 Buff 類型產生高級範圍的隨機值 */
 function getHighTierBuffValue(type) {
   switch (type) {
     case "increaseCatchRate":
@@ -1442,21 +1595,24 @@ function getHighTierBuffValue(type) {
   }
 }
 
-/** 開啟寶箱並取得隨機裝備 */
-function openChest(cost, getRarityFn, generateBuffsFn) {
+document.querySelector(".chest2").addEventListener("click", () => {
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
     10
   );
-  if (currentMoney < cost) return;
-  localStorage.setItem("fishing-money", (currentMoney - cost).toString());
+
+  if (currentMoney < chestCost) return;
+
+  localStorage.setItem("fishing-money", (currentMoney - chestCost).toString());
   updateMoneyUI();
+
   fetch("item.json")
     .then((res) => res.json())
     .then((items) => {
       const item = getRandomItem(items);
-      const rarity = getRarityFn();
-      const buffs = generateBuffsFn(rarity.buffCount);
+      const rarity = getHighTierRarity(); // ✅ 高級寶箱專用稀有度機率
+      const buffs = generateHighTierBuffs(rarity.buffCount); // ✅ 高級寶箱專用 buff 數值
+
       const newEquip = {
         id: crypto.randomUUID(),
         name: item.name,
@@ -1467,20 +1623,11 @@ function openChest(cost, getRarityFn, generateBuffsFn) {
         isFavorite: false,
         refineLevel: 0,
       };
+
       saveToOwnedEquipment(newEquip);
       showEquipmentGetModal(newEquip);
     });
-}
-
-// 綁定寶箱按鈕事件
-document.querySelector(".chest1").addEventListener("click", () => {
-  openChest(NORMAL_CHEST_COST, getRandomRarity, generateBuffs);
 });
-document.querySelector(".chest2").addEventListener("click", () => {
-  openChest(HIGH_CHEST_COST, getHighTierRarity, generateHighTierBuffs);
-});
-
-/** 隨機取得高級寶箱的裝備稀有度 */
 function getHighTierRarity() {
   const rand = Math.random() * 100;
   let sum = 0;
@@ -1490,72 +1637,64 @@ function getHighTierRarity() {
       return RARITY_TABLE.find((r) => r.label === entry.rarity);
     }
   }
-  return RARITY_TABLE[RARITY_TABLE.length - 1];
+  return RARITY_TABLE[RARITY_TABLE.length - 1]; // 預設 fallback
 }
 
-/** 從本地存儲載入玩家等級 */
+// 等級系統
 function loadLevel() {
   return parseInt(localStorage.getItem(LEVEL_KEY) || "1", 10);
 }
-
-/** 從本地存儲載入玩家經驗值 */
 function loadExp() {
   return parseInt(localStorage.getItem(EXP_KEY) || "0", 10);
 }
-
-/** 保存玩家等級至本地存儲 */
 function saveLevel(level) {
   localStorage.setItem(LEVEL_KEY, level.toString());
 }
-
-/** 保存玩家經驗值至本地存儲 */
 function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
-
-/** 計算指定等級所需的經驗值 */
 function getExpForLevel(level) {
   const growth = Math.pow(1.05, level - 1);
   if (level <= 40) return Math.floor(1400 * growth);
   if (level <= 80) return Math.floor(1800 * growth);
   return Math.floor(800 * growth);
 }
-
-/** 增加經驗值並檢查升級 */
+// 加經驗並檢查升等
+addExp(rawTotal);
 function addExp(gained) {
   const buffs = getTotalBuffs();
   const expBonus = Math.floor(gained * (buffs.increaseExpGain / 100));
   let exp = loadExp() + gained + expBonus;
   let level = loadLevel();
   let required = getExpForLevel(level);
+
   while (exp >= required) {
     exp -= required;
     level++;
     required = getExpForLevel(level);
-    // 顯示升級提示
+    // 可選：彈窗提示升級
     showLevelUpModal(level);
     updateCharacterStats();
   }
+
   saveLevel(level);
   saveExp(exp);
   updateLevelUI();
 }
-
-/** 更新等級和經驗值的顯示 UI */
 function updateLevelUI() {
   const level = loadLevel();
   const exp = loadExp();
   const required = getExpForLevel(level);
   const percent = ((exp / required) * 100).toFixed(2);
+
   document.querySelector(".level").textContent = `等級: ${level}`;
   document.querySelector(".exp").textContent = `經驗值: ${percent}%`;
 }
-
-/** 進入地圖，載入魚種資料並更新畫面 */
 function proceedToMap(config, mapKey) {
   currentMapKey = mapKey;
   currentMapConfig = config;
   localStorage.setItem("disable-equip", config.disableEquip ? "1" : "0");
+
   fetch(config.json)
     .then((res) => res.json())
     .then((data) => {
@@ -1572,12 +1711,12 @@ function proceedToMap(config, mapKey) {
     });
 }
 
-/** 顯示升級效果的提示 */
 function showLevelUpModal(level) {
   const el = document.createElement("div");
   el.className = "level-up-toast";
   el.textContent = `Lv.${level} 升級了！`;
   document.body.appendChild(el);
+
   setTimeout(() => {
     el.classList.add("show");
     setTimeout(() => {
@@ -1586,8 +1725,7 @@ function showLevelUpModal(level) {
     }, 3500);
   }, 10);
 }
-
-// 每秒檢查是否超過通行證時間
+// ⏱ 每10秒檢查是否超過通行證時間
 setInterval(() => {
   const config = MAP_CONFIG[currentMapKey];
   const timerEl = document.getElementById("ticketTimer");
@@ -1595,6 +1733,7 @@ setInterval(() => {
     if (timerEl) timerEl.style.display = "none";
     return;
   }
+
   const entryTime = parseInt(
     localStorage.getItem(`map-entry-${currentMapKey}`) || "0",
     10
@@ -1603,8 +1742,10 @@ setInterval(() => {
     timerEl.style.display = "none";
     return;
   }
+
   const now = Date.now();
   const remainingMs = config.ticketDurationMs - (now - entryTime);
+
   if (remainingMs <= 0) {
     timerEl.style.display = "none";
     showAlert("通行證已過期，已返回清澈川流");
@@ -1619,46 +1760,51 @@ setInterval(() => {
   }
 }, 1000);
 
-// 每30秒自動保存進度（需登入）
 setInterval(() => {
   if (auth.currentUser) {
     autoSaveToCloud();
   }
 }, 30000);
 
-/** 自訂確認對話框（Modal），返回使用者選擇的結果 */
 function customConfirm(message) {
   return new Promise((resolve) => {
     const modal = new bootstrap.Modal(
       document.getElementById("customConfirmModal")
     );
     document.getElementById("customConfirmMessage").textContent = message;
+
     const okBtn = document.getElementById("customConfirmOK");
     const cancelBtn = document.getElementById("customConfirmCancel");
+
     const cleanup = () => {
       okBtn.onclick = null;
       cancelBtn.onclick = null;
     };
+
     okBtn.onclick = () => {
       cleanup();
       modal.hide();
       resolve(true);
     };
+
     cancelBtn.onclick = () => {
       cleanup();
       modal.hide();
       resolve(false);
     };
+
     modal.show();
   });
 }
 
-/** 將購買的通行證加入裝備清單 */
+// 入場券
 function addTicketToInventory(ticketType) {
-  const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  const owned = JSON.parse(localStorage.getItem("owned-equipment-v2") || "[]");
+
   let name = "";
   let buffLabel = "";
   let image = "";
+
   if (ticketType === "ticket-map2") {
     name = "機械通行證";
     buffLabel = "機械城河通關所需證明";
@@ -1670,11 +1816,12 @@ function addTicketToInventory(ticketType) {
   } else if (ticketType === "ticket-map4") {
     name = "魔法通行證";
     buffLabel = "劍與魔法村通關所需證明";
-    image = "images-webp/shop/ticket3.webp";
+    image = "images-webp/shop/ticket3.webp"; // ⬅ 你自己準備好圖
   } else {
-    console.warn("未知的 ticketType：", ticketType);
+    console.warn("未知 ticketType：", ticketType);
     return;
   }
+
   const item = {
     id: crypto.randomUUID(),
     name,
@@ -1690,23 +1837,27 @@ function addTicketToInventory(ticketType) {
     ],
     isFavorite: true,
   };
+
   owned.push(item);
-  localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(owned));
+  localStorage.setItem("owned-equipment-v2", JSON.stringify(owned));
   updateOwnedEquipListUI();
   showAlert(`獲得 ${name}！`);
 }
 
-/** 播放指定地圖的背景音樂 */
+// 音樂
 function playMapMusic(musicPath, forcePlay = false) {
   if (currentBgm) {
     currentBgm.pause();
     currentBgm.currentTime = 0;
   }
+
   currentBgm = new Audio(musicPath);
   currentBgm.loop = true;
   currentBgm.volume = 0.5;
   currentBgm.muted = isMuted;
+
   const icon = document.getElementById("bgmIcon");
+
   if (userHasInteractedWithBgm || forcePlay) {
     currentBgm
       .play()
@@ -1721,49 +1872,57 @@ function playMapMusic(musicPath, forcePlay = false) {
   }
 }
 
-/** 更新提煉結晶的 UI 顯示 */
+// 更新結晶
+// 更新結晶
 function updateCrystalUI() {
   const count = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
+
   const el = document.getElementById("crystalCount");
   if (el) {
     el.textContent = `${count} 顆`;
   }
+
   const el2 = document.getElementById("refineCrystalDisplay");
   if (el2) {
     el2.textContent = `提煉結晶：${count} 個`;
   }
 }
 
-/** 打開精煉方式選擇 Modal */
+// 選擇提煉方式
 function openRefineChoiceModal(equip) {
   const modal = new bootstrap.Modal(
     document.getElementById("refineChoiceModal")
   );
   modal.show();
-  // 綁定選項按鈕行為
+
+  // 綁定兩個選項按鈕的行為
   document.getElementById("refineForgeBtn").onclick = () => {
     modal.hide();
-    openRefineModal(equip);
+    openRefineModal(equip); // 你之前寫的鍛造 modal
   };
+
   document.getElementById("refineDivineBtn").onclick = () => {
     modal.hide();
     openDivineModal(equip);
   };
 }
-
-/** 打開鍛造精煉 Modal，顯示裝備資訊 */
+// 打開鍛造
 function openRefineModal(equip) {
   selectedEquipForAction = equip;
   const modal = new bootstrap.Modal(
     document.getElementById("refineEquipModal")
   );
   modal.show();
+
   const refineLevel = equip.refineLevel ?? 0;
   const cost = (refineLevel + 2) * 2;
+
   const ownedRaw = parseInt(localStorage.getItem(CRYSTAL_KEY), 10);
   const owned = isNaN(ownedRaw) ? 0 : ownedRaw;
+
   const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
   const previewIncrease = buffIncrements[refineLevel + 1];
+
   document.getElementById("refineEquipCard").innerHTML =
     generateEquipCardHTML(equip);
   document.getElementById(
@@ -1794,65 +1953,86 @@ function openRefineModal(equip) {
     refineEquipment(equip);
 }
 
-/** 執行裝備精煉的邏輯 */
+// 精煉邏輯
 function refineEquipment(equip) {
   if (!equip || !equip.buffs || equip.buffs.length === 0) {
     showAlert("此裝備無 buff，無法精煉！");
     return;
   }
+
   const refineLevel = equip.refineLevel ?? 0;
+
   if (refineLevel >= 8) {
     showAlert("已達精煉上限！");
     return;
   }
+
   const cost = (refineLevel + 2) * 2;
   let crystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
   if (crystals < cost) {
     showAlert(`提煉需要 ${cost} 顆提煉結晶，目前只有 ${crystals}`);
     return;
   }
-  // 扣除結晶
+
+  // 扣結晶
   crystals -= cost;
-  localStorage.setItem(CRYSTAL_KEY, crystals.toString());
-  // 計算精煉成功或失敗
+  localStorage.setItem(CRYSTAL_KEY, crystals);
+
+  // 成功率表
   const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const chance = successRates[refineLevel];
   const success = Math.random() < chance;
+
   if (success) {
     equip.refineLevel++;
     const index = Math.floor(Math.random() * equip.buffs.length);
-    // 每級增加的屬性數值
-    const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15]; // 索引對應精煉等級
-    const increase = buffIncrements[equip.refineLevel] ?? 5;
+
+    // 每級增加的數值表
+    const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15]; // index = refineLevel
+    const increase = buffIncrements[equip.refineLevel] ?? 5; // fallback: default +5
+
     equip.buffs[index].value += increase;
-    // （可選提示：精煉成功/失敗，這裡已移除彈窗避免打斷流程）
+
+    // showAlert(
+    //   `✅ 精煉成功！${
+    //     buffLabelMap[equip.buffs[index].type]
+    //   } 增加了 ${increase}%`
+    // );
   } else {
-    // （失敗不提升等級，不提示）
+    // showAlert("❌ 精煉失敗，裝備等級未提升");
   }
-  // 儲存裝備變更並更新相關 UI
-  const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+
+  // 儲存與更新
+  const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   const idx = owned.findIndex((e) => e.id === equip.id);
   if (idx !== -1) owned[idx] = equip;
-  localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(owned));
+  localStorage.setItem(ownedEquipment, JSON.stringify(owned));
+
   updateOwnedEquipListUI();
   updateCrystalUI?.();
   updateCharacterStats?.();
-  // 更新精煉裝備卡片內容
+
+  // 更新裝備卡內容
   const card = document.getElementById("refineEquipCard");
   if (card) {
     card.innerHTML = generateEquipCardHTML(equip);
+
+    // ✅ 插入內容後，再選到最外層卡片本體
     const actualCard = card.querySelector(".equipment-card");
+
     if (actualCard) {
       actualCard.classList.remove("forge-success", "forge-fail");
-      void actualCard.offsetWidth;
+      void actualCard.offsetWidth; // 強制重播動畫
       actualCard.classList.add(success ? "forge-success" : "forge-fail");
     }
   }
-  // 更新精煉資訊顯示
+
+  // 更新精煉資訊
   const levelInfo = document.getElementById("refineLevelInfo");
   if (levelInfo) {
     levelInfo.textContent = `目前等級：+${equip.refineLevel}`;
   }
+
   const costInfo = document.getElementById("refineCrystalCost");
   if (costInfo) {
     const nextCost = (equip.refineLevel + 2) * 2;
@@ -1860,6 +2040,7 @@ function refineEquipment(equip) {
   }
   const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
   const previewIncrease = buffIncrements[equip.refineLevel + 1] ?? 0;
+
   const buffPreview = document.getElementById("refineBuffPreview");
   if (buffPreview) {
     if (previewIncrease !== undefined) {
@@ -1868,10 +2049,11 @@ function refineEquipment(equip) {
       buffPreview.textContent = `效果：-`;
     }
   }
+
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates2 = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
-    const currentRate = successRates2[equip.refineLevel] ?? 0;
+    const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+    const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
   updateCrystalUI();
@@ -1882,42 +2064,42 @@ function refineEquipment(equip) {
   }
 }
 
-/** 取得 Buff 的顯示文字 */
 function getBuffDisplay(buff) {
   const label = buffLabelMap[buff.type] || buff.type;
   return `${label} +${buff.value}%`;
 }
 
-/** 修正舊版本裝備資料（補充缺失屬性） */
 function patchLegacyEquipments() {
-  const owned = JSON.parse(localStorage.getItem(OWNED_EQUIPMENT_KEY) || "[]");
+  const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   let changed = false;
+
   for (const equip of owned) {
     if (equip.refineLevel == null) {
       equip.refineLevel = 0;
       changed = true;
     }
   }
+
   if (changed) {
-    localStorage.setItem(OWNED_EQUIPMENT_KEY, JSON.stringify(owned));
+    localStorage.setItem(ownedEquipment, JSON.stringify(owned));
   }
 }
-
-/** 取得裝備顯示名稱（附加精煉等級） */
 function getEquipDisplayName(equip) {
   const level = equip.refineLevel ?? 0;
   return level > 0 ? `${equip.name} +${level}` : equip.name;
 }
 
-/** 打開裝備神化 Modal，顯示所需材料 */
+// 神化功能
 function openDivineModal(equip) {
   selectedEquipForAction = equip;
+
   const reqs = {
     隕石碎片: { count: 1, icon: "images-webp/icons/ore2.webp" },
     黃銅礦: { count: 1, icon: "images-webp/icons/ore3.webp" },
     核廢料: { count: 1, icon: "images-webp/icons/ore4.webp" },
   };
-  // 動態更新神化材料需求清單 UI
+
+  // ✅ 用即時資料顯示 UI
   const listHtml = Object.entries(reqs)
     .map(([name, { count, icon }]) => {
       const owned = loadDivineMaterials()[name] || 0;
@@ -1929,24 +2111,29 @@ function openDivineModal(equip) {
       `;
     })
     .join("");
+
   document.getElementById("divineEquipCard").innerHTML =
     generateEquipCardHTML(equip);
   document.getElementById("divineMaterialReqs").innerHTML = listHtml;
+
   const modal = new bootstrap.Modal(document.getElementById("divineModal"));
   modal.show();
+
   document.getElementById("confirmDivineBtn").onclick = async () => {
     const freshMaterials = loadDivineMaterials();
-    // 檢查材料是否足夠
+
     const allEnough = Object.entries(reqs).every(
       ([name, { count }]) => (freshMaterials[name] || 0) >= count
     );
     if (!allEnough) return showAlert("材料不足，無法神化");
-    // 扣除材料
+
+    // ✅ 扣材料
     for (const [name, { count }] of Object.entries(reqs)) {
       freshMaterials[name] -= count;
     }
     saveDivineMaterials(freshMaterials);
-    // 原始名稱 → 神裝名稱對照
+
+    // ✅ 對照表：原始名稱 → 神裝名稱
     const convertMap = {
       普通釣竿: "天神釣竿",
       蚯蚓: "天神餌",
@@ -1969,14 +2156,17 @@ function openDivineModal(equip) {
       黃金外套: "天神鎧",
       黃金拖鞋: "天神靴",
     };
+
     const newName = convertMap[equip.name];
     if (!newName) return showAlert("此裝備無法神化");
-    // 從 god.json 讀取神化裝備模板資料
+
+    // ✅ 從 item.json 讀神裝資料
     const res = await fetch("god.json");
     const itemList = await res.json();
     const divineTemplate = itemList.find((i) => i.name === newName);
     if (!divineTemplate) return showAlert(`找不到神化裝備資料：${newName}`);
-    // 建立新的神化裝備物件
+
+    // ✅ 建立神化裝備
     const newEquip = {
       ...divineTemplate,
       id: crypto.randomUUID(),
@@ -1984,20 +2174,23 @@ function openDivineModal(equip) {
       buffs: equip.buffs,
       isFavorite: equip.isFavorite ?? false,
     };
-    // 用新神裝替換原裝備
+
+    // ✅ 替換裝備
     let owned = loadOwnedEquipments();
     owned = owned.filter((e) => e.id !== equip.id);
     owned.push(newEquip);
     saveOwnedEquipments(owned);
+
     updateOwnedEquipListUI();
     updateCharacterStats?.();
     updateDivineUI?.();
-    showAlert(`✨ 神化成功！你獲得了${newName}`);
+
+    showAlert(`✨ 神化成功！你獲得了【${newName}】`);
     modal.hide();
   };
 }
 
-// 綁定裝備篩選下拉選單事件
+// 下面是 document
 document
   .getElementById("equipTypeFilter")
   ?.addEventListener("change", updateOwnedEquipListUI);
@@ -2005,50 +2198,79 @@ document.getElementById("openTutorial").addEventListener("click", () => {
   const modal = new bootstrap.Modal(document.getElementById("tutorialModal"));
   modal.show();
 });
-
-// （移除重複的 refineBtn 全域綁定，統一在 openEquipActionModal 中處理）
+document.getElementById("refineBtn").onclick = () => {
+  openRefineChoiceModal(selectedEquip);
+};
 
 document.getElementById("bgmToggleBtn").addEventListener("click", () => {
   userHasInteractedWithBgm = true;
+
   if (!currentBgm && currentMapConfig?.music) {
     isMuted = false;
     playMapMusic(currentMapConfig.music, true);
     return;
   }
+
   isMuted = !isMuted;
   if (currentBgm) {
     currentBgm.muted = isMuted;
+
+    // ✅ 如果剛解除靜音，主動呼叫 play()
     if (!isMuted && currentBgm.paused) {
       currentBgm.play().catch((e) => console.warn("播放失敗", e));
     }
+
     const icon = document.getElementById("bgmIcon");
-    icon.src = isMuted
-      ? "images-webp/icons/voice2.webp"
-      : "images-webp/icons/voice.webp";
+    icon.src = isMuted ? "images-webp/icons/voice2.webp" : "images-webp/icons/voice.webp";
   }
 });
 
-/** 購買地圖通行證（入場券）並執行相關操作 */
-function buyTicket(ticketType, price) {
+// 加入劍與魔法村入場券
+document.getElementById("buyMap4Ticket").addEventListener("click", () => {
+  const price = ticket1Price;
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
     10
   );
-  if (currentMoney < price) return showAlert("金錢不足！");
-  localStorage.setItem("fishing-money", (currentMoney - price).toString());
-  updateMoneyUI();
-  addTicketToInventory(ticketType);
-}
 
-// 綁定通行證購買按鈕事件
-document.getElementById("buyMap4Ticket").addEventListener("click", () => {
-  buyTicket("ticket-map4", TICKET1_PRICE);
+  if (currentMoney < price) return showAlert("金錢不足！");
+  localStorage.setItem("fishing-money", currentMoney - price);
+  updateMoneyUI();
+  addTicketToInventory("ticket-map4");
 });
+
+// 加入機械城河入場券
 document.getElementById("buyMap2Ticket").addEventListener("click", () => {
-  buyTicket("ticket-map2", TICKET2_PRICE);
+  const price = ticket2Price;
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
+
+  if (currentMoney < price) return showAlert("金錢不足！");
+  // if (hasTicketInInventory("ticket-map2"))
+  //   return showAlert("你已擁有機械城河入場券");
+
+  localStorage.setItem("fishing-money", currentMoney - price);
+  updateMoneyUI();
+  addTicketToInventory("ticket-map2");
 });
+
+// 加入黃金遺址入場券
 document.getElementById("buyMap3Ticket").addEventListener("click", () => {
-  buyTicket("ticket-map3", TICKET3_PRICE);
+  const price = ticket3Price;
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
+
+  if (currentMoney < price) return showAlert("金錢不足！");
+  // if (hasTicketInInventory("ticket-map3"))
+  //   return showAlert("你已擁有黃金遺址入場券");
+
+  localStorage.setItem("fishing-money", currentMoney - price);
+  updateMoneyUI();
+  addTicketToInventory("ticket-map3");
 });
 
 document
@@ -2056,21 +2278,24 @@ document
   .addEventListener("click", async () => {
     const confirmed = await customConfirm("你確定要拆解所有未收藏的裝備嗎?");
     if (!confirmed) return;
-    let list = loadOwnedEquipments();
-    const beforeCount = list.length;
+
+    let list = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
+
     const nonFavorite = list.filter((e) => !e.isFavorite);
     const gainedCrystals = nonFavorite.reduce((sum, item) => {
       const count = (item.buffs || []).filter((b) => b.type !== "note").length;
       return sum + count;
     }, 0);
+
+    const beforeCount = list.length;
     list = list.filter((e) => e.isFavorite);
-    saveOwnedEquipments(list);
-    // 更新結晶數量
+
+    localStorage.setItem(ownedEquipment, JSON.stringify(list));
+
+    // 更新結晶
     const oldCrystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
-    localStorage.setItem(
-      CRYSTAL_KEY,
-      (oldCrystals + gainedCrystals).toString()
-    );
+    localStorage.setItem(CRYSTAL_KEY, oldCrystals + gainedCrystals);
+
     updateOwnedEquipListUI();
     showAlert(
       `已拆解 ${
@@ -2084,7 +2309,9 @@ document.getElementById("openMaps").addEventListener("click", () => {
   const functionMenu = bootstrap.Modal.getInstance(
     document.getElementById("functionMenuModal")
   );
-  if (functionMenu) functionMenu.hide();
+  if (functionMenu) {
+    functionMenu.hide();
+  }
   new bootstrap.Modal(document.getElementById("mapSelectModal")).show();
 });
 document.getElementById("openFunctionMenu").addEventListener("click", () => {
@@ -2097,7 +2324,9 @@ document.getElementById("openFishBook").addEventListener("click", () => {
   const functionMenu = bootstrap.Modal.getInstance(
     document.getElementById("functionMenuModal")
   );
-  if (functionMenu) functionMenu.hide();
+  if (functionMenu) {
+    functionMenu.hide();
+  }
   renderFishBook();
   new bootstrap.Modal(document.getElementById("fishBookModal")).show();
 });
@@ -2140,38 +2369,44 @@ document.getElementById("openEquip").addEventListener("click", () => {
   updateEquippedUI();
   updateCharacterStats();
 });
-
 document.getElementById("dismantleBtn").addEventListener("click", () => {
   if (!selectedEquipForAction) return;
+
   if (selectedEquipForAction.isFavorite) {
     showAlert("此裝備已收藏");
     return;
   }
-  // 計算該裝備可獲得的提煉結晶數量
+
+  // ⛏️ 計算這件裝備可獲得的提煉結晶
   const gained = (selectedEquipForAction.buffs || []).filter(
     (b) => b.type !== "note"
   ).length;
-  // 更新結晶數量
+
+  // ⛏️ 更新結晶數量
   const current = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
-  localStorage.setItem(CRYSTAL_KEY, (current + gained).toString());
+  localStorage.setItem(CRYSTAL_KEY, current + gained);
+
   // 移除裝備
-  let owned = loadOwnedEquipments();
+  let owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   owned = owned.filter((e) => e.id !== selectedEquipForAction.id);
-  saveOwnedEquipments(owned);
+  localStorage.setItem(ownedEquipment, JSON.stringify(owned));
+
   // 更新畫面
   updateOwnedEquipListUI();
   updateCrystalUI?.();
-  // 關閉裝備操作 Modal
+
+  // 關閉 Modal
   const modal = bootstrap.Modal.getInstance(
     document.getElementById("equipActionModal")
   );
   if (modal) modal.hide();
+
   // 清除選擇狀態
   selectedEquipForAction = null;
+
   showAlert(`已拆解裝備，獲得 ${gained} 顆提煉結晶！`);
   updateCrystalUI();
 });
-
 document
   .getElementById("confirmMultiSellResult")
   .addEventListener("click", () => {
@@ -2180,19 +2415,19 @@ document
     );
     if (modal) modal.hide();
   });
-
 window.addEventListener("DOMContentLoaded", async () => {
   switchMap("map1");
   updateMoneyUI();
   updateCrystalUI();
   patchLegacyEquipments();
-  // 顯示版本資訊 Modal（若首次執行）
+  // ✅ 顯示版本資訊 Modal（若沒看過）
   const seenVersion = localStorage.getItem("seen-version");
   if (seenVersion !== GAME_VERSION) {
     const versionModal = new bootstrap.Modal(
       document.getElementById("versionModal")
     );
     versionModal.show();
+
     document
       .getElementById("versionConfirmBtn")
       .addEventListener("click", () => {
@@ -2200,9 +2435,12 @@ window.addEventListener("DOMContentLoaded", async () => {
         versionModal.hide();
       });
   }
-  // 載入所有魚種資料（供圖鑑使用）
+
+  // ✅ 載入所有魚種（供圖鑑使用）
   await loadAllFishTypes();
-  // 顯示當前登入的帳號資訊
+
+  // ✅ 顯示登入帳號資訊
+  const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user && user.email) {
       const username = user.email.split("@")[0];
@@ -2214,7 +2452,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// PWA 支援：註冊 Service Worker
+// ✅ PWA 支援
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/service-worker.js")
