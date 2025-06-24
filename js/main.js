@@ -253,6 +253,13 @@ const MAP_CONFIG = {
     background: "images-webp/index/index3.webp",
     music: "sound/map1.mp3",
     autoFishingAllowed: true,
+    bgFrames: [
+      "images-webp/maps/map1/1-2.webp",
+      "images-webp/maps/map1/1-3.webp",
+      "images-webp/maps/map1/1-4.webp",
+      "images-webp/maps/map1/1-5.webp",
+    ],
+    frameDelay: 400,
   },
   map4: {
     json: "fish4.json",
@@ -402,12 +409,12 @@ async function switchMap(mapKey) {
 }
 
 window.switchMap = switchMap;
-function updateBackground(imagePath) {
-  const wrapper = document.getElementById("backgroundWrapper");
-  if (wrapper) {
-    wrapper.style.backgroundImage = `url('${imagePath}')`;
-  }
-}
+// function updateBackground(imagePath) {
+//   const wrapper = document.getElementById("backgroundWrapper");
+//   if (wrapper) {
+//     wrapper.style.backgroundImage = `url('${imagePath}')`;
+//   }
+// }
 
 // 載入目前已裝備的資料
 function loadEquippedItems() {
@@ -1482,8 +1489,8 @@ function renderFishBook() {
   const mapName = selectedMap === "all" ? null : MAP_CONFIG[selectedMap].name;
 
   // 🔍 篩出該地圖出現的所有魚種
-  const filteredFishTypes = allFishTypes.filter((fish) =>
-    !mapName || (fish.maps || []).includes(mapName)
+  const filteredFishTypes = allFishTypes.filter(
+    (fish) => !mapName || (fish.maps || []).includes(mapName)
   );
 
   // 🧮 計算該地圖中有幾種魚被發現
@@ -1492,8 +1499,9 @@ function renderFishBook() {
   ).length;
 
   // 🧾 顯示進度 (目前地圖已發現 / 地圖總魚種)
-  document.getElementById("fishBookProgress").textContent =
-    `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
+  document.getElementById(
+    "fishBookProgress"
+  ).textContent = `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
 
   for (const fishType of allFishTypes) {
     const data = dex.find((d) => d.name === fishType.name);
@@ -1518,13 +1526,14 @@ function renderFishBook() {
         <div class="fish-text">首次釣到：${new Date(
           data.firstCaught
         ).toLocaleDateString()}</div>
-        <div class="fish-text">出沒地圖：${(fishType.maps || []).join("、")}</div>
+        <div class="fish-text">出沒地圖：${(fishType.maps || []).join(
+          "、"
+        )}</div>
       </div>
     `;
     grid.appendChild(card);
   }
 }
-
 
 function loadFishDex() {
   return JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]");
@@ -1702,7 +1711,15 @@ function proceedToMap(config, mapKey) {
         normalizeFishProbabilities(data),
         config
       );
-      updateBackground(config.background);
+      if (config.bgFrames?.length > 0) {
+        startAnimatedBackground(config.bgFrames, config.frameDelay || 500);
+      } else {
+        clearInterval(window.bgAnimInterval);
+        const frameEl = document.getElementById("bgAnimFrame");
+        if (frameEl) {
+          frameEl.style.backgroundImage = `url('${config.background}')`;
+        }
+      }
       document.getElementById(
         "currentMapDisplay"
       ).textContent = `目前地圖：${config.name}`;
@@ -2189,6 +2206,20 @@ function openDivineModal(equip) {
     modal.hide();
   };
 }
+// 切換動態地圖
+function startAnimatedBackground(frames, delay = 500) {
+  const frameEl = document.getElementById("bgAnimFrame");
+  if (!frameEl || !frames?.length) return;
+
+  let index = 0;
+  clearInterval(window.bgAnimInterval);
+  frameEl.style.backgroundImage = `url('${frames[0]}')`;
+
+  window.bgAnimInterval = setInterval(() => {
+    index = (index + 1) % frames.length;
+    frameEl.style.backgroundImage = `url('${frames[index]}')`;
+  }, delay);
+}
 
 // 下面是 document
 document
@@ -2221,7 +2252,9 @@ document.getElementById("bgmToggleBtn").addEventListener("click", () => {
     }
 
     const icon = document.getElementById("bgmIcon");
-    icon.src = isMuted ? "images-webp/icons/voice2.webp" : "images-webp/icons/voice.webp";
+    icon.src = isMuted
+      ? "images-webp/icons/voice2.webp"
+      : "images-webp/icons/voice.webp";
   }
 });
 
