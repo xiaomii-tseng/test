@@ -253,13 +253,6 @@ const MAP_CONFIG = {
     background: "images-webp/index/index3.webp",
     music: "sound/map1.mp3",
     autoFishingAllowed: true,
-    bgFrames: [
-      "images-webp/maps/map1/1-2.webp",
-      "images-webp/maps/map1/1-3.webp",
-      "images-webp/maps/map1/1-4.webp",
-      "images-webp/maps/map1/1-5.webp",
-    ],
-    frameDelay: 400,
   },
   map4: {
     json: "fish4.json",
@@ -409,12 +402,12 @@ async function switchMap(mapKey) {
 }
 
 window.switchMap = switchMap;
-// function updateBackground(imagePath) {
-//   const wrapper = document.getElementById("backgroundWrapper");
-//   if (wrapper) {
-//     wrapper.style.backgroundImage = `url('${imagePath}')`;
-//   }
-// }
+function updateBackground(imagePath) {
+  const wrapper = document.getElementById("backgroundWrapper");
+  if (wrapper) {
+    wrapper.style.backgroundImage = `url('${imagePath}')`;
+  }
+}
 
 // 載入目前已裝備的資料
 function loadEquippedItems() {
@@ -792,8 +785,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
 function doFishing() {
   // 自動釣魚固定機率（例如 50% 成功）
@@ -1663,10 +1656,7 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  const growth = Math.pow(1.05, level - 1);
-  if (level <= 40) return Math.floor(1400 * growth);
-  if (level <= 80) return Math.floor(1800 * growth);
-  return Math.floor(800 * growth);
+  return level * 800;
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
@@ -1711,15 +1701,7 @@ function proceedToMap(config, mapKey) {
         normalizeFishProbabilities(data),
         config
       );
-      if (config.bgFrames?.length > 0) {
-        startAnimatedBackground(config.bgFrames, config.frameDelay || 500);
-      } else {
-        clearInterval(window.bgAnimInterval);
-        const frameEl = document.getElementById("bgAnimFrame");
-        if (frameEl) {
-          frameEl.style.backgroundImage = `url('${config.background}')`;
-        }
-      }
+      updateBackground(config.background);
       document.getElementById(
         "currentMapDisplay"
       ).textContent = `目前地圖：${config.name}`;
@@ -2205,20 +2187,6 @@ function openDivineModal(equip) {
     showAlert(`✨ 神化成功！你獲得了【${newName}】`);
     modal.hide();
   };
-}
-// 切換動態地圖
-function startAnimatedBackground(frames, delay = 500) {
-  const frameEl = document.getElementById("bgAnimFrame");
-  if (!frameEl || !frames?.length) return;
-
-  let index = 0;
-  clearInterval(window.bgAnimInterval);
-  frameEl.style.backgroundImage = `url('${frames[0]}')`;
-
-  window.bgAnimInterval = setInterval(() => {
-    index = (index + 1) % frames.length;
-    frameEl.style.backgroundImage = `url('${frames[index]}')`;
-  }, delay);
 }
 
 // 下面是 document

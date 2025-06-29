@@ -821,18 +821,3 @@ body {
 .forge-fail {
   animation: forge-fail 0.4s ease;
 }
-
-.background-wrapper {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.bg-frame {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  transition: background-image 0.15s linear; /* 可選 */
-}
