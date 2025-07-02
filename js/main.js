@@ -81,7 +81,42 @@ const FishingLoopSound = {
     this.audio.currentTime = 0;
   },
 };
+function preloadAllSfx() {
+  const sfxList = [
+    sfxOpen,
+    sfxClose,
+    sfxDoor,
+    sfxEquip,
+    sfxDelete,
+    sfxOpenFishBook,
+    sfxFail,
+    sfxSuccess,
+    sfxRefine,
+    sfxTicket,
+    sfxOpenChest,
+    sfxGod,
+    sfxToggle,
+    sfxFishingClick,
+  ];
+  sfxList.forEach(decodeAudioToBuffer);
+}
+const webAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const audioBufferMap = new WeakMap();
 
+// 把 <audio> 轉成 Web Audio buffer（一次轉好）
+function decodeAudioToBuffer(audioEl) {
+  if (audioBufferMap.has(audioEl)) return;
+
+  fetch(audioEl.src)
+    .then((res) => res.arrayBuffer())
+    .then((buf) => webAudioCtx.decodeAudioData(buf))
+    .then((decoded) => {
+      audioBufferMap.set(audioEl, decoded);
+    })
+    .catch((err) => {
+      console.warn("解碼音效失敗", audioEl.src, err);
+    });
+}
 import {
   getAuth,
   onAuthStateChanged,
@@ -1659,31 +1694,36 @@ document.querySelector(".chest2").addEventListener("click", () => {
   );
 
   if (currentMoney < chestCost) return;
+  playSfx(sfxOpenChest);
+  setTimeout(() => {
+    localStorage.setItem(
+      "fishing-money",
+      (currentMoney - chestCost).toString()
+    );
+    updateMoneyUI();
 
-  localStorage.setItem("fishing-money", (currentMoney - chestCost).toString());
-  updateMoneyUI();
+    fetch("item.json")
+      .then((res) => res.json())
+      .then((items) => {
+        const item = getRandomItem(items);
+        const rarity = getHighTierRarity(); // ✅ 高級寶箱專用稀有度機率
+        const buffs = generateHighTierBuffs(rarity.buffCount); // ✅ 高級寶箱專用 buff 數值
 
-  fetch("item.json")
-    .then((res) => res.json())
-    .then((items) => {
-      const item = getRandomItem(items);
-      const rarity = getHighTierRarity(); // ✅ 高級寶箱專用稀有度機率
-      const buffs = generateHighTierBuffs(rarity.buffCount); // ✅ 高級寶箱專用 buff 數值
+        const newEquip = {
+          id: crypto.randomUUID(),
+          name: item.name,
+          image: item.image,
+          type: item.type,
+          rarity: rarity.key,
+          buffs: buffs,
+          isFavorite: false,
+          refineLevel: 0,
+        };
 
-      const newEquip = {
-        id: crypto.randomUUID(),
-        name: item.name,
-        image: item.image,
-        type: item.type,
-        rarity: rarity.key,
-        buffs: buffs,
-        isFavorite: false,
-        refineLevel: 0,
-      };
-
-      saveToOwnedEquipment(newEquip);
-      showEquipmentGetModal(newEquip);
-    });
+        saveToOwnedEquipment(newEquip);
+        showEquipmentGetModal(newEquip);
+      });
+  }, 500);
 });
 function getHighTierRarity() {
   const rand = Math.random() * 100;
@@ -2257,16 +2297,29 @@ function openDivineModal(equip) {
   };
 }
 // 音效
-function playSfx(audio) {
+function playSfx(audioEl) {
   if (!userHasInteractedWithBgm) return;
-  try {
-    const s = audio.cloneNode();
-    s.volume = audio.volume; // ✅ 確保跟原始 volume 一樣
-    s.play();
-  } catch (e) {
-    console.warn("音效播放失敗", e);
+
+  // 如果還沒 decode 完就先跳過
+  const buffer = audioBufferMap.get(audioEl);
+  if (!buffer) {
+    decodeAudioToBuffer(audioEl); // 預先 decode（非同步）
+    return;
   }
+
+  // 建立播放 source
+  const source = webAudioCtx.createBufferSource();
+  source.buffer = buffer;
+
+  // 建立 gain node 來控制音量
+  const gainNode = webAudioCtx.createGain();
+  gainNode.gain.value = audioEl.volume;
+
+  // 接上音訊串接
+  source.connect(gainNode).connect(webAudioCtx.destination);
+  source.start(0);
 }
+
 // 下面是 document
 document.querySelectorAll(".ticket-icon").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -2512,6 +2565,7 @@ document
     if (modal) modal.hide();
   });
 window.addEventListener("DOMContentLoaded", async () => {
+  preloadAllSfx();
   switchMap("map1");
   updateMoneyUI();
   updateCrystalUI();
