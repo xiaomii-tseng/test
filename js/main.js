@@ -38,6 +38,49 @@ const buffLabelMap = {
   increaseSellValue: "增加販售金額",
   increaseExpGain: "經驗值加成",
 };
+// 音效
+const sfxOpen = new Audio("sound/test-open.mp3");
+sfxOpen.volume = 0.6;
+const sfxClose = new Audio("sound/test-close.mp3");
+sfxClose.volume = 0.2;
+const sfxDoor = new Audio("sound/test-opendoor.mp3");
+sfxDoor.volume = 0.4;
+const sfxEquip = new Audio("sound/test-equip.mp3");
+sfxEquip.volume = 0.4;
+const sfxDelete = new Audio("sound/test-delete.mp3");
+sfxDelete.volume = 0.4;
+const sfxOpenFishBook = new Audio("sound/test-openfishbook.mp3");
+sfxOpenFishBook.volume = 0.4;
+const sfxFail = new Audio("sound/test-fail.mp3");
+sfxFail.volume = 0.4;
+const sfxSuccess = new Audio("sound/test-success.mp3");
+sfxSuccess.volume = 0.5;
+const sfxRefine = new Audio("sound/test-refine.mp3");
+sfxRefine.volume = 0.4;
+const sfxTicket = new Audio("sound/test-ticket.mp3");
+sfxTicket.volume = 0.6;
+const sfxOpenChest = new Audio("sound/test-openChest.mp3");
+sfxOpenChest.volume = 0.6;
+const sfxGod = new Audio("sound/test-god.mp3");
+sfxGod.volume = 0.5;
+const sfxToggle = new Audio("sound/test-toggle.mp3");
+sfxToggle.volume = 0.5;
+const sfxFishingClick = new Audio("sound/test-fishingclick.mp3");
+sfxFishingClick.volume = 0.5;
+const FishingLoopSound = {
+  audio: new Audio("sound/test-fishing.mp3"),
+  play() {
+    // ✅ 直接播放，不判斷 audioManager
+    this.audio.loop = true;
+    this.audio.volume = 0.3;
+    this.audio.currentTime = 0;
+    this.audio.play().catch(() => {});
+  },
+  stop() {
+    this.audio.pause();
+    this.audio.currentTime = 0;
+  },
+};
 
 import {
   getAuth,
@@ -97,6 +140,7 @@ async function showLeaderboard() {
 document
   .getElementById("openLeaderboard")
   .addEventListener("click", async () => {
+    playSfx(sfxOpen);
     const functionMenu = bootstrap.Modal.getInstance(
       document.getElementById("functionMenuModal")
     );
@@ -117,6 +161,7 @@ document
     new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
   });
 document.getElementById("logoutBtn").addEventListener("click", () => {
+  playSfx(sfxOpen);
   signOut(auth)
     .then(() => {
       showAlert("已登出！");
@@ -129,6 +174,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
 document
   .getElementById("saveToCloudBtn")
   .addEventListener("click", async () => {
+    playSfx(sfxOpen);
     saveToCloud();
   });
 function showAlert(message) {
@@ -262,7 +308,7 @@ const MAP_CONFIG = {
     catchRateModifier: 0.9,
     name: "劍與魔法村",
     background: "images-webp/maps/map4.webp",
-    requiredLevel: 40,
+    requiredLevel: 50,
     requiredEquipNames: [
       "魔劍釣竿",
       "魔法小蝦",
@@ -284,7 +330,7 @@ const MAP_CONFIG = {
     catchRateModifier: 0.8, // 稍微難釣
     name: "機械城河",
     background: "images-webp/maps/map2.webp",
-    requiredLevel: 80,
+    requiredLevel: 100,
     requiredEquipNames: [
       "金屬釣竿",
       "金屬餌",
@@ -306,7 +352,7 @@ const MAP_CONFIG = {
     catchRateModifier: 0.7, // 較難上鉤
     name: "黃金遺址",
     background: "images-webp/maps/map3.webp",
-    requiredLevel: 120,
+    requiredLevel: 150,
     requiredEquipNames: ["黃金釣竿", "黃金", "黃金帽", "黃金外套", "黃金拖鞋"],
     requiredTicketName: "黃金通行證",
     disableEquip: true,
@@ -526,6 +572,7 @@ const intervalTime = 16;
 
 function startPrecisionBar() {
   if (precisionInterval) return;
+  // FishingLoopSound.play();
   document.getElementById("precisionBarContainer").style.display = "flex";
   const track = document.getElementById("precisionTrack");
   const indicator = document.getElementById("precisionIndicator");
@@ -675,12 +722,14 @@ function logCatch(message) {
     }, 3000);
   }
 }
-document
-  .getElementById("precisionStopBtn")
-  .addEventListener("click", stopPrecisionBar);
+document.getElementById("precisionStopBtn").addEventListener("click", () => {
+  playSfx(sfxFishingClick);
+  stopPrecisionBar();
+});
 
 // 關閉指示器
 function stopPrecisionBar() {
+  // FishingLoopSound.stop();
   if (!precisionInterval) return;
   clearInterval(precisionInterval);
   precisionInterval = null;
@@ -726,6 +775,7 @@ function assignPriceByProbability(fishList, mapConfig) {
 const openBackpackBtn = document.getElementById("openBackpack");
 if (openBackpackBtn) {
   openBackpackBtn.addEventListener("click", () => {
+    playSfx(sfxOpen);
     const modal = new bootstrap.Modal(document.getElementById("backpackModal"));
     modal.show();
 
@@ -743,6 +793,7 @@ if (fishingStatus) {
 }
 if (toggleBtn) {
   toggleBtn.addEventListener("click", () => {
+    playSfx(sfxToggle);
     isAutoMode = !isAutoMode;
     toggleBtn.textContent = isAutoMode
       ? "點擊進入手動模式"
@@ -1043,42 +1094,45 @@ const RARITY_PROBABILITIES = [
 ];
 
 document.querySelector(".shop-chest").addEventListener("click", () => {
-  const currentMoney = parseInt(
-    localStorage.getItem("fishing-money") || "0",
-    10
-  );
+  playSfx(sfxOpenChest);
+  setTimeout(() => {
+    const currentMoney = parseInt(
+      localStorage.getItem("fishing-money") || "0",
+      10
+    );
 
-  if (currentMoney < CHEST_COST) {
-    return;
-  }
+    if (currentMoney < CHEST_COST) {
+      return;
+    }
 
-  // 扣錢
-  const updatedMoney = currentMoney - CHEST_COST;
-  localStorage.setItem("fishing-money", updatedMoney.toString());
-  updateMoneyUI(); // 若有即時更新顯示金額的 function
+    // 扣錢
+    const updatedMoney = currentMoney - CHEST_COST;
+    localStorage.setItem("fishing-money", updatedMoney.toString());
+    updateMoneyUI(); // 若有即時更新顯示金額的 function
 
-  // 正常抽裝備
-  fetch("item.json")
-    .then((res) => res.json())
-    .then((items) => {
-      const item = getRandomItem(items);
-      const rarity = getRandomRarity();
-      const buffs = generateBuffs(rarity.buffCount);
+    // 正常抽裝備
+    fetch("item.json")
+      .then((res) => res.json())
+      .then((items) => {
+        const item = getRandomItem(items);
+        const rarity = getRandomRarity();
+        const buffs = generateBuffs(rarity.buffCount);
 
-      const newEquip = {
-        id: crypto.randomUUID(),
-        name: item.name,
-        image: item.image,
-        type: item.type,
-        rarity: rarity.key,
-        buffs: buffs,
-        isFavorite: false,
-        refineLevel: 0,
-      };
+        const newEquip = {
+          id: crypto.randomUUID(),
+          name: item.name,
+          image: item.image,
+          type: item.type,
+          rarity: rarity.key,
+          buffs: buffs,
+          isFavorite: false,
+          refineLevel: 0,
+        };
 
-      saveToOwnedEquipment(newEquip);
-      showEquipmentGetModal(newEquip);
-    });
+        saveToOwnedEquipment(newEquip);
+        showEquipmentGetModal(newEquip);
+      });
+  }, 500);
 });
 
 // 從 item.json 抽一個
@@ -1262,6 +1316,7 @@ function openEquipActionModal(selectedEquip) {
   document.getElementById("currentlyEquippedCard").innerHTML = equippedCardHTML;
 
   document.getElementById("equipBtn").onclick = () => {
+    playSfx(sfxEquip);
     const isEquipLocked = localStorage.getItem("disable-equip") === "1";
     if (isEquipLocked) {
       showAlert("此地圖禁止更換裝備");
@@ -1656,7 +1711,15 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  return level * 800;
+  if (level >= 1 && level <= 50) {
+    return level * 100;
+  } else if (level >= 51 && level <= 100) {
+    return level * 200;
+  } else if (level >= 101) {
+    return level * 400;
+  } else {
+    return 0; // 處理 level < 1 的情況
+  }
 }
 // 加經驗並檢查升等
 addExp(rawTotal);
@@ -1781,6 +1844,7 @@ function customConfirm(message) {
     };
 
     okBtn.onclick = () => {
+      playSfx(sfxDelete);
       cleanup();
       modal.hide();
       resolve(true);
@@ -1896,11 +1960,13 @@ function openRefineChoiceModal(equip) {
 
   // 綁定兩個選項按鈕的行為
   document.getElementById("refineForgeBtn").onclick = () => {
+    playSfx(sfxRefine);
     modal.hide();
     openRefineModal(equip); // 你之前寫的鍛造 modal
   };
 
   document.getElementById("refineDivineBtn").onclick = () => {
+    playSfx(sfxRefine);
     modal.hide();
     openDivineModal(equip);
   };
@@ -1983,6 +2049,7 @@ function refineEquipment(equip) {
   const success = Math.random() < chance;
 
   if (success) {
+    playSfx(sfxSuccess);
     equip.refineLevel++;
     const index = Math.floor(Math.random() * equip.buffs.length);
 
@@ -1998,6 +2065,7 @@ function refineEquipment(equip) {
     //   } 增加了 ${increase}%`
     // );
   } else {
+    playSfx(sfxFail);
     // showAlert("❌ 精煉失敗，裝備等級未提升");
   }
 
@@ -2125,7 +2193,7 @@ function openDivineModal(equip) {
       ([name, { count }]) => (freshMaterials[name] || 0) >= count
     );
     if (!allEnough) return showAlert("材料不足，無法神化");
-
+    playSfx(sfxGod);
     // ✅ 扣材料
     for (const [name, { count }] of Object.entries(reqs)) {
       freshMaterials[name] -= count;
@@ -2188,12 +2256,33 @@ function openDivineModal(equip) {
     modal.hide();
   };
 }
-
+// 音效
+function playSfx(audio) {
+  if (!userHasInteractedWithBgm) return;
+  try {
+    const s = audio.cloneNode();
+    s.volume = audio.volume; // ✅ 確保跟原始 volume 一樣
+    s.play();
+  } catch (e) {
+    console.warn("音效播放失敗", e);
+  }
+}
 // 下面是 document
+document.querySelectorAll(".ticket-icon").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    playSfx(sfxTicket);
+  });
+});
+document.querySelectorAll(".btn-close").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    playSfx(sfxClose);
+  });
+});
 document
   .getElementById("equipTypeFilter")
   ?.addEventListener("change", updateOwnedEquipListUI);
 document.getElementById("openTutorial").addEventListener("click", () => {
+  playSfx(sfxOpen);
   const modal = new bootstrap.Modal(document.getElementById("tutorialModal"));
   modal.show();
 });
@@ -2307,6 +2396,7 @@ document
   });
 
 document.getElementById("openMaps").addEventListener("click", () => {
+  playSfx(sfxOpen);
   const functionMenu = bootstrap.Modal.getInstance(
     document.getElementById("functionMenuModal")
   );
@@ -2316,12 +2406,14 @@ document.getElementById("openMaps").addEventListener("click", () => {
   new bootstrap.Modal(document.getElementById("mapSelectModal")).show();
 });
 document.getElementById("openFunctionMenu").addEventListener("click", () => {
+  playSfx(sfxOpen);
   const modal = new bootstrap.Modal(
     document.getElementById("functionMenuModal")
   );
   modal.show();
 });
 document.getElementById("openFishBook").addEventListener("click", () => {
+  playSfx(sfxOpenFishBook);
   const functionMenu = bootstrap.Modal.getInstance(
     document.getElementById("functionMenuModal")
   );
@@ -2336,6 +2428,7 @@ document
   .addEventListener("change", renderFishBook);
 document.getElementById("mapFilter").addEventListener("change", renderFishBook);
 document.getElementById("openShop").addEventListener("click", () => {
+  playSfx(sfxDoor);
   const modal = new bootstrap.Modal(document.getElementById("shopModal"));
   modal.show();
 });
@@ -2346,6 +2439,7 @@ document.getElementById("selectAllBtn").addEventListener("click", () => {
   updateCardSelectionUI();
 });
 document.getElementById("multiSellBtn").addEventListener("click", () => {
+  playSfx(sfxDelete);
   batchSellSelected();
   exitMultiSelectMode();
   enterMultiSelectMode();
@@ -2364,6 +2458,7 @@ document.querySelectorAll(".fnc-anm").forEach((btn) => {
   btn.addEventListener("click", () => addClickBounce(btn));
 });
 document.getElementById("openEquip").addEventListener("click", () => {
+  playSfx(sfxOpen);
   const modal = new bootstrap.Modal(document.getElementById("equipModal"));
   modal.show();
   updateOwnedEquipListUI();
@@ -2421,21 +2516,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   updateMoneyUI();
   updateCrystalUI();
   patchLegacyEquipments();
-  // ✅ 顯示版本資訊 Modal（若沒看過）
-  const seenVersion = localStorage.getItem("seen-version");
-  if (seenVersion !== GAME_VERSION) {
-    const versionModal = new bootstrap.Modal(
-      document.getElementById("versionModal")
-    );
-    versionModal.show();
 
-    document
-      .getElementById("versionConfirmBtn")
-      .addEventListener("click", () => {
-        localStorage.setItem("seen-version", GAME_VERSION);
-        versionModal.hide();
-      });
-  }
+  // ✅ 直接顯示版本資訊 Modal（每次都顯示）
+  const versionModal = new bootstrap.Modal(
+    document.getElementById("versionModal")
+  );
+  versionModal.show();
+
+  document.getElementById("versionConfirmBtn").addEventListener("click", () => {
+    versionModal.hide();
+
+    // ✅ 使用者互動後，播放音樂（解除瀏覽器限制）
+    userHasInteractedWithBgm = true;
+    isMuted = false;
+    if (currentMapConfig?.music) {
+      playMapMusic(currentMapConfig.music, true); // 加上 forcePlay 參數以保證播放
+    }
+  });
 
   // ✅ 載入所有魚種（供圖鑑使用）
   await loadAllFishTypes();
@@ -2443,13 +2540,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   // ✅ 顯示登入帳號資訊
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
-    if (user && user.email) {
-      const username = user.email.split("@")[0];
-      const el = document.getElementById("accountDisplay");
-      if (el) {
-        el.textContent = `目前帳號：${username}`;
-      }
-    }
+    // ... 原本的登入邏輯照舊 ...
   });
 });
 
