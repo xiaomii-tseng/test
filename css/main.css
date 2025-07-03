@@ -576,9 +576,10 @@ body {
   color: #ffbc37;
 }
 .cloud-btn {
+  margin: auto;
   font-weight: bold;
   font-size: 1rem;
-  padding: 10px 15px 10px 15px;
+  padding: 10px 80px 10px 80px;
   border-radius: 15px;
   background-color: #d4b389;
   color: #4c2c00;
@@ -820,4 +821,27 @@ body {
 
 .forge-fail {
   animation: forge-fail 0.4s ease;
+}
+
+.sound-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 85%;
+  margin: auto;
+  text-shadow: 2px 2px 0px black;
+}
+
+.sound-check-btn {
+  margin: auto;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 20px 8px 20px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
 }

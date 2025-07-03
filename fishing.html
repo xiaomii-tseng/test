@@ -427,7 +427,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body d-flex flex-column gap-2">
-                    <div class="d-flex justify-content-around">
+                    <div class="d-flex justify-content-around mt-2">
                         <button class="fnc-btn fnc-anm" id="openMaps">
                             <img src="images-webp/icons/map.webp" alt="地圖" class="icon" />
                             <div>地圖</div>
@@ -447,9 +447,18 @@
                             <div>教學</div>
                         </button>
                     </div>
+                    <div class="d-flex justify-content-around mt-3">
+                        <button id="saveToCloudBtn" class="fnc-btn fnc-anm">
+                            <img src="images-webp/icons/save.webp" alt="存檔" class="icon" />
+                            <div>存檔</div>
+                        </button>
+                        <button id="SoundBtn" class="fnc-btn fnc-anm">
+                            <img src="images-webp/icons/sound.webp" alt="選項" class="icon" />
+                            <div>選項</div>
+                        </button>
+                    </div>
 
-                    <button id="saveToCloudBtn" class="cloud-btn fnc-anm mt-3">手動存檔</button>
-                    <button id="logoutBtn" class="cloud-btn fnc-anm">登出</button>
+                    <button id="logoutBtn" class="cloud-btn fnc-anm mt-4">登出</button>
 
                 </div>
             </div>
@@ -564,9 +573,9 @@
     <div id="ticketTimer"></div>
 
     <!-- 🎵 音樂控制按鈕 -->
-    <div id="bgmToggleBtn" class="bgm-btn fnc-anm">
+    <!-- <div id="bgmToggleBtn" class="bgm-btn fnc-anm">
         <img id="bgmIcon" src="images-webp/icons/voice2.webp" alt="音樂控制" />
-    </div>
+    </div> -->
 
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
@@ -577,6 +586,26 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="customAlertContent">這是一個提示訊息</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音效選項 -->
+    <div class="modal fade" id="soundSettingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered sound-modal">
+            <div class="modal-content text-center p-3">
+                <h5 class="mb-1">音效設定</h5>
+                <div class="d-flex justify-content-around mt-3">
+                    <button id="setSoundBtn" class="fnc-btn fnc-anm">
+                        <img id="setSoundIcon" src="images-webp/icons/voice2.webp" alt="音效" class="icon" />
+                        <div>音效</div>
+                    </button>
+                    <button id="bgmToggleBtn" class="fnc-btn fnc-anm">
+                        <img id="bgmIcon" src="images-webp/icons/voice2.webp" alt="音樂" class="icon" />
+                        <div>音樂</div>
+                    </button>
+                </div>
+                <button id="soundCheckBtn" class="sound-check-btn fnc-anm mt-4">確定</button>
             </div>
         </div>
     </div>

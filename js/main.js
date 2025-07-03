@@ -29,6 +29,7 @@ let allFishTypes = [];
 let currentBgm = null;
 let isMuted = true;
 let userHasInteractedWithBgm = false;
+let isSoundEnabled = false;
 let isAutoFishing = false;
 let autoFishingTimeoutId = null;
 const buffLabelMap = {
@@ -40,33 +41,33 @@ const buffLabelMap = {
 };
 // 音效
 const sfxOpen = new Audio("sound/test-open.mp3");
-sfxOpen.volume = 0.6;
+sfxOpen.volume = 0.7;
 const sfxClose = new Audio("sound/test-close.mp3");
-sfxClose.volume = 0.2;
+sfxClose.volume = 0.4;
 const sfxDoor = new Audio("sound/test-opendoor.mp3");
-sfxDoor.volume = 0.4;
+sfxDoor.volume = 0.6;
 const sfxEquip = new Audio("sound/test-equip.mp3");
-sfxEquip.volume = 0.4;
+sfxEquip.volume = 0.6;
 const sfxDelete = new Audio("sound/test-delete.mp3");
-sfxDelete.volume = 0.4;
+sfxDelete.volume = 0.6;
 const sfxOpenFishBook = new Audio("sound/test-openfishbook.mp3");
-sfxOpenFishBook.volume = 0.4;
+sfxOpenFishBook.volume = 0.6;
 const sfxFail = new Audio("sound/test-fail.mp3");
-sfxFail.volume = 0.4;
+sfxFail.volume = 0.6;
 const sfxSuccess = new Audio("sound/test-success.mp3");
-sfxSuccess.volume = 0.5;
+sfxSuccess.volume = 0.8;
 const sfxRefine = new Audio("sound/test-refine.mp3");
-sfxRefine.volume = 0.4;
+sfxRefine.volume = 0.5;
 const sfxTicket = new Audio("sound/test-ticket.mp3");
-sfxTicket.volume = 0.6;
+sfxTicket.volume = 0.7;
 const sfxOpenChest = new Audio("sound/test-openChest.mp3");
-sfxOpenChest.volume = 0.6;
+sfxOpenChest.volume = 0.7;
 const sfxGod = new Audio("sound/test-god.mp3");
-sfxGod.volume = 0.5;
+sfxGod.volume = 0.8;
 const sfxToggle = new Audio("sound/test-toggle.mp3");
-sfxToggle.volume = 0.5;
+sfxToggle.volume = 0.7;
 const sfxFishingClick = new Audio("sound/test-fishingclick.mp3");
-sfxFishingClick.volume = 0.5;
+sfxFishingClick.volume = 0.7;
 const FishingLoopSound = {
   audio: new Audio("sound/test-fishing.mp3"),
   play() {
@@ -2298,7 +2299,7 @@ function openDivineModal(equip) {
 }
 // 音效
 function playSfx(audioEl) {
-  if (!userHasInteractedWithBgm) return;
+  if (!userHasInteractedWithBgm || !isSoundEnabled) return;
 
   // 如果還沒 decode 完就先跳過
   const buffer = audioBufferMap.get(audioEl);
@@ -2319,8 +2320,41 @@ function playSfx(audioEl) {
   source.connect(gainNode).connect(webAudioCtx.destination);
   source.start(0);
 }
+// 載入儲存的使用者偏好（可放在 main.js 前面）
+function loadSoundSetting() {
+  isSoundEnabled = localStorage.getItem("sound-enabled") !== "false";
+}
+// 儲存設定（供 UI 切換時用）
+function saveSoundSetting() {
+  localStorage.setItem("sound-enabled", isSoundEnabled);
+}
+// 切換音樂模式圖片
+function updateSoundToggleIcon() {
+  const icon = document.getElementById("setSoundIcon");
+  icon.src = isSoundEnabled
+    ? "images-webp/icons/voice.webp"
+    : "images-webp/icons/voice2.webp";
+}
 
 // 下面是 document
+document.getElementById("soundCheckBtn").addEventListener("click", () => {
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("soundSettingModal")
+  );
+  modal?.hide(); // ✅ 關閉 modal
+});
+document.getElementById("SoundBtn").addEventListener("click", () => {
+  // updateSoundModalButtons(); // 確保每次開都顯示正確狀態
+  const modal = new bootstrap.Modal(
+    document.getElementById("soundSettingModal")
+  );
+  modal.show();
+});
+document.getElementById("setSoundBtn").addEventListener("click", () => {
+  isSoundEnabled = !isSoundEnabled;
+  saveSoundSetting();
+  updateSoundToggleIcon();
+});
 document.querySelectorAll(".ticket-icon").forEach((btn) => {
   btn.addEventListener("click", () => {
     playSfx(sfxTicket);
@@ -2570,6 +2604,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   updateMoneyUI();
   updateCrystalUI();
   patchLegacyEquipments();
+  loadSoundSetting();
+  updateSoundToggleIcon();
 
   // ✅ 直接顯示版本資訊 Modal（每次都顯示）
   const versionModal = new bootstrap.Modal(

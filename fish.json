@@ -25,7 +25,7 @@
     },
     {
         "name": "巨骨舌魚",
-        "probability": 0.15,
+        "probability": 0.09,
         "image": "images-webp/fish/fish24.webp",
         "maps": "清澈川流"
     },
@@ -43,7 +43,7 @@
     },
     {
         "name": "歐洲鯰魚",
-        "probability": 0.2,
+        "probability": 0.087,
         "image": "images-webp/fish/fish28.webp",
         "maps": "清澈川流"
     },
