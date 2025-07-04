@@ -13,15 +13,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { app } from "./firebase.js";
 
-// 🔧 Firebase 設定
-const firebaseConfig = {
-  apiKey: "AIzaSyDrmErLaf1rLc0GC5-1ncj4cqbOfX11ZaE",
-  authDomain: "fishing-dcf4c.firebaseapp.com",
-  projectId: "fishing-dcf4c",
-  storageBucket: "fishing-dcf4c.firebasestorage.app",
-  messagingSenderId: "883849375266",
-  appId: "1:883849375266:web:2d3ad179436bf8deb5647b",
-};
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -32,8 +23,8 @@ function showAlert(message) {
 
 // ✅ 登入
 window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -45,20 +36,89 @@ window.login = async function () {
     showAlert("請確認帳號密碼是否正確");
   }
 };
-// ✅ 註冊
-window.register = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    showAlert("註冊成功，自動登入中");
-  } catch (err) {
-    showAlert("註冊失敗");
+
+// ✅ 註冊步驟 1：點註冊 → 先檢查 email/password，開啟 modal
+window.register = function () {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    return showAlert("請輸入帳號與密碼");
   }
+
+  const modal = new bootstrap.Modal(document.getElementById("usernameModal"));
+  modal.show();
 };
 
-// 其他 import、firebase 初始化...（已經存在）
+// ✨ 點擊動畫效果
+function addClickBounce(el) {
+  el.classList.add("click-bounce");
+  el.addEventListener(
+    "animationend",
+    () => {
+      el.classList.remove("click-bounce");
+    },
+    { once: true }
+  );
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("loginBtn").addEventListener("click", login);
+  document.getElementById("registerBtn").addEventListener("click", register);
+
+  // ✅ 註冊步驟 2：輸入名稱並送出 createUser
+  document
+    .getElementById("confirmUsernameBtn")
+    .addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const playerName = document.getElementById("usernameInput").value.trim();
+
+      if (!email || !password || !playerName) {
+        return showAlert("請完整填寫帳號、密碼與玩家名稱");
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+
+        // 儲存初始資料 + 玩家名稱
+        const userRef = doc(db, "saves", user.uid);
+        const defaultSave = {
+          backpack: [],
+          ownedEquipment: [],
+          equippedItems: {},
+          fishDex: [],
+          level: 1,
+          exp: 0,
+          money: 0,
+          name: playerName,
+        };
+        await setDoc(userRef, defaultSave);
+
+        localStorage.clear();
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("usernameModal")
+        );
+        modal.hide();
+        location.href = "fishing.html";
+      } catch (err) {
+        console.error("❌ 註冊失敗：", err);
+        showAlert("註冊失敗，請檢查帳號是否已被使用");
+      }
+    });
+});
+
+document.querySelectorAll(".fnc-anm").forEach((btn) => {
+  btn.addEventListener("click", () => addClickBounce(btn));
+});
+
+// ✅ 登入後讀取資料進 localStorage
 onAuthStateChanged(auth, async (user) => {
   const loginBox = document.querySelector(".login-box");
   const loginLoading = document.getElementById("loginLoading");
@@ -93,64 +153,12 @@ onAuthStateChanged(auth, async (user) => {
         "divine-materials",
         JSON.stringify(data.divineMaterials || {})
       );
-    } else {
-      const defaultSave = {
-        backpack: [],
-        ownedEquipment: [],
-        equippedItems: {},
-        fishDex: [],
-        level: 1,
-        exp: 0,
-        money: 0,
-      };
-      await setDoc(userRef, defaultSave);
-      localStorage.clear();
-      const keyMap = {
-        backpack: "fishing-v3-backpack",
-        ownedEquipment: "owned-equipment-v2",
-        equippedItems: "equipped-items-v2",
-        fishDex: "fish-dex-v2",
-        level: "fishing-player-level-v1",
-        exp: "fishing-player-exp-v1",
-        money: "fishing-money",
-      };
-      for (const [k, v] of Object.entries(defaultSave)) {
-        localStorage.setItem(
-          keyMap[k],
-          typeof v === "object" ? JSON.stringify(v) : String(v)
-        );
-      }
     }
 
-    // ✅ 自動儲存名稱（email 前綴）
-    const username = user.email.split("@")[0];
-    await setDoc(userRef, { name: username }, { merge: true });
-
-    // ✅ 成功登入 → 導向
+    // ✅ 成功登入 → 導向遊戲
     location.href = "fishing.html";
   } else {
-    // ✅ 沒登入 → 顯示登入表單
     if (loginLoading) loginLoading.style.display = "none";
     if (loginBox) loginBox.classList.remove("login-box-none");
   }
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("loginBtn").addEventListener("click", login);
-  document.getElementById("registerBtn").addEventListener("click", register);
-});
-
-document.querySelectorAll(".fnc-anm").forEach((btn) => {
-  btn.addEventListener("click", () => addClickBounce(btn));
-});
-// ✨ 點擊動畫效果
-function addClickBounce(el) {
-  el.classList.add("click-bounce");
-  el.addEventListener(
-    "animationend",
-    () => {
-      el.classList.remove("click-bounce");
-    },
-    { once: true }
-  );
-}

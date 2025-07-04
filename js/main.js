@@ -127,6 +127,7 @@ import {
   getFirestore,
   doc,
   setDoc,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -241,7 +242,7 @@ function saveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      name: username, // ✅ 存帳號名稱
+      // name: username, // ✅ 存帳號名稱
       refineCrystal: parseInt(
         localStorage.getItem("refine-crystal") || "0",
         10
@@ -281,7 +282,7 @@ function autoSaveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      name: username,
+      // name: username,
       refineCrystal: parseInt(
         localStorage.getItem("refine-crystal") || "0",
         10
@@ -2629,12 +2630,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // ✅ 顯示登入帳號資訊
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    if (user && user.email) {
-      const username = user.email.split("@")[0];
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, "saves", user.uid);
+      const userSnap = await getDoc(userRef);
+      const playerName = userSnap.exists() ? userSnap.data().name : null;
+
       const el = document.getElementById("accountDisplay");
       if (el) {
-        el.textContent = `目前帳號：${username}`;
+        el.textContent = `玩家名稱：${playerName || "未知玩家"}`;
       }
     }
   });

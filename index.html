@@ -19,7 +19,7 @@
 
     <style>
         body {
-            background-image: url("images-webp/index/index3.webp");
+            background-image: url("images-webp/index/index6.webp");
             /* 可用木紋圖或純色背景 */
             background-size: cover;
             background-repeat: no-repeat;
@@ -35,11 +35,20 @@
 
         .login-box,
         #loginLoading {
-            background-color: #000000bc;
+            box-shadow: 0px 0px 10px black;
+            background-image: url("../images-webp/index/backpackbg.webp");
+            /* 可用木紋圖或純色背景 */
+            background-size: cover;
+            background-repeat: no-repeat;
+            border: 3px solid #4c2c00;
             padding: 2rem;
             border-radius: 10px;
             width: 270px;
             text-align: center;
+            background-color: rgba(0, 0, 0, 0.319);
+            /* 黑色透明遮罩（可調） */
+            background-blend-mode: overlay;
+            /* 讓背景圖與透明色混合 */
         }
 
         input {
@@ -51,7 +60,7 @@
         }
 
         button {
-            box-shadow: 2px 2px 20px rgb(4, 49, 60);
+            box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.489);
             color: #4c2c00;
             border: 3px solid #4c2c00;
             background-color: #d4b389;
@@ -157,12 +166,29 @@
         <input type="email" id="email" autocomplete="off" placeholder="Email">
         <input type="password" id="password" placeholder="密碼" autocomplete="new-password" name="new-password">
         <div class="font-ts">密碼最少要6位數</div>
-        <button class="fnc-anm" id="loginBtn">登入</button>
+        <button class="fnc-anm me-3" id="loginBtn">登入</button>
         <button class="fnc-anm" id="registerBtn">註冊</button>
         <div>
             Ver 3.0.0
         </div>
     </div>
+
+    <!-- 玩家名稱輸入 Modal -->
+    <div class="modal fade" id="usernameModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered alert-modal">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title">輸入玩家名稱</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <input type="text" id="usernameInput" placeholder="玩家名稱" class="form-control mb-2" />
+                    <button class="fnc-anm" id="confirmUsernameBtn">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
