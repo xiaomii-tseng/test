@@ -2630,7 +2630,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   // ✅ 顯示登入帳號資訊
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
-    // ... 原本的登入邏輯照舊 ...
+    if (user && user.email) {
+      const username = user.email.split("@")[0];
+      const el = document.getElementById("accountDisplay");
+      if (el) {
+        el.textContent = `目前帳號：${username}`;
+      }
+    }
   });
 });
 

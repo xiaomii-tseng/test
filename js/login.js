@@ -42,7 +42,7 @@ window.login = async function () {
     );
     localStorage.setItem("userId", userCredential.user.uid);
   } catch (err) {
-    showAlert("登入失敗：" + err.message);
+    showAlert("請確認帳號密碼是否正確");
   }
 };
 // ✅ 註冊
@@ -53,7 +53,7 @@ window.register = async function () {
     await createUserWithEmailAndPassword(auth, email, password);
     showAlert("註冊成功，自動登入中");
   } catch (err) {
-    showAlert("註冊失敗：" + err.message);
+    showAlert("註冊失敗");
   }
 };
 
@@ -139,3 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loginBtn").addEventListener("click", login);
   document.getElementById("registerBtn").addEventListener("click", register);
 });
+
+document.querySelectorAll(".fnc-anm").forEach((btn) => {
+  btn.addEventListener("click", () => addClickBounce(btn));
+});
+// ✨ 點擊動畫效果
+function addClickBounce(el) {
+  el.classList.add("click-bounce");
+  el.addEventListener(
+    "animationend",
+    () => {
+      el.classList.remove("click-bounce");
+    },
+    { once: true }
+  );
+}
