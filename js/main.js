@@ -2016,7 +2016,7 @@ function openRefineModal(equip) {
   const ownedRaw = parseInt(localStorage.getItem(CRYSTAL_KEY), 10);
   const owned = isNaN(ownedRaw) ? 0 : ownedRaw;
 
-  const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
+  const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20];
   const previewIncrease = buffIncrements[refineLevel + 1];
 
   document.getElementById("refineEquipCard").innerHTML =
@@ -2040,7 +2040,7 @@ function openRefineModal(equip) {
   document.getElementById(
     "refineCrystalOwned"
   ).textContent = `目前擁有：${owned} 顆`;
-  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const currentRate = successRates[refineLevel] ?? 0;
   document.getElementById(
     "refineSuccessRate"
@@ -2075,7 +2075,7 @@ function refineEquipment(equip) {
   localStorage.setItem(CRYSTAL_KEY, crystals);
 
   // 成功率表
-  const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const chance = successRates[refineLevel];
   const success = Math.random() < chance;
 
@@ -2085,7 +2085,7 @@ function refineEquipment(equip) {
     const index = Math.floor(Math.random() * equip.buffs.length);
 
     // 每級增加的數值表
-    const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15]; // index = refineLevel
+    const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20]; // index = refineLevel
     const increase = buffIncrements[equip.refineLevel] ?? 5; // fallback: default +5
 
     equip.buffs[index].value += increase;
@@ -2136,7 +2136,7 @@ function refineEquipment(equip) {
     const nextCost = (equip.refineLevel + 2) * 2;
     costInfo.textContent = `消耗提煉結晶：${nextCost} 顆`;
   }
-  const buffIncrements = [0, 5, 5, 5, 7, 8, 10, 10, 15];
+  const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20];
   const previewIncrease = buffIncrements[equip.refineLevel + 1] ?? 0;
 
   const buffPreview = document.getElementById("refineBuffPreview");
@@ -2150,7 +2150,7 @@ function refineEquipment(equip) {
 
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates = [1.0, 0.85, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+    const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
     const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
