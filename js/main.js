@@ -226,7 +226,6 @@ function saveToCloud() {
     }
 
     const userId = user.uid;
-    const username = user.email.split("@")[0]; // 👈 取 email 前綴
     const saveData = {
       backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
       ownedEquipment: JSON.parse(
@@ -242,7 +241,6 @@ function saveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      // name: username, // ✅ 存帳號名稱
       refineCrystal: parseInt(
         localStorage.getItem("refine-crystal") || "0",
         10
@@ -253,7 +251,7 @@ function saveToCloud() {
     };
 
     try {
-      await setDoc(doc(db, "saves", userId), saveData);
+      await setDoc(doc(db, "saves", userId), saveData, { merge: true });
       showAlert("存檔成功！");
     } catch (err) {
       console.error("❌ 存檔失敗", err);
@@ -265,7 +263,6 @@ function saveToCloud() {
 function autoSaveToCloud() {
   onAuthStateChanged(auth, async (user) => {
     const userId = user.uid;
-    const username = user.email.split("@")[0]; // ← 補這行！
 
     const saveData = {
       backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
@@ -282,7 +279,6 @@ function autoSaveToCloud() {
       ),
       exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
       money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      // name: username,
       refineCrystal: parseInt(
         localStorage.getItem("refine-crystal") || "0",
         10
@@ -293,7 +289,7 @@ function autoSaveToCloud() {
     };
 
     try {
-      await setDoc(doc(db, "saves", userId), saveData);
+      await setDoc(doc(db, "saves", userId), saveData, { merge: true });
     } catch (err) {}
   });
 }
