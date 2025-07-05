@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         const user = userCredential.user;
         showAlert("註冊成功，登入中...");
+
         // 儲存初始資料 + 玩家名稱
         const userRef = doc(db, "saves", user.uid);
         const defaultSave = {
@@ -101,7 +102,26 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         await setDoc(userRef, defaultSave);
 
+        // ✅ 清空後重新初始化
         localStorage.clear();
+        localStorage.setItem("fishing-player-level-v1", "1");
+        localStorage.setItem("fishing-player-exp-v1", "0");
+        localStorage.setItem("fishing-money", "0");
+        localStorage.setItem("fishing-v3-backpack", "[]");
+        localStorage.setItem("owned-equipment-v2", "[]");
+        localStorage.setItem("equipped-items-v2", "{}");
+        localStorage.setItem("fish-dex-v2", "[]");
+        localStorage.setItem("player-stat-points", "1"); // 🟡 初始1點
+        localStorage.setItem(
+          "player-custom-bonus",
+          JSON.stringify({
+            increaseCatchRate: 0,
+            increaseRareRate: 0,
+            increaseBigFishChance: 0,
+            increaseSellValue: 0,
+            increaseExpGain: 0,
+          })
+        );
 
         const modal = bootstrap.Modal.getInstance(
           document.getElementById("usernameModal")
@@ -152,6 +172,22 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem(
         "divine-materials",
         JSON.stringify(data.divineMaterials || {})
+      );
+      localStorage.setItem(
+        "player-custom-bonus",
+        JSON.stringify(
+          data.customBonus || {
+            increaseCatchRate: 0,
+            increaseRareRate: 0,
+            increaseBigFishChance: 0,
+            increaseSellValue: 0,
+            increaseExpGain: 0,
+          }
+        )
+      );
+      localStorage.setItem(
+        "player-stat-points",
+        (data.statPoints || 0).toString()
       );
     }
 

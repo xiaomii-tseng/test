@@ -202,6 +202,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   signOut(auth)
     .then(() => {
       showAlert("已登出！");
+      localStorage.clear();
       window.location.href = "index.html"; // 登出後回登入頁面
     })
     .catch((error) => {
@@ -218,38 +219,38 @@ function showAlert(message) {
   document.getElementById("customAlertContent").textContent = message;
   new bootstrap.Modal(document.getElementById("customAlertModal")).show();
 }
+// 存檔區
+function collectSaveData() {
+  return {
+    backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
+    ownedEquipment: JSON.parse(
+      localStorage.getItem("owned-equipment-v2") || "[]"
+    ),
+    equippedItems: JSON.parse(
+      localStorage.getItem("equipped-items-v2") || "{}"
+    ),
+    fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
+    level: parseInt(localStorage.getItem("fishing-player-level-v1") || "1", 10),
+    exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
+    money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
+    refineCrystal: parseInt(localStorage.getItem("refine-crystal") || "0", 10),
+    divineMaterials: JSON.parse(
+      localStorage.getItem("divine-materials") || "{}"
+    ),
+    customBonus: JSON.parse(
+      localStorage.getItem("player-custom-bonus") || "{}"
+    ),
+    statPoints: parseInt(localStorage.getItem("player-stat-points") || "0", 10),
+  };
+}
 function saveToCloud() {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       showAlert("請先登入");
       return;
     }
-
     const userId = user.uid;
-    const saveData = {
-      backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
-      ownedEquipment: JSON.parse(
-        localStorage.getItem("owned-equipment-v2") || "[]"
-      ),
-      equippedItems: JSON.parse(
-        localStorage.getItem("equipped-items-v2") || "{}"
-      ),
-      fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
-      level: parseInt(
-        localStorage.getItem("fishing-player-level-v1") || "1",
-        10
-      ),
-      exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
-      money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      refineCrystal: parseInt(
-        localStorage.getItem("refine-crystal") || "0",
-        10
-      ),
-      divineMaterials: JSON.parse(
-        localStorage.getItem("divine-materials") || "{}"
-      ),
-    };
-
+    const saveData = collectSaveData();
     try {
       await setDoc(doc(db, "saves", userId), saveData, { merge: true });
       showAlert("存檔成功！");
@@ -259,35 +260,10 @@ function saveToCloud() {
     }
   });
 }
-
 function autoSaveToCloud() {
   onAuthStateChanged(auth, async (user) => {
     const userId = user.uid;
-
-    const saveData = {
-      backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
-      ownedEquipment: JSON.parse(
-        localStorage.getItem("owned-equipment-v2") || "[]"
-      ),
-      equippedItems: JSON.parse(
-        localStorage.getItem("equipped-items-v2") || "{}"
-      ),
-      fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
-      level: parseInt(
-        localStorage.getItem("fishing-player-level-v1") || "1",
-        10
-      ),
-      exp: parseInt(localStorage.getItem("fishing-player-exp-v1") || "0", 10),
-      money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
-      refineCrystal: parseInt(
-        localStorage.getItem("refine-crystal") || "0",
-        10
-      ),
-      divineMaterials: JSON.parse(
-        localStorage.getItem("divine-materials") || "{}"
-      ),
-    };
-
+    const saveData = collectSaveData();
     try {
       await setDoc(doc(db, "saves", userId), saveData, { merge: true });
     } catch (err) {}
@@ -1412,27 +1388,31 @@ function updateCharacterStats() {
     }
   }
 
-  // ✅ 動態取得最新等級加成
-  const level = loadLevel();
-  const levelBuff = level * 0.125;
+  // ✅ 加上自選點數 bonus
+  const custom = JSON.parse(
+    localStorage.getItem("player-custom-bonus") || "{}"
+  );
+  for (const key in custom) {
+    if (stats.hasOwnProperty(key)) {
+      stats[key] += custom[key];
+    }
+  }
 
-  document.querySelector(".increase-catch-rate").textContent = `增加上鉤率：${(
-    stats.increaseCatchRate + levelBuff
-  ).toFixed(2)}%`;
-  document.querySelector(".increase-rare-rate").textContent = `增加稀有率：${(
-    stats.increaseRareRate + levelBuff
-  ).toFixed(2)}%`;
+  document.querySelector(
+    ".increase-catch-rate"
+  ).textContent = `增加上鉤率：${stats.increaseCatchRate}%`;
+  document.querySelector(
+    ".increase-rare-rate"
+  ).textContent = `增加稀有率：${stats.increaseRareRate}%`;
   document.querySelector(
     ".increase-big-fish-chance"
-  ).textContent = `大體型機率：${(
-    stats.increaseBigFishChance + levelBuff
-  ).toFixed(2)}%`;
-  document.querySelector(".increase-sellValue").textContent = `增加販售金額：${(
-    stats.increaseSellValue + levelBuff
-  ).toFixed(2)}%`;
-  document.querySelector(".increase-exp-gain").textContent = `經驗值加成：${(
-    stats.increaseExpGain + levelBuff
-  ).toFixed(2)}%`;
+  ).textContent = `大體型機率：${stats.increaseBigFishChance}%`;
+  document.querySelector(
+    ".increase-sellValue"
+  ).textContent = `增加販售金額：${stats.increaseSellValue}%`;
+  document.querySelector(
+    ".increase-exp-gain"
+  ).textContent = `經驗值加成：${stats.increaseExpGain}%`;
 }
 
 // 脫下裝備
@@ -1516,15 +1496,19 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
 // buff實裝
 function getTotalBuffs() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+  const custom = JSON.parse(
+    localStorage.getItem("player-custom-bonus") || "{}"
+  );
 
   const buffs = {
     increaseCatchRate: 0,
     increaseRareRate: 0,
     increaseBigFishChance: 0,
     increaseSellValue: 0,
-    increaseExpGain: 0, // ✅ 新增
+    increaseExpGain: 0,
   };
 
+  // ➕ 裝備 buff
   for (const item of Object.values(equipped)) {
     if (!item?.buffs) continue;
     for (const buff of item.buffs) {
@@ -1534,13 +1518,16 @@ function getTotalBuffs() {
     }
   }
 
-  // ✅ 加入等級加成
-  const level = loadLevel();
-  const levelBuff = level * 0.25;
-  for (const key in buffs) {
-    buffs[key] += levelBuff;
-    buffs[key] = Math.round(buffs[key] * 10) / 10;
+  // ➕ 自選點數 buff
+  for (const key in custom) {
+    if (buffs.hasOwnProperty(key)) {
+      buffs[key] += custom[key];
+    }
   }
+
+  // ➕ (已取消) 等級 buff
+
+  // cap 上鉤率
   buffs.increaseCatchRate = Math.min(buffs.increaseCatchRate, 99);
   return buffs;
 }
@@ -1809,6 +1796,13 @@ function showLevelUpModal(level) {
   el.className = "level-up-toast";
   el.textContent = `Lv.${level} 升級了！`;
   document.body.appendChild(el);
+  // ✅ 同步素質點數
+  syncStatPointsWithLevel(level);
+  // ✅ 如果素質分配畫面是開著的，就順便更新畫面
+  const modalEl = document.getElementById("statPointModal");
+  if (modalEl && modalEl.classList.contains("show")) {
+    updateStatPointModal();
+  }
 
   setTimeout(() => {
     el.classList.add("show");
@@ -2341,7 +2335,123 @@ function updateSoundToggleIcon() {
     : "images-webp/icons/voice2.webp";
 }
 
+// 等級點數
+function syncStatPointsWithLevel(levelFromParam = null) {
+  const level =
+    levelFromParam ??
+    parseInt(localStorage.getItem("fishing-player-level-v1") || "1", 10);
+  const custom = JSON.parse(
+    localStorage.getItem("player-custom-bonus") || "{}"
+  );
+  const usedPoints = Object.values(custom).reduce((a, b) => a + b, 0);
+  const currentPoints = parseInt(
+    localStorage.getItem("player-stat-points") || "0",
+    10
+  );
+
+  const totalShouldHave = level;
+  const missing = totalShouldHave - (usedPoints + currentPoints);
+
+  if (missing > 0) {
+    const updated = currentPoints + missing;
+    localStorage.setItem("player-stat-points", updated.toString());
+  }
+}
+
+function updateStatPointModal() {
+  const pointsRaw = parseInt(localStorage.getItem("player-stat-points") || "0");
+  const custom = JSON.parse(
+    localStorage.getItem("player-custom-bonus") || "{}"
+  );
+
+  const usedPoints = Object.values(custom).reduce((a, b) => a + b, 0);
+  const totalPoints = pointsRaw + usedPoints; // 等級總共應得點數
+  const remainingPoints = totalPoints - usedPoints;
+
+  const statList = document.getElementById("statList");
+  statList.innerHTML = "";
+
+  const ATTRS = [
+    { key: "increaseBigFishChance", label: "大體型機率" },
+    { key: "increaseCatchRate", label: "增加上鉤率" },
+    { key: "increaseRareRate", label: "增加稀有率" },
+    { key: "increaseSellValue", label: "增加販售金額" },
+    { key: "increaseExpGain", label: "經驗值加成" },
+  ];
+
+  for (const attr of ATTRS) {
+    const value = custom[attr.key] || 0;
+
+    const row = document.createElement("div");
+    row.className =
+      "d-flex justify-content-between align-items-center status-buff rounded px-3 py-2";
+
+    const labelDiv = document.createElement("div");
+    labelDiv.className = "status-text";
+    labelDiv.textContent = attr.label;
+
+    const valueDiv = document.createElement("div");
+    valueDiv.className = "status-text";
+    valueDiv.textContent = `+${value}%`;
+
+    const left = document.createElement("div");
+    left.className = "d-flex justify-content-between w-75";
+    left.appendChild(labelDiv);
+    left.appendChild(valueDiv);
+
+    row.appendChild(left);
+
+    const right = document.createElement("div");
+    if (remainingPoints > 0) {
+      const btn = document.createElement("div");
+      btn.className = "status-btn";
+      btn.textContent = "+1";
+
+      // 🔧 重點：延遲綁定點擊事件
+      setTimeout(() => {
+        btn.addEventListener("click", () => {
+          allocatePoint(attr.key);
+          addClickBounce(btn);
+        });
+      }, 0);
+
+      right.appendChild(btn);
+    }
+
+    row.appendChild(right);
+    statList.appendChild(row);
+  }
+
+  document.getElementById("availablePoints").textContent = remainingPoints;
+}
+
+window.allocatePoint = function (type) {
+  console.log("123123123");
+  let points = parseInt(localStorage.getItem("player-stat-points") || "0");
+  if (points <= 0) return;
+
+  const custom = JSON.parse(
+    localStorage.getItem("player-custom-bonus") || "{}"
+  );
+  custom[type] = (custom[type] || 0) + 1;
+  localStorage.setItem("player-custom-bonus", JSON.stringify(custom));
+
+  points--;
+  setTimeout(() => {
+    localStorage.setItem("player-stat-points", points.toString());
+    updateStatPointModal(); // 畫面更新
+  }, 0);
+
+  // ✅ 重新更新畫面與資料
+  updateStatPointModal(); // 重新 render UI
+  updateCharacterStats(); // 更新主畫面加總加成顯示
+};
+
 // 下面是 document
+document.querySelector(".all-status-btn").addEventListener("click", () => {
+  updateStatPointModal(); // ← 更新內容
+  new bootstrap.Modal(document.getElementById("statPointModal")).show();
+});
 document.getElementById("soundCheckBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   const modal = bootstrap.Modal.getInstance(
@@ -2610,6 +2720,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   patchLegacyEquipments();
   loadSoundSetting();
   updateSoundToggleIcon();
+  syncStatPointsWithLevel();
 
   // ✅ 直接顯示版本資訊 Modal（每次都顯示）
   const versionModal = new bootstrap.Modal(
