@@ -1127,45 +1127,42 @@ const RARITY_PROBABILITIES = [
 ];
 
 document.querySelector(".shop-chest").addEventListener("click", () => {
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
+
+  if (currentMoney < CHEST_COST) {
+    return showAlert("金錢不足！");
+  }
   playSfx(sfxOpenChest);
-  setTimeout(() => {
-    const currentMoney = parseInt(
-      localStorage.getItem("fishing-money") || "0",
-      10
-    );
+  // 扣錢
+  const updatedMoney = currentMoney - CHEST_COST;
+  localStorage.setItem("fishing-money", updatedMoney.toString());
+  updateMoneyUI(); // 若有即時更新顯示金額的 function
 
-    if (currentMoney < CHEST_COST) {
-      return;
-    }
+  // 正常抽裝備
+  fetch("item.json")
+    .then((res) => res.json())
+    .then((items) => {
+      const item = getRandomItem(items);
+      const rarity = getRandomRarity();
+      const buffs = generateBuffs(rarity.buffCount);
 
-    // 扣錢
-    const updatedMoney = currentMoney - CHEST_COST;
-    localStorage.setItem("fishing-money", updatedMoney.toString());
-    updateMoneyUI(); // 若有即時更新顯示金額的 function
+      const newEquip = {
+        id: crypto.randomUUID(),
+        name: item.name,
+        image: item.image,
+        type: item.type,
+        rarity: rarity.key,
+        buffs: buffs,
+        isFavorite: false,
+        refineLevel: 0,
+      };
 
-    // 正常抽裝備
-    fetch("item.json")
-      .then((res) => res.json())
-      .then((items) => {
-        const item = getRandomItem(items);
-        const rarity = getRandomRarity();
-        const buffs = generateBuffs(rarity.buffCount);
-
-        const newEquip = {
-          id: crypto.randomUUID(),
-          name: item.name,
-          image: item.image,
-          type: item.type,
-          rarity: rarity.key,
-          buffs: buffs,
-          isFavorite: false,
-          refineLevel: 0,
-        };
-
-        saveToOwnedEquipment(newEquip);
-        showEquipmentGetModal(newEquip);
-      });
-  }, 500);
+      saveToOwnedEquipment(newEquip);
+      showEquipmentGetModal(newEquip);
+    });
 });
 
 // 從 item.json 抽一個
@@ -1691,37 +1688,33 @@ document.querySelector(".chest2").addEventListener("click", () => {
     10
   );
 
-  if (currentMoney < chestCost) return;
+  if (currentMoney < chestCost) return showAlert("金錢不足！");
   playSfx(sfxOpenChest);
-  setTimeout(() => {
-    localStorage.setItem(
-      "fishing-money",
-      (currentMoney - chestCost).toString()
-    );
-    updateMoneyUI();
 
-    fetch("item.json")
-      .then((res) => res.json())
-      .then((items) => {
-        const item = getRandomItem(items);
-        const rarity = getHighTierRarity(); // ✅ 高級寶箱專用稀有度機率
-        const buffs = generateHighTierBuffs(rarity.buffCount); // ✅ 高級寶箱專用 buff 數值
+  localStorage.setItem("fishing-money", (currentMoney - chestCost).toString());
+  updateMoneyUI();
 
-        const newEquip = {
-          id: crypto.randomUUID(),
-          name: item.name,
-          image: item.image,
-          type: item.type,
-          rarity: rarity.key,
-          buffs: buffs,
-          isFavorite: false,
-          refineLevel: 0,
-        };
+  fetch("item.json")
+    .then((res) => res.json())
+    .then((items) => {
+      const item = getRandomItem(items);
+      const rarity = getHighTierRarity(); // ✅ 高級寶箱專用稀有度機率
+      const buffs = generateHighTierBuffs(rarity.buffCount); // ✅ 高級寶箱專用 buff 數值
 
-        saveToOwnedEquipment(newEquip);
-        showEquipmentGetModal(newEquip);
-      });
-  }, 500);
+      const newEquip = {
+        id: crypto.randomUUID(),
+        name: item.name,
+        image: item.image,
+        type: item.type,
+        rarity: rarity.key,
+        buffs: buffs,
+        isFavorite: false,
+        refineLevel: 0,
+      };
+
+      saveToOwnedEquipment(newEquip);
+      showEquipmentGetModal(newEquip);
+    });
 });
 function getHighTierRarity() {
   const rand = Math.random() * 100;
@@ -2335,12 +2328,14 @@ function updateSoundToggleIcon() {
 
 // 下面是 document
 document.getElementById("soundCheckBtn").addEventListener("click", () => {
+  playSfx(sfxOpen);
   const modal = bootstrap.Modal.getInstance(
     document.getElementById("soundSettingModal")
   );
   modal?.hide(); // ✅ 關閉 modal
 });
 document.getElementById("SoundBtn").addEventListener("click", () => {
+  playSfx(sfxOpen);
   // updateSoundModalButtons(); // 確保每次開都顯示正確狀態
   const modal = new bootstrap.Modal(
     document.getElementById("soundSettingModal")
@@ -2348,14 +2343,10 @@ document.getElementById("SoundBtn").addEventListener("click", () => {
   modal.show();
 });
 document.getElementById("setSoundBtn").addEventListener("click", () => {
+  // playSfx(sfxOpen);
   isSoundEnabled = !isSoundEnabled;
   saveSoundSetting();
   updateSoundToggleIcon();
-});
-document.querySelectorAll(".ticket-icon").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    playSfx(sfxTicket);
-  });
 });
 document.querySelectorAll(".btn-close").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -2408,6 +2399,7 @@ document.getElementById("buyMap4Ticket").addEventListener("click", () => {
   );
 
   if (currentMoney < price) return showAlert("金錢不足！");
+  playSfx(sfxTicket);
   localStorage.setItem("fishing-money", currentMoney - price);
   updateMoneyUI();
   addTicketToInventory("ticket-map4");
@@ -2424,7 +2416,7 @@ document.getElementById("buyMap2Ticket").addEventListener("click", () => {
   if (currentMoney < price) return showAlert("金錢不足！");
   // if (hasTicketInInventory("ticket-map2"))
   //   return showAlert("你已擁有機械城河入場券");
-
+  playSfx(sfxTicket);
   localStorage.setItem("fishing-money", currentMoney - price);
   updateMoneyUI();
   addTicketToInventory("ticket-map2");
@@ -2441,7 +2433,7 @@ document.getElementById("buyMap3Ticket").addEventListener("click", () => {
   if (currentMoney < price) return showAlert("金錢不足！");
   // if (hasTicketInInventory("ticket-map3"))
   //   return showAlert("你已擁有黃金遺址入場券");
-
+  playSfx(sfxTicket); 
   localStorage.setItem("fishing-money", currentMoney - price);
   updateMoneyUI();
   addTicketToInventory("ticket-map3");

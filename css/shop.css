@@ -130,7 +130,13 @@
 }
 
 .chest-animate {
-  animation: shake 2s ease-in-out infinite, shine 1.5s ease-in-out infinite;
+  animation: shake 2s ease-in-out infinite, shine 2.5s ease-in-out infinite;
+  cursor: pointer;
+  transform-origin: center bottom;
+}
+
+.shiny {
+  animation: shine 2.5s ease-in-out infinite;
   cursor: pointer;
   transform-origin: center bottom;
 }

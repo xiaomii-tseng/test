@@ -31,6 +31,7 @@ window.login = async function () {
       email,
       password
     );
+    showAlert("登入中...");
     localStorage.setItem("userId", userCredential.user.uid);
   } catch (err) {
     showAlert("請確認帳號密碼是否正確");
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
           password
         );
         const user = userCredential.user;
-
+        showAlert("註冊成功，登入中...");
         // 儲存初始資料 + 玩家名稱
         const userRef = doc(db, "saves", user.uid);
         const defaultSave = {
@@ -105,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const modal = bootstrap.Modal.getInstance(
           document.getElementById("usernameModal")
         );
-        modal.hide();
         location.href = "fishing.html";
       } catch (err) {
         console.error("❌ 註冊失敗：", err);
