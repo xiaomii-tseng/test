@@ -2365,68 +2365,37 @@ function updateStatPointModal() {
   );
 
   const usedPoints = Object.values(custom).reduce((a, b) => a + b, 0);
-  const totalPoints = pointsRaw + usedPoints; // 等級總共應得點數
+  const totalPoints = pointsRaw + usedPoints;
   const remainingPoints = totalPoints - usedPoints;
 
-  const statList = document.getElementById("statList");
-  statList.innerHTML = "";
-
-  const ATTRS = [
-    { key: "increaseBigFishChance", label: "大體型機率" },
-    { key: "increaseCatchRate", label: "增加上鉤率" },
-    { key: "increaseRareRate", label: "增加稀有率" },
-    { key: "increaseSellValue", label: "增加販售金額" },
-    { key: "increaseExpGain", label: "經驗值加成" },
-  ];
-
-  for (const attr of ATTRS) {
-    const value = custom[attr.key] || 0;
-
-    const row = document.createElement("div");
-    row.className =
-      "d-flex justify-content-between align-items-center status-buff rounded px-3 py-2";
-
-    const labelDiv = document.createElement("div");
-    labelDiv.className = "status-text";
-    labelDiv.textContent = attr.label;
-
-    const valueDiv = document.createElement("div");
-    valueDiv.className = "status-text";
-    valueDiv.textContent = `+${value}%`;
-
-    const left = document.createElement("div");
-    left.className = "d-flex justify-content-between w-75";
-    left.appendChild(labelDiv);
-    left.appendChild(valueDiv);
-
-    row.appendChild(left);
-
-    const right = document.createElement("div");
-    if (remainingPoints > 0) {
-      const btn = document.createElement("div");
-      btn.className = "status-btn";
-      btn.textContent = "+1";
-
-      // 🔧 重點：延遲綁定點擊事件
-      setTimeout(() => {
-        btn.addEventListener("click", () => {
-          allocatePoint(attr.key);
-          addClickBounce(btn);
-        });
-      }, 0);
-
-      right.appendChild(btn);
-    }
-
-    row.appendChild(right);
-    statList.appendChild(row);
-  }
-
   document.getElementById("availablePoints").textContent = remainingPoints;
+
+  // 遍歷每一列（已靜態存在）
+  document.querySelectorAll("#statList > div[data-key]").forEach((row) => {
+    const key = row.dataset.key;
+    const value = custom[key] || 0;
+
+    // 更新數值
+    const valueDiv = row.querySelector(".value");
+    if (valueDiv) valueDiv.textContent = `+${value}%`;
+
+    // 更新 +1 按鈕
+    const btn = row.querySelector(".add-btn");
+    if (btn) {
+      if (remainingPoints > 0) {
+        btn.style.display = "block";
+        btn.onclick = () => {
+          allocatePoint(key);
+          addClickBounce(btn);
+        };
+      } else {
+        btn.style.display = "none";
+      }
+    }
+  });
 }
 
 window.allocatePoint = function (type) {
-  console.log("123123123");
   let points = parseInt(localStorage.getItem("player-stat-points") || "0");
   if (points <= 0) return;
 

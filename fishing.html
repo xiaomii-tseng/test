@@ -590,14 +590,66 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <div class="mb-2">剩餘可用點數：<span id="availablePoints">0</span></div>
+                    <div class="mb-2">
+                        剩餘可用點數：<span id="availablePoints">0</span>
+                    </div>
                     <div id="statList" class="d-flex flex-column align-items-center gap-2">
-                        <!-- 這裡動態產生各屬性 -->
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseBigFishChance">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">大體型機率</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseCatchRate">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">增加上鉤率</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseRareRate">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">增加稀有率</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseSellValue">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">增加販售金額</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseExpGain">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">經驗值加成</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- 音效選項 -->
     <div class="modal fade" id="soundSettingModal" tabindex="-1" aria-hidden="true">
