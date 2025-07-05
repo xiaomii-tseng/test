@@ -97,7 +97,7 @@
     },
     {
         "name": "秘魷",
-        "probability": 0.071,
+        "probability": 0.096,
         "image": "images-webp/fish2/fish49.webp",
         "maps": "機械城河"
     },
@@ -137,10 +137,9 @@
         "image": "images-webp/fish2/fish55.webp",
         "maps": "機械城河"
     },
-
     {
         "name": "重甲蟹",
-        "probability": 0.036,
+        "probability": 0.087,
         "image": "images-webp/fish2/fish56.webp",
         "maps": "機械城河"
     },

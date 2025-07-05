@@ -1,5 +1,17 @@
 [
     {
+        "name": "秋刀魚",
+        "probability": 40,
+        "image": "images-webp/fish/fish27.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "海螺",
+        "probability": 50,
+        "image": "images-webp/fish/fish15.webp",
+        "maps": "清澈川流"
+    },
+    {
         "name": "金魚",
         "probability": 60,
         "image": "images-webp/fish/fish1.webp",
@@ -7,7 +19,7 @@
     },
     {
         "name": "鯉魚",
-        "probability": 65,
+        "probability": 45,
         "image": "images-webp/fish/fish3.webp",
         "maps": "清澈川流"
     },
@@ -24,21 +36,75 @@
         "maps": "清澈川流"
     },
     {
-        "name": "巨骨舌魚",
+        "name": "海馬",
+        "probability": 12,
+        "image": "images-webp/fish/fish19.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "飛魚",
+        "probability": 30,
+        "image": "images-webp/fish/fish21.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "海鰻",
+        "probability": 0.4,
+        "image": "images-webp/fish/fish6.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "河豚",
+        "probability": 1,
+        "image": "images-webp/fish/fish7.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "螃蟹",
+        "probability": 0.5,
+        "image": "images-webp/fish/fish8.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "紅蝦子",
+        "probability": 1.2,
+        "image": "images-webp/fish/fish10.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "水母",
+        "probability": 0.41,
+        "image": "images-webp/fish/fish25.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "魟魚",
+        "probability": 0.32,
+        "image": "images-webp/fish/fish26.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "魷魚",
+        "probability": 1.4,
+        "image": "images-webp/fish/fish16.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "龍蝦",
+        "probability": 0.2,
+        "image": "images-webp/fish/fish11.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "海象鯰",
         "probability": 0.09,
-        "image": "images-webp/fish/fish24.webp",
+        "image": "images-webp/fish/fish30.webp",
         "maps": "清澈川流"
     },
     {
-        "name": "魚罐頭",
-        "probability": 0.8,
-        "image": "images-webp/fish/fish13.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "機械鯉魚",
-        "probability": 0.017,
-        "image": "images-webp/fish/fish20.webp",
+        "name": "鯊魚",
+        "probability": 0.165,
+        "image": "images-webp/fish/fish2.webp",
         "maps": "清澈川流"
     },
     {
@@ -54,143 +120,75 @@
         "maps": "清澈川流"
     },
     {
-        "name": "海象鯰",
-        "probability": 0.35,
-        "image": "images-webp/fish/fish30.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "矛尾魚",
-        "probability": 0.33,
-        "image": "images-webp/fish/fish31.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "巨鱗魚",
-        "probability": 0.3,
-        "image": "images-webp/fish/fish32.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "秋刀魚",
-        "probability": 40,
-        "image": "images-webp/fish/fish27.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "海螺",
-        "probability": 50,
-        "image": "images-webp/fish/fish15.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "鯊魚",
-        "probability": 0.7,
-        "image": "images-webp/fish/fish2.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "鮪魚",
-        "probability": 0.15,
-        "image": "images-webp/fish/fish4.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "海鰻",
-        "probability": 2,
-        "image": "images-webp/fish/fish6.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "河豚",
-        "probability": 4,
-        "image": "images-webp/fish/fish7.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "螃蟹",
-        "probability": 3.5,
-        "image": "images-webp/fish/fish8.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "帝王蟹",
-        "probability": 0.6,
-        "image": "images-webp/fish/fish9.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "紅蝦子",
-        "probability": 3,
-        "image": "images-webp/fish/fish10.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "龍蝦",
-        "probability": 0.55,
-        "image": "images-webp/fish/fish11.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "深海燈籠魚",
-        "probability": 0.006,
-        "image": "images-webp/fish/fish12.webp",
-        "maps": "清澈川流"
-    },
-
-    {
-        "name": "魷魚",
-        "probability": 1.4,
-        "image": "images-webp/fish/fish16.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "章魚",
-        "probability": 1.5,
-        "image": "images-webp/fish/fish17.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "海馬王",
-        "probability": 0.2,
-        "image": "images-webp/fish/fish18.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "海馬",
-        "probability": 1.2,
-        "image": "images-webp/fish/fish19.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "飛魚",
-        "probability": 2.3,
-        "image": "images-webp/fish/fish21.webp",
-        "maps": "清澈川流"
-    },
-    {
         "name": "深海鯊",
         "probability": 0.27,
         "image": "images-webp/fish/fish22.webp",
         "maps": "清澈川流"
     },
     {
+        "name": "矛尾魚",
+        "probability": 0.075,
+        "image": "images-webp/fish/fish31.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "巨鱗魚",
+        "probability": 0.067,
+        "image": "images-webp/fish/fish32.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "章魚",
+        "probability": 0.05,
+        "image": "images-webp/fish/fish17.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "魚罐頭",
+        "probability": 0.07,
+        "image": "images-webp/fish/fish13.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "帝王蟹",
+        "probability": 0.06,
+        "image": "images-webp/fish/fish9.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "巨骨舌魚",
+        "probability": 0.009,
+        "image": "images-webp/fish/fish24.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "鮪魚",
+        "probability": 0.027,
+        "image": "images-webp/fish/fish4.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "海馬王",
+        "probability": 0.038,
+        "image": "images-webp/fish/fish18.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "機械鯉魚",
+        "probability": 0.015,
+        "image": "images-webp/fish/fish20.webp",
+        "maps": "清澈川流"
+    },
+    {
+        "name": "深海燈籠魚",
+        "probability": 0.004,
+        "image": "images-webp/fish/fish12.webp",
+        "maps": "清澈川流"
+    },
+    {
         "name": "鯨魚",
-        "probability": 0.0085,
+        "probability": 0.0065,
         "image": "images-webp/fish/fish23.webp",
-        "maps": "清澈川流"
-    },
-
-    {
-        "name": "水母",
-        "probability": 0.41,
-        "image": "images-webp/fish/fish25.webp",
-        "maps": "清澈川流"
-    },
-    {
-        "name": "魟魚",
-        "probability": 0.32,
-        "image": "images-webp/fish/fish26.webp",
         "maps": "清澈川流"
     }
 ]
