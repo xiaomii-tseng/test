@@ -1984,6 +1984,11 @@ function updateCrystalUI() {
 
 // 選擇提煉方式
 function openRefineChoiceModal(equip) {
+  const level = loadLevel();
+  if (level < 30) {
+    showAlert("等級 30 解鎖提煉功能");
+    return;
+  }
   const modal = new bootstrap.Modal(
     document.getElementById("refineChoiceModal")
   );
@@ -2040,7 +2045,7 @@ function openRefineModal(equip) {
   document.getElementById(
     "refineCrystalOwned"
   ).textContent = `目前擁有：${owned} 顆`;
-  const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const currentRate = successRates[refineLevel] ?? 0;
   document.getElementById(
     "refineSuccessRate"
@@ -2075,7 +2080,7 @@ function refineEquipment(equip) {
   localStorage.setItem(CRYSTAL_KEY, crystals);
 
   // 成功率表
-  const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
   const chance = successRates[refineLevel];
   const success = Math.random() < chance;
 
@@ -2150,7 +2155,7 @@ function refineEquipment(equip) {
 
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates = [0.9, 0.8, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+    const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
     const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
@@ -2433,7 +2438,7 @@ document.getElementById("buyMap3Ticket").addEventListener("click", () => {
   if (currentMoney < price) return showAlert("金錢不足！");
   // if (hasTicketInInventory("ticket-map3"))
   //   return showAlert("你已擁有黃金遺址入場券");
-  playSfx(sfxTicket); 
+  playSfx(sfxTicket);
   localStorage.setItem("fishing-money", currentMoney - price);
   updateMoneyUI();
   addTicketToInventory("ticket-map3");
