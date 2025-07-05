@@ -18,7 +18,7 @@ let isAutoMode = true;
 let isMultiSelectMode = false;
 let currentSort = "desc";
 let currentMapKey = "map1"; // 預設地圖
-const chestCost = 12000; // 高級寶箱
+const chestCost = 16000; // 高級寶箱
 const CHEST_COST = 2000; // 普通寶箱
 const ticket1Price = 40000;
 const ticket2Price = 70000;
@@ -1200,15 +1200,15 @@ function generateBuffs(count) {
 function getBuffValue(type) {
   switch (type) {
     case "increaseCatchRate":
-      return randomInt(1, 20);
+      return randomInt(1, 15);
     case "increaseRareRate":
-      return randomInt(1, 30);
+      return randomInt(1, 15);
     case "increaseBigFishChance":
-      return randomInt(1, 20);
+      return randomInt(1, 10);
     case "increaseSellValue":
-      return randomInt(1, 7);
+      return randomInt(1, 5);
     case "increaseExpGain":
-      return randomInt(1, 6);
+      return randomInt(1, 5);
     default:
       return 1;
   }
@@ -1414,7 +1414,7 @@ function updateCharacterStats() {
 
   // ✅ 動態取得最新等級加成
   const level = loadLevel();
-  const levelBuff = level * 0.25;
+  const levelBuff = level * 0.125;
 
   document.querySelector(".increase-catch-rate").textContent = `增加上鉤率：${(
     stats.increaseCatchRate + levelBuff
@@ -1668,15 +1668,15 @@ function generateHighTierBuffs(count) {
 function getHighTierBuffValue(type) {
   switch (type) {
     case "increaseCatchRate":
-      return randomInt(1, 40);
+      return randomInt(1, 50);
     case "increaseRareRate":
-      return randomInt(1, 60);
+      return randomInt(1, 50);
     case "increaseBigFishChance":
       return randomInt(1, 40);
     case "increaseSellValue":
-      return randomInt(1, 20);
+      return randomInt(1, 15);
     case "increaseExpGain":
-      return randomInt(1, 12);
+      return randomInt(1, 15);
     default:
       return 1;
   }
