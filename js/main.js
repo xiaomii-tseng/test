@@ -1981,12 +1981,19 @@ function updateCrystalUI() {
     el2.textContent = `提煉結晶：${count} 個`;
   }
 }
-
+// 精煉等級限制
+function getRefineLimitByLevel() {
+  const level = loadLevel();
+  if (level >= 125) return 8;
+  if (level >= 75) return 6;
+  if (level >= 25) return 4;
+  return 0;
+}
 // 選擇提煉方式
 function openRefineChoiceModal(equip) {
   const level = loadLevel();
-  if (level < 30) {
-    showAlert("等級 30 解鎖提煉功能");
+  if (level < 25) {
+    showAlert("等級 25 解鎖提煉功能");
     return;
   }
   const modal = new bootstrap.Modal(
@@ -2062,12 +2069,15 @@ function refineEquipment(equip) {
   }
 
   const refineLevel = equip.refineLevel ?? 0;
-
-  if (refineLevel >= 8) {
-    showAlert("已達精煉上限！");
+  const maxRefine = getRefineLimitByLevel();
+  if (refineLevel === 8) {
+    showAlert(`已達最高精煉!`);
     return;
   }
-
+  if (refineLevel >= maxRefine) {
+    showAlert(`已達目前精煉上限，等級提升即可繼續強化!`);
+    return;
+  }
   const cost = (refineLevel + 2) * 2;
   let crystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
   if (crystals < cost) {
