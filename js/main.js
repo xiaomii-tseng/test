@@ -2854,14 +2854,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// ✅ PWA 支援
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/service-worker.js")
-    .then(() => console.log("✅ Service Worker registered"))
-    .catch((err) => console.error("SW registration failed:", err));
-}
-
 // 建立 UI 清單內容
 export function renderAchievementList() {
   const container = document.getElementById("achievementList");
@@ -2944,4 +2936,12 @@ function formatRewardText(reward) {
     }
   }
   return parts.join("，");
+}
+
+// ✅ PWA 支援
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/service-worker.js")
+    .then(() => console.log("✅ Service Worker registered"))
+    .catch((err) => console.error("SW registration failed:", err));
 }
