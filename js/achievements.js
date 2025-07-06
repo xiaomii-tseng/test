@@ -15,7 +15,7 @@ export let ACHIEVEMENT_DEFS = {};
 const STORAGE_KEY = "fishing-achievements-v1";
 
 export async function loadAchievements() {
-  const res = await fetch("../achievements.json");
+  const res = await fetch("achievements.json");
   ACHIEVEMENT_DEFS = await res.json();
 }
 
