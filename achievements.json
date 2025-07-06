@@ -1,67 +1,335 @@
 {
-    "reachLevel10": {
-        "title": "等級達到 10",
-        "desc": "角色等級達到 10 級",
+    "reachLevel3": {
+        "title": "等級達到 3",
+        "desc": "開寶箱體驗基金",
         "condition": {
             "type": "level",
-            "value": 10
+            "value": 3
         },
         "reward": {
-            "money": 500
+            "money": 4000
+        }
+    },
+    "reachLevel25": {
+        "title": "等級達到 25",
+        "desc": "解鎖提煉功能!",
+        "condition": {
+            "type": "level",
+            "value": 25
+        },
+        "reward": {
+            "refineCrystal": 10
         }
     },
     "reachLevel50": {
         "title": "等級達到 50",
-        "desc": "角色等級達到 50 級",
+        "desc": "開放新地圖【劍與魔法村】",
         "condition": {
             "type": "level",
             "value": 50
         },
         "reward": {
-            "refineCrystal": 5
+            "mapPass": "ticket-map4"
+        }
+    },
+    "reachLevel75": {
+        "title": "等級達到 75",
+        "desc": "解鎖提煉功能二階段!",
+        "condition": {
+            "type": "level",
+            "value": 75
+        },
+        "reward": {
+            "refineCrystal": 40
+        }
+    },
+    "reachLevel100": {
+        "title": "等級達到 100",
+        "desc": "開放新地圖【機械城河】",
+        "condition": {
+            "type": "level",
+            "value": 100
+        },
+        "reward": {
+            "mapPass": "ticket-map2"
+        }
+    },
+    "reachLevel125": {
+        "title": "等級達到 125",
+        "desc": "解鎖提煉功能三階段!",
+        "condition": {
+            "type": "level",
+            "value": 125
+        },
+        "reward": {
+            "refineCrystal": 100
+        }
+    },
+    "reachLevel150": {
+        "title": "等級達到 150",
+        "desc": "開放新地圖【黃金遺址】",
+        "condition": {
+            "type": "level",
+            "value": 150
+        },
+        "reward": {
+            "mapPass": "ticket-map3"
+        }
+    },
+    "reachLevel175": {
+        "title": "等級達到 175",
+        "desc": "角色等級達到 175 級",
+        "condition": {
+            "type": "level",
+            "value": 125
+        },
+        "reward": {
+            "refineCrystal": 200
+        }
+    },
+    "reachLevel200": {
+        "title": "等級達到 200",
+        "desc": "角色等級達到 200 級",
+        "condition": {
+            "type": "level",
+            "value": 200
+        },
+        "reward": {
+            "refineCrystal": 500,
+            "divineMaterial": {
+                "隕石碎片": 1,
+                "黃銅礦": 1,
+                "核廢料": 1
+            }
+        }
+    },
+    "moneySaver10000": {
+        "title": "第一筆資金",
+        "desc": "累計擁有金幣達 10,000",
+        "condition": {
+            "type": "money",
+            "value": 10000
+        },
+        "reward": {
+            "refineCrystal": 2
+        }
+    },
+    "moneySaver50000": {
+        "title": "努力存錢",
+        "desc": "累計擁有金幣達 50,000",
+        "condition": {
+            "type": "money",
+            "value": 50000
+        },
+        "reward": {
+            "statPoint": 1
         }
     },
     "moneySaver100000": {
-        "title": "百萬富翁",
+        "title": "努力存錢(二)",
         "desc": "累計擁有金幣達 100,000",
         "condition": {
             "type": "money",
             "value": 100000
         },
         "reward": {
+            "statPoint": 1
+        }
+    },
+    "moneySaver500000": {
+        "title": "半百萬富翁",
+        "desc": "累計擁有金幣達 500,000",
+        "condition": {
+            "type": "money",
+            "value": 500000
+        },
+        "reward": {
             "statPoint": 3
         }
     },
+    "moneySaver1000000": {
+        "title": "百萬富翁",
+        "desc": "累計擁有金幣達 1,000,000",
+        "condition": {
+            "type": "money",
+            "value": 1000000
+        },
+        "reward": {
+            "statPoint": 5
+        }
+    },
+    "moneySaver2000000": {
+        "title": "兩百萬富翁",
+        "desc": "累計擁有金幣達 2,000,000",
+        "condition": {
+            "type": "money",
+            "value": 2000000
+        },
+        "reward": {
+            "statPoint": 5
+        }
+    },
+    "moneySaver5000000": {
+        "title": "五百萬富翁",
+        "desc": "累計擁有金幣達 5,000,000",
+        "condition": {
+            "type": "money",
+            "value": 5000000
+        },
+        "reward": {
+            "statPoint": 7
+        }
+    },
+    "moneySaver10000000": {
+        "title": "千萬富翁",
+        "desc": "累計擁有金幣達 10,000,000",
+        "condition": {
+            "type": "money",
+            "value": 10000000
+        },
+        "reward": {
+            "statPoint": 10
+        }
+    },
     "fishCount100": {
-        "title": "百魚達成",
+        "title": "抓到 100 隻魚啦!",
         "desc": "釣到 100 條魚",
         "condition": {
             "type": "fishCount",
             "value": 100
         },
         "reward": {
-            "money": 800,
-            "refineCrystal": 2
+            "money": 5000,
+            "refineCrystal": 1
         }
     },
-    "dexMap3_15": {
-        "title": "清澈川流圖鑑達成",
-        "desc": "清澈川流魚圖鑑收集滿 15 種",
+    "fishCount500": {
+        "title": "抓到 500 隻魚啦!",
+        "desc": "釣到 500 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 500
+        },
+        "reward": {
+            "money": 10000,
+            "refineCrystal": 5
+        }
+    },
+    "fishCount1000": {
+        "title": "抓到 1000 隻魚啦!",
+        "desc": "釣到 1000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 1000
+        },
+        "reward": {
+            "money": 15000,
+            "refineCrystal": 7
+        }
+    },
+    "fishCount2000": {
+        "title": "抓到 2000 隻魚啦!",
+        "desc": "釣到 2000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 2000
+        },
+        "reward": {
+            "money": 20000,
+            "refineCrystal": 9
+        }
+    },
+    "fishCount5000": {
+        "title": "抓到 5000 隻魚啦!",
+        "desc": "釣到 5000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 5000
+        },
+        "reward": {
+            "money": 30000,
+            "refineCrystal": 12
+        }
+    },
+    "fishCount10000": {
+        "title": "抓到 10000 隻魚啦!",
+        "desc": "釣到 10000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 10000
+        },
+        "reward": {
+            "money": 50000,
+            "refineCrystal": 12
+        }
+    },
+    "fishCount20000": {
+        "title": "抓到 20000 隻魚啦!",
+        "desc": "釣到 20000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 20000
+        },
+        "reward": {
+            "money": 70000,
+            "refineCrystal": 15
+        }
+    },
+    "fishCount50000": {
+        "title": "抓到 50000 隻魚啦!",
+        "desc": "釣到 50000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 50000
+        },
+        "reward": {
+            "money": 100000,
+            "refineCrystal": 20
+        }
+    },
+    "fishCount100000": {
+        "title": "抓到 100000 隻魚啦!",
+        "desc": "釣到 100000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 100000
+        },
+        "reward": {
+            "money": 200000,
+            "refineCrystal": 40
+        }
+    },
+    "dexMap1_10": {
+        "title": "清澈川流圖鑑收集(一)",
+        "desc": "清澈川流魚圖鑑收集滿 10 種",
         "condition": {
             "type": "mapDex",
             "map": "清澈川流",
-            "value": 15
+            "value": 10
+        },
+        "reward": {
+            "money": 3000
+        }
+    },
+    "dexMap1_25": {
+        "title": "清澈川流圖鑑收集(二)",
+        "desc": "清澈川流魚圖鑑收集滿 25 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "清澈川流",
+            "value": 25
         },
         "reward": {
             "mapPass": "ticket-map4"
         }
     },
-    "mythicFish10": {
-        "title": "神話魚王",
-        "desc": "釣到 10 條神話魚",
+    "dexMap1_32": {
+        "title": "清澈川流圖鑑收集(三)",
+        "desc": "清澈川流魚圖鑑全收集",
         "condition": {
-            "type": "mythicFish",
-            "value": 10
+            "type": "mapDex",
+            "map": "清澈川流",
+            "value": 32
         },
         "reward": {
             "divineMaterial": {
@@ -69,16 +337,254 @@
             }
         }
     },
+    "dexMap2_15": {
+        "title": "劍與魔法村圖鑑收集(一)",
+        "desc": "劍與魔法村魚圖鑑收集滿 15 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "劍與魔法村",
+            "value": 15
+        },
+        "reward": {
+            "mapPass": "ticket-map2"
+        }
+    },
+    "dexMap2_35": {
+        "title": "劍與魔法村圖鑑收集(二)",
+        "desc": "劍與魔法村魚圖鑑收集滿 35 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "劍與魔法村",
+            "value": 35
+        },
+        "reward": {
+            "money": 20000,
+            "statPoint": 3
+        }
+    },
+    "dexMap2_44": {
+        "title": "劍與魔法村圖鑑收集(三)",
+        "desc": "劍與魔法村魚圖鑑收集滿 44 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "劍與魔法村",
+            "value": 44
+        },
+        "reward": {
+            "divineMaterial": {
+                "黃銅礦": 1
+            }
+        }
+    },
+    "dexMap3_15": {
+        "title": "機械城河圖鑑收集(一)",
+        "desc": "機械城河魚圖鑑收集滿 15 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "機械城河",
+            "value": 15
+        },
+        "reward": {
+            "mapPass": "ticket-map3"
+        }
+    },
+    "dexMap3_35": {
+        "title": "機械城河圖鑑收集(二)",
+        "desc": "機械城河魚圖鑑收集滿 35 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "機械城河",
+            "value": 35
+        },
+        "reward": {
+            "money": 50000,
+            "statPoint": 3
+        }
+    },
+    "dexMap3_43": {
+        "title": "機械城河圖鑑收集(三)",
+        "desc": "機械城河魚圖鑑收集滿 43 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "機械城河",
+            "value": 43
+        },
+        "reward": {
+            "divineMaterial": {
+                "核廢料": 1
+            }
+        }
+    },
+    "dexMap4_15": {
+        "title": "黃金遺址圖鑑收集(一)",
+        "desc": "黃金遺址魚圖鑑收集滿 15 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "黃金遺址",
+            "value": 15
+        },
+        "reward": {
+            "refineCrystal": 50
+        }
+    },
+    "dexMap4_35": {
+        "title": "黃金遺址圖鑑收集(二)",
+        "desc": "黃金遺址魚圖鑑收集滿 35 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "黃金遺址",
+            "value": 35
+        },
+        "reward": {
+            "money": 80000,
+            "statPoint": 5
+        }
+    },
+    "dexMap4_43": {
+        "title": "黃金遺址圖鑑收集(三)",
+        "desc": "黃金遺址魚圖鑑收集滿 43 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "黃金遺址",
+            "value": 43
+        },
+        "reward": {
+            "divineMaterial": {
+                "隕石碎片": 1,
+                "黃銅礦": 1,
+                "核廢料": 1
+            }
+        }
+    },
+    "mythicFish1": {
+        "title": "初見神話魚",
+        "desc": "釣到 1 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 1
+        },
+        "reward": {
+            "statPoint": 1
+        }
+    },
+    "mythicFish10": {
+        "title": "神話魚高手",
+        "desc": "釣到 10 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 10
+        },
+        "reward": {
+            "statPoint": 5
+        }
+    },
+    "mythicFish50": {
+        "title": "神話魚達人",
+        "desc": "釣到 50 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 50
+        },
+        "reward": {
+            "statPoint": 10
+        }
+    },
+    "mythicFish100": {
+        "title": "神話魚王者",
+        "desc": "釣到 100 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 100
+        },
+        "reward": {
+            "statPoint": 10,
+            "divineMaterial": {
+                "隕石碎片": 1,
+                "黃銅礦": 1,
+                "核廢料": 1
+            }
+        }
+    },
+    "mythicFish500": {
+        "title": "神話魚傳說",
+        "desc": "釣到 500 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 500
+        },
+        "reward": {
+            "statPoint": 30,
+            "divineMaterial": {
+                "隕石碎片": 1,
+                "黃銅礦": 1,
+                "核廢料": 1
+            }
+        }
+    },
+    "chestDraw10": {
+        "title": "寶箱抽抽樂",
+        "desc": "累計開啟 10 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 10
+        },
+        "reward": {
+            "statPoint": 1
+        }
+    },
     "chestDraw50": {
-        "title": "寶箱成癮",
+        "title": "寶箱開不完",
         "desc": "累計開啟 50 次寶箱",
         "condition": {
             "type": "chestDraw",
             "value": 50
         },
         "reward": {
-            "money": 1000,
             "statPoint": 2
+        }
+    },
+    "chestDraw100": {
+        "title": "寶箱成癮",
+        "desc": "累計開啟 100 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 100
+        },
+        "reward": {
+            "statPoint": 3
+        }
+    },
+    "chestDraw500": {
+        "title": "寶箱賭徒",
+        "desc": "累計開啟 500 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 500
+        },
+        "reward": {
+            "statPoint": 4
+        }
+    },
+    "chestDraw1000": {
+        "title": "寶箱大亨",
+        "desc": "累計開啟 1000 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 1000
+        },
+        "reward": {
+            "statPoint": 5
+        }
+    },
+    "chestDraw5000": {
+        "title": "寶箱隨便開",
+        "desc": "累計開啟 5000 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 5000
+        },
+        "reward": {
+            "statPoint": 10
         }
     }
 }

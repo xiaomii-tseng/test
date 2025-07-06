@@ -20,9 +20,9 @@ let currentSort = "desc";
 let currentMapKey = "map1"; // 預設地圖
 const chestCost = 16000; // 高級寶箱
 const CHEST_COST = 2000; // 普通寶箱
-const ticket1Price = 50000;
-const ticket2Price = 100000;
-const ticket3Price = 200000;
+const ticket1Price = 45000;
+const ticket2Price = 90000;
+const ticket3Price = 180000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -1044,9 +1044,9 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0001 },
-    map4: { name: "黃銅礦", chance: 0.0001 },
-    map2: { name: "核廢料", chance: 0.0001 },
+    map1: { name: "隕石碎片", chance: 0.0007 },
+    map4: { name: "黃銅礦", chance: 0.0007 },
+    map2: { name: "核廢料", chance: 0.0007 },
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
