@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("equipped-items-v2", "{}");
         localStorage.setItem("fish-dex-v2", "[]");
         localStorage.setItem("player-stat-points", "1"); // 🟡 初始1點
+        localStorage.setItem("fishing-achievements-v1","{}");
         localStorage.setItem(
           "player-custom-bonus",
           JSON.stringify({
@@ -188,6 +189,30 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem(
         "player-stat-points",
         (data.statPoints || 0).toString()
+      );
+      localStorage.setItem(
+        "fishing-achievements-v1",
+        JSON.stringify(data.achievements || {})
+      );
+      localStorage.setItem(
+        "player-fish-count",
+        (data.playerFishCount || 0).toString()
+      );
+      localStorage.setItem(
+        "mythic-fish-count",
+        (data.mythicFishCount || 0).toString()
+      );
+      localStorage.setItem(
+        "player-chest-count",
+        (data.playerChestCount || 0).toString()
+      );
+      localStorage.setItem(
+        "player-achievement-points",
+        (data.playerAchievementPoints || 0).toString()
+      );
+      localStorage.setItem(
+        "player-custom-bonus",
+        JSON.stringify(data.playerCustomBonus || {})
       );
     }
 

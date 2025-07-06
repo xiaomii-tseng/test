@@ -1,0 +1,84 @@
+{
+    "reachLevel10": {
+        "title": "等級達到 10",
+        "desc": "角色等級達到 10 級",
+        "condition": {
+            "type": "level",
+            "value": 10
+        },
+        "reward": {
+            "money": 500
+        }
+    },
+    "reachLevel50": {
+        "title": "等級達到 50",
+        "desc": "角色等級達到 50 級",
+        "condition": {
+            "type": "level",
+            "value": 50
+        },
+        "reward": {
+            "refineCrystal": 5
+        }
+    },
+    "moneySaver100000": {
+        "title": "百萬富翁",
+        "desc": "累計擁有金幣達 100,000",
+        "condition": {
+            "type": "money",
+            "value": 100000
+        },
+        "reward": {
+            "statPoint": 3
+        }
+    },
+    "fishCount100": {
+        "title": "百魚達成",
+        "desc": "釣到 100 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 100
+        },
+        "reward": {
+            "money": 800,
+            "refineCrystal": 2
+        }
+    },
+    "dexMap3_15": {
+        "title": "清澈川流圖鑑達成",
+        "desc": "清澈川流魚圖鑑收集滿 15 種",
+        "condition": {
+            "type": "mapDex",
+            "map": "清澈川流",
+            "value": 15
+        },
+        "reward": {
+            "mapPass": "ticket-map4"
+        }
+    },
+    "mythicFish10": {
+        "title": "神話魚王",
+        "desc": "釣到 10 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 10
+        },
+        "reward": {
+            "divineMaterial": {
+                "隕石碎片": 1
+            }
+        }
+    },
+    "chestDraw50": {
+        "title": "寶箱成癮",
+        "desc": "累計開啟 50 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 50
+        },
+        "reward": {
+            "money": 1000,
+            "statPoint": 2
+        }
+    }
+}

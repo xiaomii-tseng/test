@@ -20,9 +20,9 @@ let currentSort = "desc";
 let currentMapKey = "map1"; // 預設地圖
 const chestCost = 16000; // 高級寶箱
 const CHEST_COST = 2000; // 普通寶箱
-const ticket1Price = 40000;
-const ticket2Price = 70000;
-const ticket3Price = 160000;
+const ticket1Price = 50000;
+const ticket2Price = 100000;
+const ticket3Price = 200000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -135,6 +135,13 @@ import {
   collection,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { app } from "./firebase.js";
+import {
+  loadAchievements,
+  checkAchievements,
+  claimAchievement,
+  ACHIEVEMENT_DEFS,
+  getAchievementStatusMap,
+} from "./achievements.js";
 
 const auth = getAuth();
 const db = getFirestore(app);
@@ -215,10 +222,40 @@ document
     playSfx(sfxOpen);
     saveToCloud();
   });
-function showAlert(message) {
-  document.getElementById("customAlertContent").textContent = message;
-  new bootstrap.Modal(document.getElementById("customAlertModal")).show();
+const alertQueue = [];
+let alertShowing = false;
+
+export function showAlert(message) {
+  alertQueue.push(message);
+  if (!alertShowing) processNextAlert();
 }
+
+export function processNextAlert() {
+  if (alertQueue.length === 0) {
+    alertShowing = false;
+    return;
+  }
+
+  alertShowing = true;
+  const message = alertQueue.shift();
+
+  const modalEl = document.getElementById("customAlertModal");
+  const modalContent = document.getElementById("customAlertContent");
+  modalContent.textContent = message;
+
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
+
+  // ✅ 等 modal 關閉後再顯示下一個
+  modalEl.addEventListener(
+    "hidden.bs.modal",
+    () => {
+      setTimeout(processNextAlert, 200); // 可選 delay
+    },
+    { once: true }
+  );
+}
+
 // 存檔區
 function collectSaveData() {
   return {
@@ -241,6 +278,20 @@ function collectSaveData() {
       localStorage.getItem("player-custom-bonus") || "{}"
     ),
     statPoints: parseInt(localStorage.getItem("player-stat-points") || "0", 10),
+    playerFishCount: parseInt(localStorage.getItem("player-fish-count") || "0"),
+    mythicFishCount: parseInt(localStorage.getItem("mythic-fish-count") || "0"),
+    playerChestCount: parseInt(
+      localStorage.getItem("player-chest-count") || "0"
+    ),
+    playerAchievementPoints: parseInt(
+      localStorage.getItem("player-achievement-points") || "0"
+    ),
+    playerCustomBonus: JSON.parse(
+      localStorage.getItem("player-custom-bonus") || "{}"
+    ),
+    achievements: JSON.parse(
+      localStorage.getItem("fishing-achievements-v1") || "{}"
+    ),
   };
 }
 function saveToCloud() {
@@ -707,6 +758,7 @@ function batchSellSelected() {
   updateBackpackUI();
   updateMoneyUI();
   exitMultiSelectMode();
+  checkAchievements();
 
   // 顯示結果 Modal
   document.getElementById("rawTotal").textContent = rawTotal.toLocaleString();
@@ -973,6 +1025,14 @@ function addFishToBackpack(fishType) {
   logCatchCard(fishObj, fishType);
   addExp(fishObj.finalPrice);
   maybeDropDivineItem();
+  refreshAllUI();
+  checkAchievements();
+  incrementCounter("player-fish-count"); // ✅ 累計釣魚次數
+
+  const rarity = getRarityClass(fishType.rawProbability);
+  if (rarity === "rarity-mythic") {
+    incrementCounter("mythic-fish-count"); // ✅ 累計神話魚
+  }
 }
 // 神話道具存本地
 function loadDivineMaterials() {
@@ -1111,6 +1171,8 @@ document.querySelector(".shop-chest").addEventListener("click", () => {
   if (currentMoney < CHEST_COST) {
     return showAlert("金錢不足！");
   }
+  incrementCounter("player-chest-count");
+  checkAchievements();
   playSfx(sfxOpenChest);
   // 扣錢
   const updatedMoney = currentMoney - CHEST_COST;
@@ -1676,8 +1738,10 @@ document.querySelector(".chest2").addEventListener("click", () => {
   );
 
   if (currentMoney < chestCost) return showAlert("金錢不足！");
-  playSfx(sfxOpenChest);
 
+  playSfx(sfxOpenChest);
+  incrementCounter("player-chest-count");
+  checkAchievements();
   localStorage.setItem("fishing-money", (currentMoney - chestCost).toString());
   updateMoneyUI();
 
@@ -1760,6 +1824,8 @@ function addExp(gained) {
   saveLevel(level);
   saveExp(exp);
   updateLevelUI();
+  checkAchievements();
+  refreshAllUI();
 }
 function updateLevelUI() {
   const level = loadLevel();
@@ -1886,7 +1952,7 @@ function customConfirm(message) {
 }
 
 // 入場券
-function addTicketToInventory(ticketType) {
+export function addTicketToInventory(ticketType) {
   const owned = JSON.parse(localStorage.getItem("owned-equipment-v2") || "[]");
 
   let name = "";
@@ -2340,6 +2406,14 @@ function syncStatPointsWithLevel(levelFromParam = null) {
   const level =
     levelFromParam ??
     parseInt(localStorage.getItem("fishing-player-level-v1") || "1", 10);
+
+  const fromLevel = level;
+  const fromAchievement = parseInt(
+    localStorage.getItem("player-achievement-points") || "0",
+    10
+  );
+  const expectedTotal = fromLevel + fromAchievement;
+
   const custom = JSON.parse(
     localStorage.getItem("player-custom-bonus") || "{}"
   );
@@ -2349,12 +2423,14 @@ function syncStatPointsWithLevel(levelFromParam = null) {
     10
   );
 
-  const totalShouldHave = level;
-  const missing = totalShouldHave - (usedPoints + currentPoints);
+  const totalOwned = usedPoints + currentPoints;
+  const diff = expectedTotal - totalOwned;
 
-  if (missing > 0) {
-    const updated = currentPoints + missing;
-    localStorage.setItem("player-stat-points", updated.toString());
+  if (diff > 0) {
+    localStorage.setItem(
+      "player-stat-points",
+      (currentPoints + diff).toString()
+    );
   }
 }
 
@@ -2416,7 +2492,21 @@ window.allocatePoint = function (type) {
   updateCharacterStats(); // 更新主畫面加總加成顯示
 };
 
+// ✅ 自動統計玩家動作紀錄
+function incrementCounter(key) {
+  const value = parseInt(localStorage.getItem(key) || "0", 10);
+  localStorage.setItem(key, (value + 1).toString());
+}
+
 // 下面是 document
+document.getElementById("openAchievementBtn").addEventListener("click", () => {
+  playSfx(sfxOpen);
+  renderAchievementList();
+  const modal = new bootstrap.Modal(
+    document.getElementById("achievementModal")
+  );
+  modal.show();
+});
 document.querySelector(".all-status-btn").addEventListener("click", () => {
   updateStatPointModal(); // ← 更新內容
   new bootstrap.Modal(document.getElementById("statPointModal")).show();
@@ -2681,6 +2771,11 @@ document
     );
     if (modal) modal.hide();
   });
+export function refreshAllUI() {
+  renderAchievementList();
+  updateMoneyUI();
+  updateCrystalUI();
+}
 window.addEventListener("DOMContentLoaded", async () => {
   preloadAllSfx();
   switchMap("map1");
@@ -2690,7 +2785,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   loadSoundSetting();
   updateSoundToggleIcon();
   syncStatPointsWithLevel();
-
+  await loadAchievements();
   // ✅ 直接顯示版本資訊 Modal（每次都顯示）
   const versionModal = new bootstrap.Modal(
     document.getElementById("versionModal")
@@ -2733,4 +2828,88 @@ if ("serviceWorker" in navigator) {
     .register("/service-worker.js")
     .then(() => console.log("✅ Service Worker registered"))
     .catch((err) => console.error("SW registration failed:", err));
+}
+
+// 建立 UI 清單內容
+export function renderAchievementList() {
+  const container = document.getElementById("achievementList");
+  if (!container) return;
+
+  const statusMap = getAchievementStatusMap();
+  container.innerHTML = "";
+
+  // ✅ 排序：unlocked → locked → claimed
+  const sortedEntries = Object.entries(ACHIEVEMENT_DEFS).sort(
+    ([keyA], [keyB]) => {
+      const getRank = (status) => {
+        if (status === "unlocked") return 0;
+        if (status === "locked" || !status) return 1;
+        return 2; // claimed
+      };
+      const rankA = getRank(statusMap[keyA]);
+      const rankB = getRank(statusMap[keyB]);
+      return rankA - rankB;
+    }
+  );
+
+  for (const [key, def] of sortedEntries) {
+    const state = statusMap[key] || "locked";
+
+    let btnText = "未完成";
+    let btnClass = "btn-secondary";
+    let disabled = true;
+
+    if (state === "unlocked") {
+      btnText = "領取獎勵";
+      btnClass = "btn-warning";
+      disabled = false;
+    } else if (state === "claimed") {
+      btnText = "已領取";
+      btnClass = "btn-success";
+    }
+
+    const rewardStr = formatRewardText(def.reward);
+
+    const card = document.createElement("div");
+    card.className = `achievement-card ${state}`;
+    card.innerHTML = `
+      <h6>${def.title}</h6>
+      <div class="small">${def.desc}</div>
+      <div class="text-info mt-1 mb-2">🎁 ${rewardStr}</div>
+      <button class="btn ${btnClass}" ${
+      disabled ? "disabled" : ""
+    } data-key="${key}">${btnText}</button>
+    `;
+
+    const btn = card.querySelector("button");
+    if (!disabled) {
+      btn.addEventListener("click", () => {
+        claimAchievement(key);
+        renderAchievementList(); // ✅ 點擊後重新排序 & 渲染
+      });
+    }
+
+    container.appendChild(card);
+  }
+}
+
+const TICKET_NAMES = {
+  "ticket-map4": "魔法通行證",
+  "ticket-map2": "機械通行證",
+  "ticket-map3": "黃金通行證",
+};
+
+function formatRewardText(reward) {
+  const parts = [];
+  if (reward.money) parts.push(`金幣 +${reward.money}`);
+  if (reward.refineCrystal) parts.push(`提煉結晶 +${reward.refineCrystal}`);
+  if (reward.statPoint) parts.push(`能力點數 +${reward.statPoint}`);
+  if (reward.mapPass)
+    parts.push(`通行證：${TICKET_NAMES[reward.mapPass] || reward.mapPass}`);
+  if (reward.divineMaterial) {
+    for (const [k, v] of Object.entries(reward.divineMaterial)) {
+      parts.push(`神化材料 ${k} +${v}`);
+    }
+  }
+  return parts.join("，");
 }

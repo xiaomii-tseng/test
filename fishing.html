@@ -54,6 +54,10 @@
             <button id="toggleModeBtn" class="mode-btn fnc-anm">點擊切換手動模式</button>
             <div class="version-info">版本 : 3.0.0</div>
         </div>
+        <!-- 成就獎勵按鈕 -->
+        <button id="openAchievementBtn" class="fnc-btn fnc-anm">
+            <img src="images-webp/icons/leaderboard.webp" alt="成就獎勵">
+        </button>
         <!-- 釣魚中 -->
         <div id="fishingStatus" class="fishing-status">自動釣魚中...</div>
         <!-- 釣魚訊息 -->
@@ -359,7 +363,7 @@
                                     class="ticket-icon shop-ticket fnc-anm" data-map="map4" data-price="35000" />
                             </div>
                             <div>劍與魔法村</div>
-                            <div>40000 G</div>
+                            <div>50000 G</div>
                         </div>
                         <div class="text-center">
                             <div class="shiny">
@@ -367,7 +371,7 @@
                                     class="ticket-icon shop-ticket fnc-anm" data-map="map2" data-price="150000" />
                             </div>
                             <div>機械城河</div>
-                            <div>70000 G</div>
+                            <div>100000 G</div>
                         </div>
                         <div class="text-center">
                             <div class="shiny">
@@ -375,7 +379,7 @@
                                     class="ticket-icon shop-ticket fnc-anm" data-map="map3" data-price="600000" />
                             </div>
                             <div>黃金遺址</div>
-                            <div>160000 G</div>
+                            <div>200000 G</div>
                         </div>
                     </div>
                 </div>
@@ -448,7 +452,7 @@
                     </div>
                     <div class="d-flex justify-content-around mt-3">
                         <button class="fnc-btn fnc-anm" id="openLeaderboard">
-                            <img src="images-webp/icons/leaderboard.webp" alt="排行榜" class="icon" />
+                            <img src="images-webp/icons/winner.webp" alt="排行榜" class="icon" />
                             <div>排行榜</div>
                         </button>
                         <button class="fnc-btn fnc-anm" id="openTutorial">
@@ -667,6 +671,21 @@
                     </button>
                 </div>
                 <button id="soundCheckBtn" class="sound-check-btn fnc-anm mt-4">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎉 成就 Modal -->
+    <div class="modal fade" id="achievementModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg ach-modal">
+            <div class="modal-content text-white bg-dark p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">🏆 成就獎勵</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="achievementList" class="d-flex flex-column gap-3"></div>
+                </div>
             </div>
         </div>
     </div>

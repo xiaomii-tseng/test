@@ -65,20 +65,36 @@ body {
   z-index: 10;
 }
 .mode-btn {
-  font-weight: bold;
   font-size: 0.8rem;
   padding: 10px 15px 10px 15px;
   border-radius: 15px;
   background-color: #d4b389;
   color: #4c2c00;
-  box-shadow: 2px 2px 20px rgb(4, 49, 60);
   border: 2px solid #4c2c00;
 }
 #toggleModeBtn {
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
-
+/* 成就獎勵按鈕 */
+#openAchievementBtn {
+  position: absolute;
+  top: 128px;
+  right: 10px;
+  z-index: 10;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 2px solid #4c2c00;
+  width: auto;
+}
+#openAchievementBtn img {
+  width: 24px;
+  height: 24px;
+}
 /* 下方功能按鈕 */
 .bottom-menu {
   position: absolute;
@@ -844,4 +860,31 @@ body {
   color: #4c2c00;
   box-shadow: 2px 2px 0px rgb(4, 49, 60);
   border: 2px solid #4c2c00;
+}
+
+.achievement-card {
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #222;
+}
+.achievement-card.unlocked {
+  border-color: gold;
+}
+.achievement-card.claimed {
+  opacity: 0.5;
+}
+.ach-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 100%;
+  margin: auto;
+  text-shadow: 2px 2px 0px black;
+}
+.ach-modal .modal-body {
+  max-height: 70vh; /* 你可以依需要調整為 70vh、50vh 等 */
+  overflow-y: auto;
 }
