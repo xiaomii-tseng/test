@@ -513,7 +513,7 @@
             "value": 500
         },
         "reward": {
-            "statPoint": 30,
+            "statPoint": 20,
             "divineMaterial": {
                 "隕石碎片": 1,
                 "黃銅礦": 1,

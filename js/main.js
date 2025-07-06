@@ -20,9 +20,9 @@ let currentSort = "desc";
 let currentMapKey = "map1"; // 預設地圖
 const chestCost = 16000; // 高級寶箱
 const CHEST_COST = 2000; // 普通寶箱
-const ticket1Price = 45000;
-const ticket2Price = 90000;
-const ticket3Price = 180000;
+const ticket1Price = 50000;
+const ticket2Price = 100000;
+const ticket3Price = 200000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -2027,7 +2027,6 @@ function playMapMusic(musicPath, forcePlay = false) {
 }
 
 // 更新結晶
-// 更新結晶
 function updateCrystalUI() {
   const count = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
 
@@ -2497,8 +2496,41 @@ function incrementCounter(key) {
   const value = parseInt(localStorage.getItem(key) || "0", 10);
   localStorage.setItem(key, (value + 1).toString());
 }
+// 購買提煉結晶的通用函式
+function buyRefineCrystal(amount, price) {
+  const currentMoney = parseInt(
+    localStorage.getItem("fishing-money") || "0",
+    10
+  );
+  if (currentMoney < price) {
+    return showAlert("金錢不足！");
+  }
 
+  // 扣除金幣與增加結晶
+  localStorage.setItem("fishing-money", (currentMoney - price).toString());
+  const currentCrystal = parseInt(
+    localStorage.getItem("refine-crystal") || "0",
+    10
+  );
+  localStorage.setItem("refine-crystal", (currentCrystal + amount).toString());
+
+  // 更新畫面與音效
+  playSfx(sfxTicket);
+  updateMoneyUI();
+  updateCrystalUI();
+  showAlert(`已購買 ${amount} 顆提煉結晶！`);
+}
 // 下面是 document
+// 綁定按鈕事件
+document.getElementById("buyOre1").addEventListener("click", () => {
+  buyRefineCrystal(1, 1900);
+});
+document.getElementById("buyOre10").addEventListener("click", () => {
+  buyRefineCrystal(10, 18500);
+});
+document.getElementById("buyOre100").addEventListener("click", () => {
+  buyRefineCrystal(100, 180000);
+});
 document.getElementById("openAchievementBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   renderAchievementList();
