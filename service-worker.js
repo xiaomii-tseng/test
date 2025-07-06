@@ -8,6 +8,7 @@ const urlsToCache = [
   "/js/login.js",
   "/css/main.css",
   "/manifest.json",
+  "/achievements.json",
   "/images-webp/index/index3.webp",
   "/images-webp/maps/map2.webp",
   "/images-webp/maps/map3.webp",
