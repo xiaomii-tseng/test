@@ -802,10 +802,12 @@ function stopPrecisionBar() {
   const precisionRatio = pos / (trackWidth - indicatorWidth);
 
   const buffs = getTotalBuffs();
-  const successChance =
-    Math.min(50 + precisionRatio * 25) *
-    ((buffs.increaseCatchRate * 0.3 + 100) / 100) *
-    currentMapConfig.catchRateModifier;
+  const successChance = Math.min(
+    Math.min(45 + precisionRatio * 25) *
+      ((buffs.increaseCatchRate * 0.45 + 100) / 100) *
+      currentMapConfig.catchRateModifier,
+    98
+  );
   const isSuccess = Math.random() * 100 < successChance;
 
   if (isSuccess) {
@@ -900,9 +902,13 @@ function getRandomAutoFishingDelay() {
   // return 8000 + Math.random() * 5000;
   return 4500;
 }
+// 自訂釣魚上鉤率
 function doFishing() {
-  // 自動釣魚固定機率（例如 50% 成功）
-  const successRate = 0.6;
+  const buffs = getTotalBuffs();
+  const catchRateBonus = (buffs.increaseCatchRate * 0.45 + 100) / 100;
+  const rawSuccessRate =
+    0.5 * catchRateBonus * currentMapConfig.catchRateModifier;
+  const successRate = Math.min(rawSuccessRate, 0.98); // 最終 cap 成功率
 
   if (Math.random() < successRate) {
     const fishType = getRandomFish();
@@ -966,7 +972,7 @@ function getWeightedFishByPrecision(precisionRatio) {
   }
 }
 
-// 🎯 機率抽魚
+// 自動釣魚稀有度機率
 function getRandomFish() {
   const buffs = getTotalBuffs();
   const rareRateBonus = 1 + buffs.increaseRareRate / 100;
@@ -1587,10 +1593,6 @@ function getTotalBuffs() {
     }
   }
 
-  // ➕ (已取消) 等級 buff
-
-  // cap 上鉤率
-  buffs.increaseCatchRate = Math.min(buffs.increaseCatchRate, 99);
   return buffs;
 }
 

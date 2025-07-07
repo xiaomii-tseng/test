@@ -1,13 +1,13 @@
 {
     "reachLevel3": {
-        "title": "等級達到 3",
+        "title": "等級達到 10",
         "desc": "開寶箱體驗基金",
         "condition": {
             "type": "level",
-            "value": 3
+            "value": 10
         },
         "reward": {
-            "money": 4000
+            "money": 6000
         }
     },
     "reachLevel25": {
@@ -111,7 +111,7 @@
             "value": 10000
         },
         "reward": {
-            "refineCrystal": 2
+            "refineCrystal": 10
         }
     },
     "moneySaver50000": {
@@ -144,7 +144,7 @@
             "value": 500000
         },
         "reward": {
-            "statPoint": 3
+            "statPoint": 2
         }
     },
     "moneySaver1000000": {
@@ -155,7 +155,7 @@
             "value": 1000000
         },
         "reward": {
-            "statPoint": 5
+            "statPoint": 4
         }
     },
     "moneySaver2000000": {
@@ -166,7 +166,7 @@
             "value": 2000000
         },
         "reward": {
-            "statPoint": 5
+            "statPoint": 6
         }
     },
     "moneySaver5000000": {
@@ -177,7 +177,7 @@
             "value": 5000000
         },
         "reward": {
-            "statPoint": 7
+            "statPoint": 8
         }
     },
     "moneySaver10000000": {
@@ -200,7 +200,7 @@
         },
         "reward": {
             "money": 5000,
-            "refineCrystal": 1
+            "refineCrystal": 10
         }
     },
     "fishCount500": {
@@ -212,7 +212,7 @@
         },
         "reward": {
             "money": 10000,
-            "refineCrystal": 5
+            "refineCrystal": 20
         }
     },
     "fishCount1000": {
@@ -224,7 +224,7 @@
         },
         "reward": {
             "money": 15000,
-            "refineCrystal": 7
+            "refineCrystal": 50
         }
     },
     "fishCount2000": {
@@ -236,7 +236,7 @@
         },
         "reward": {
             "money": 20000,
-            "refineCrystal": 9
+            "refineCrystal": 70
         }
     },
     "fishCount5000": {
@@ -248,7 +248,7 @@
         },
         "reward": {
             "money": 30000,
-            "refineCrystal": 12
+            "refineCrystal": 120
         }
     },
     "fishCount10000": {
@@ -260,7 +260,7 @@
         },
         "reward": {
             "money": 50000,
-            "refineCrystal": 12
+            "refineCrystal": 180
         }
     },
     "fishCount20000": {
@@ -272,7 +272,7 @@
         },
         "reward": {
             "money": 70000,
-            "refineCrystal": 15
+            "refineCrystal": 250
         }
     },
     "fishCount50000": {
@@ -284,7 +284,7 @@
         },
         "reward": {
             "money": 100000,
-            "refineCrystal": 20
+            "refineCrystal": 350
         }
     },
     "fishCount100000": {
@@ -296,7 +296,7 @@
         },
         "reward": {
             "money": 200000,
-            "refineCrystal": 40
+            "refineCrystal": 500
         }
     },
     "dexMap1_10": {
@@ -308,7 +308,7 @@
             "value": 10
         },
         "reward": {
-            "money": 3000
+            "money": 4000
         }
     },
     "dexMap1_25": {
@@ -424,7 +424,7 @@
             "value": 15
         },
         "reward": {
-            "refineCrystal": 50
+            "refineCrystal": 80
         }
     },
     "dexMap4_35": {
@@ -437,7 +437,7 @@
         },
         "reward": {
             "money": 80000,
-            "statPoint": 5
+            "statPoint": 3
         }
     },
     "dexMap4_43": {
@@ -475,7 +475,7 @@
             "value": 10
         },
         "reward": {
-            "statPoint": 5
+            "statPoint": 3
         }
     },
     "mythicFish50": {
@@ -486,7 +486,7 @@
             "value": 50
         },
         "reward": {
-            "statPoint": 10
+            "statPoint": 5
         }
     },
     "mythicFish100": {
@@ -497,7 +497,7 @@
             "value": 100
         },
         "reward": {
-            "statPoint": 10,
+            "statPoint": 7,
             "divineMaterial": {
                 "隕石碎片": 1,
                 "黃銅礦": 1,
@@ -513,7 +513,7 @@
             "value": 500
         },
         "reward": {
-            "statPoint": 20,
+            "statPoint": 10,
             "divineMaterial": {
                 "隕石碎片": 1,
                 "黃銅礦": 1,
