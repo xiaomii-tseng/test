@@ -320,7 +320,59 @@ function autoSaveToCloud() {
     } catch (err) {}
   });
 }
+window.addEventListener("DOMContentLoaded", async () => {
+  // ✅ PWA 支援
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("service-worker.js")
+      .then(() => console.log("✅ Service Worker registered"))
+      .catch((err) => console.error("SW registration failed:", err));
+  }
 
+  preloadAllSfx();
+  switchMap("map1");
+  updateMoneyUI();
+  updateCrystalUI();
+  patchLegacyEquipments();
+  loadSoundSetting();
+  updateSoundToggleIcon();
+  syncStatPointsWithLevel();
+  await loadAchievements();
+  // ✅ 直接顯示版本資訊 Modal（每次都顯示）
+  const versionModal = new bootstrap.Modal(
+    document.getElementById("versionModal")
+  );
+  versionModal.show();
+
+  document.getElementById("versionConfirmBtn").addEventListener("click", () => {
+    versionModal.hide();
+
+    // ✅ 使用者互動後，播放音樂（解除瀏覽器限制）
+    userHasInteractedWithBgm = true;
+    isMuted = false;
+    if (currentMapConfig?.music) {
+      playMapMusic(currentMapConfig.music, true); // 加上 forcePlay 參數以保證播放
+    }
+  });
+
+  // ✅ 載入所有魚種（供圖鑑使用）
+  await loadAllFishTypes();
+
+  // ✅ 顯示登入帳號資訊
+  const auth = getAuth();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, "saves", user.uid);
+      const userSnap = await getDoc(userRef);
+      const playerName = userSnap.exists() ? userSnap.data().name : null;
+
+      const el = document.getElementById("accountDisplay");
+      if (el) {
+        el.textContent = `玩家名稱：${playerName || "未知玩家"}`;
+      }
+    }
+  });
+});
 // 更新圖鑑數量
 async function loadAllFishTypes() {
   const mapKeys = Object.keys(MAP_CONFIG);
@@ -2899,59 +2951,6 @@ export function refreshAllUI() {
   updateMoneyUI();
   updateCrystalUI();
 }
-window.addEventListener("DOMContentLoaded", async () => {
-  // ✅ PWA 支援
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("service-worker.js")
-      .then(() => console.log("✅ Service Worker registered"))
-      .catch((err) => console.error("SW registration failed:", err));
-  }
-
-  preloadAllSfx();
-  switchMap("map1");
-  updateMoneyUI();
-  updateCrystalUI();
-  patchLegacyEquipments();
-  loadSoundSetting();
-  updateSoundToggleIcon();
-  syncStatPointsWithLevel();
-  await loadAchievements();
-  // ✅ 直接顯示版本資訊 Modal（每次都顯示）
-  const versionModal = new bootstrap.Modal(
-    document.getElementById("versionModal")
-  );
-  versionModal.show();
-
-  document.getElementById("versionConfirmBtn").addEventListener("click", () => {
-    versionModal.hide();
-
-    // ✅ 使用者互動後，播放音樂（解除瀏覽器限制）
-    userHasInteractedWithBgm = true;
-    isMuted = false;
-    if (currentMapConfig?.music) {
-      playMapMusic(currentMapConfig.music, true); // 加上 forcePlay 參數以保證播放
-    }
-  });
-
-  // ✅ 載入所有魚種（供圖鑑使用）
-  await loadAllFishTypes();
-
-  // ✅ 顯示登入帳號資訊
-  const auth = getAuth();
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userRef = doc(db, "saves", user.uid);
-      const userSnap = await getDoc(userRef);
-      const playerName = userSnap.exists() ? userSnap.data().name : null;
-
-      const el = document.getElementById("accountDisplay");
-      if (el) {
-        el.textContent = `玩家名稱：${playerName || "未知玩家"}`;
-      }
-    }
-  });
-});
 
 // 建立 UI 清單內容
 export function renderAchievementList() {
