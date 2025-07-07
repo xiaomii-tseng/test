@@ -934,6 +934,7 @@ if (toggleBtn) {
         : "機率加成中...";
     }
     stopAutoFishing();
+    FishingLoopSound.stop();
     clearTimeout(manualFishingTimeout);
     hidePrecisionBar();
 
