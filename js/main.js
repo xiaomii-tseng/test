@@ -1329,7 +1329,7 @@ function getBuffValue(type) {
     case "increaseExpGain":
       return randomInt(1, 5);
     case "multiCatchChance":
-      return randomInt(2, 10); // 較低起跳值，適合普通掉落
+      return randomInt(1, 15); // 較低起跳值，適合普通掉落
     case "multiCatchMultiplier":
       return randomInt(1, 5); // 較保守值，避免普通裝就出 x5
     default:
@@ -1802,7 +1802,7 @@ function getHighTierBuffValue(type) {
     case "increaseExpGain":
       return randomInt(1, 15);
     case "multiCatchChance":
-      return randomInt(5, 30); // 多魚發動率，建議從 5% 起跳
+      return randomInt(1, 40); // 多魚發動率，建議從 5% 起跳
     case "multiCatchMultiplier":
       return randomInt(1, 10); // 倍數影響建議範圍較低
     default:
