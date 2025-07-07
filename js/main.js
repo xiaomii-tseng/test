@@ -38,6 +38,8 @@ const buffLabelMap = {
   increaseBigFishChance: "大體型機率",
   increaseSellValue: "增加販售金額",
   increaseExpGain: "經驗值加成",
+  multiCatchChance: "多魚上鉤率",
+  multiCatchMultiplier: "多魚倍數提升",
 };
 // 音效
 const sfxOpen = new Audio("sound/test-open.mp3");
@@ -657,7 +659,7 @@ function startPrecisionBar() {
 }
 
 // 釣魚資訊
-function logCatchCard(fishObj, fishType) {
+function logCatchCard(fishObj, fishType, count = 1) {
   const bottomInfo = document.getElementById("bottomInfo");
   if (!bottomInfo) return;
 
@@ -680,7 +682,16 @@ function logCatchCard(fishObj, fishType) {
         <div class="fish-value">💰：${fishObj.finalPrice} G</div>
       </div>
     `;
-    bottomInfo.appendChild(card);
+    const wrapper = document.createElement("div");
+    wrapper.className = "fish-card-wrapper";
+    if (count > 1) {
+      const countLabel = document.createElement("div");
+      countLabel.className = "fish-dup-count";
+      countLabel.textContent = `×${count}`;
+      wrapper.appendChild(countLabel);
+    }
+    wrapper.appendChild(card);
+    bottomInfo.appendChild(wrapper);
   } else {
     bottomInfo.innerHTML = `<div class="fish-escape">魚跑掉了...</div>`;
   }
@@ -812,7 +823,7 @@ function stopPrecisionBar() {
 
   if (isSuccess) {
     const fishType = getWeightedFishByPrecision(precisionRatio);
-    addFishToBackpack(fishType);
+    tryMultiCatch(fishType);
   } else {
     logCatch("魚跑掉了...");
   }
@@ -913,7 +924,7 @@ function doFishing() {
   if (Math.random() < successRate) {
     const fishType = getRandomFish();
     if (fishType) {
-      addFishToBackpack(fishType);
+      tryMultiCatch(fishType);
     } else {
       logCatch("沒釣到魚.");
     }
@@ -1022,24 +1033,34 @@ function createFishInstance(fishType) {
 }
 
 // 🧳 新增魚到背包並保存
-function addFishToBackpack(fishType) {
-  const fishObj = createFishInstance(fishType);
-  backpack.push(fishObj);
+function addFishToBackpack(fishType, count = 1) {
+  let lastFishObj = null;
+
+  for (let i = 0; i < count; i++) {
+    const fishObj = createFishInstance(fishType);
+    backpack.push(fishObj);
+    updateFishDex(fishObj);
+    addExp(fishObj.finalPrice);
+    maybeDropDivineItem();
+    lastFishObj = fishObj; // 留最後一隻作為 UI 顯示
+  }
+
   saveBackpack();
-  updateFishDex(fishObj);
   updateBackpackUI();
-  logCatchCard(fishObj, fishType);
-  addExp(fishObj.finalPrice);
-  maybeDropDivineItem();
   refreshAllUI();
   checkAchievements();
-  incrementCounter("player-fish-count"); // ✅ 累計釣魚次數
+  incrementCounter("player-fish-count");
+
+  if (lastFishObj) {
+    logCatchCard(lastFishObj, fishType, count);
+  }
 
   const rarity = getRarityClass(fishType.rawProbability);
   if (rarity === "rarity-mythic") {
-    incrementCounter("mythic-fish-count"); // ✅ 累計神話魚
+    incrementCounter("mythic-fish-count");
   }
 }
+
 // 神話道具存本地
 function loadDivineMaterials() {
   return JSON.parse(localStorage.getItem(DIVINE_STORAGE_KEY) || "{}");
@@ -1050,7 +1071,7 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0005},
+    map1: { name: "隕石碎片", chance: 0.0005 },
     map4: { name: "黃銅礦", chance: 0.0005 },
     map2: { name: "核廢料", chance: 0.0005 },
   };
@@ -1154,6 +1175,8 @@ const BUFF_TYPES = [
   { type: "increaseBigFishChance", label: "大體型魚機率" },
   { type: "increaseSellValue", label: "增加販售金額" },
   { type: "increaseExpGain", label: "經驗獲得加成" },
+  { type: "multiCatchChance", label: "多魚上鉤率" },
+  { type: "multiCatchMultiplier", label: "多魚倍數值" },
 ];
 
 const RARITY_TABLE = [
@@ -1253,6 +1276,10 @@ function getBuffValue(type) {
       return randomInt(1, 5);
     case "increaseExpGain":
       return randomInt(1, 5);
+    case "multiCatchChance":
+      return randomInt(2, 10); // 較低起跳值，適合普通掉落
+    case "multiCatchMultiplier":
+      return randomInt(1, 5); // 較保守值，避免普通裝就出 x5
     default:
       return 1;
   }
@@ -1443,6 +1470,8 @@ function updateCharacterStats() {
     increaseBigFishChance: 0,
     increaseSellValue: 0,
     increaseExpGain: 0,
+    multiCatchChance: 0,
+    multiCatchMultiplier: 0,
   };
 
   for (const slot in equipped) {
@@ -1481,6 +1510,12 @@ function updateCharacterStats() {
   document.querySelector(
     ".increase-exp-gain"
   ).textContent = `經驗值加成：${stats.increaseExpGain}%`;
+  document.querySelector(
+    ".multi-catch-chance"
+  ).textContent = `多魚上鉤率：${stats.multiCatchChance}%`;
+  document.querySelector(
+    ".multi-catch-multiplier"
+  ).textContent = `多魚倍數值：${stats.multiCatchMultiplier}%`;
 }
 
 // 脫下裝備
@@ -1574,6 +1609,8 @@ function getTotalBuffs() {
     increaseBigFishChance: 0,
     increaseSellValue: 0,
     increaseExpGain: 0,
+    multiCatchChance: 0,
+    multiCatchMultiplier: 0,
   };
 
   // ➕ 裝備 buff
@@ -1728,6 +1765,10 @@ function getHighTierBuffValue(type) {
       return randomInt(1, 15);
     case "increaseExpGain":
       return randomInt(1, 15);
+    case "multiCatchChance":
+      return randomInt(5, 30); // 多魚發動率，建議從 5% 起跳
+    case "multiCatchMultiplier":
+      return randomInt(1, 10); // 倍數影響建議範圍較低
     default:
       return 1;
   }
@@ -2599,6 +2640,32 @@ function computeRarityMultiplier(
   const sumBase = weightedBase.reduce((a, b) => a + b, 0);
 
   return sumNow / sumBase;
+}
+// 多魚判斷
+function tryMultiCatch(fishType) {
+  const buffs = getTotalBuffs();
+  const chance = Math.min((buffs.multiCatchChance || 0) / 7, 90);
+  const bonus = buffs.multiCatchMultiplier || 0;
+  let finalCount = 1;
+
+  if (Math.random() * 100 < chance) {
+    const table = [
+      { count: 5, weight: 1 + bonus * 0.1 },
+      { count: 4, weight: 3 + bonus * 0.6 },
+      { count: 3, weight: 7 + bonus },
+      { count: 2, weight: 500 + bonus * 3 },
+    ];
+    let r = Math.random() * table.reduce((s, m) => s + m.weight, 0);
+    for (const m of table) {
+      if (r < m.weight) {
+        finalCount = m.count;
+        break;
+      }
+      r -= m.weight;
+    }
+  }
+
+  addFishToBackpack(fishType, finalCount);
 }
 
 // 下面是 document

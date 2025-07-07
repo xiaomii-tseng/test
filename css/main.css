@@ -904,3 +904,17 @@ body {
   font-size: 1.2rem;
   color: gold;
 }
+
+.fish-dup-count {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  background-color: #ff3b3b;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
