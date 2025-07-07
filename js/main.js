@@ -2522,8 +2522,91 @@ function buyRefineCrystal(amount, price) {
   updateCrystalUI();
   showAlert(`已購買 ${amount} 顆提煉結晶！`);
 }
+
+// 查看目前地圖效率
+function showEfficiencyModal() {
+  const buffs = getTotalBuffs();
+  const mapMod = currentMapConfig.catchRateModifier;
+
+  // 🎯 手動釣魚最高命中率（precisionRatio = 1）
+  const precisionRatio = 1;
+  const manualCatchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
+  const baseManual = 45 + precisionRatio * 25;
+  const rawManualRate = baseManual * manualCatchRateBonus * mapMod;
+  const manualRate = Math.min(rawManualRate, 98);
+  document.getElementById("manualRate").textContent = manualRate.toFixed(2);
+
+  // 🤖 自動釣魚命中率
+  const autoCatchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
+  const rawAutoRate = 0.5 * autoCatchRateBonus * mapMod;
+  const autoRate = Math.min(rawAutoRate, 0.98);
+  document.getElementById("autoRate").textContent = (autoRate * 100).toFixed(2);
+
+  // 💎 傳奇魚倍率（mythic）
+  const manualMythicMult = computeRarityMultiplier(
+    "rarity-mythic",
+    "manual",
+    buffs
+  );
+  const autoMythicMult = computeRarityMultiplier(
+    "rarity-mythic",
+    "auto",
+    buffs
+  );
+
+  document.getElementById("manualMythicMultiplier").textContent =
+    manualMythicMult.toFixed(2);
+  document.getElementById("autoMythicMultiplier").textContent =
+    autoMythicMult.toFixed(2);
+
+  new bootstrap.Modal(document.getElementById("efficiencyModal")).show();
+}
+
+function computeRarityMultiplier(
+  rarityClass,
+  mode = "auto",
+  buffs = getTotalBuffs()
+) {
+  const penalty = currentMapConfig.rarePenalty;
+  const rareRateBonus = 1 + (buffs.increaseRareRate || 0) / 100;
+  const factor = mode === "manual" ? 0.1 : 0.05;
+  const precisionRatio = 1;
+
+  const filtered = fishTypes.filter(
+    (fish) => getRarityClass(fish.rawProbability) === rarityClass
+  );
+  console.table(
+    fishTypes
+      .filter((f) => getRarityClass(f.rawProbability) === "rarity-mythic")
+      .map((f) => ({ name: f.name, prob: f.rawProbability }))
+  );
+  if (filtered.length === 0) return 1;
+
+  const weightedNow = filtered.map((fish) => {
+    const rarityWeight = 1 / fish.probability;
+    const bias =
+      1 + (rarityWeight * precisionRatio * factor * rareRateBonus) / penalty;
+    return fish.probability * bias;
+  });
+
+  const weightedBase = filtered.map((fish) => {
+    const rarityWeight = 1 / fish.probability;
+    const bias = 1 + (rarityWeight * precisionRatio * factor * 1) / penalty;
+    return fish.probability * bias;
+  });
+
+  const sumNow = weightedNow.reduce((a, b) => a + b, 0);
+  const sumBase = weightedBase.reduce((a, b) => a + b, 0);
+
+  return sumNow / sumBase;
+}
+
 // 下面是 document
 // 綁定按鈕事件
+document.getElementById("currentMapDisplay").addEventListener("click", () => {
+  playSfx(sfxOpen);
+  showEfficiencyModal();
+});
 document.getElementById("buyOre1").addEventListener("click", () => {
   buyRefineCrystal(1, 1900);
 });

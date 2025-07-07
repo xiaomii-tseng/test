@@ -718,6 +718,27 @@
         </div>
     </div>
 
+    <!-- 🎣 釣魚效率分析 Modal -->
+    <div class="modal fade" id="efficiencyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered effect-modal">
+            <div class="modal-content p-3">
+                <h5 class="modal-title">當前地圖釣魚效率</h5>
+                <div class="mt-3">
+                    <div class="effect-title">手動釣魚</div>
+                    <div>最高上鉤率：<span id="manualRate"></span>%</div>
+                    <div>傳奇魚提升最高倍率：<span id="manualMythicMultiplier"></span>倍</div>
+
+                    <div class="effect-title mt-2">自動釣魚</div>
+                    <div>上鉤率：<span id="autoRate"></span>%</div>
+                    <div>傳奇魚提升倍率：<span id="autoMythicMultiplier"></span>倍</div>
+                </div>
+                <div class="text-center mt-3">
+                    <button class="sell-btn fnc-anm" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered alert-modal">
