@@ -4,7 +4,7 @@
         "desc": "開寶箱體驗基金",
         "condition": {
             "type": "level",
-            "value": 10
+            "value": 5
         },
         "reward": {
             "money": 6000
@@ -125,7 +125,7 @@
         "desc": "角色等級達到 175 級",
         "condition": {
             "type": "level",
-            "value": 125
+            "value": 175
         },
         "reward": {
             "refineCrystal": 200
@@ -159,11 +159,11 @@
         }
     },
     "moneySaver20000": {
-        "title": "第一筆資金",
+        "title": "第二筆資金",
         "desc": "累計擁有金幣達 20,000",
         "condition": {
             "type": "money",
-            "value": 10000
+            "value": 20000
         },
         "reward": {
             "refineCrystal": 10
@@ -207,7 +207,7 @@
         "desc": "累計擁有金幣達 250,000",
         "condition": {
             "type": "money",
-            "value": 500000
+            "value": 250000
         },
         "reward": {
             "statPoint": 1

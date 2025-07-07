@@ -68,10 +68,12 @@ const sfxGod = new Audio("sound/test-god.mp3");
 sfxGod.volume = 0.8;
 const sfxToggle = new Audio("sound/test-toggle.mp3");
 sfxToggle.volume = 0.7;
-const sfxFishingClick = new Audio("sound/test-fishingclick.mp3");
+const sfxFishingClick = new Audio("sound/getFish.mp3");
 sfxFishingClick.volume = 0.7;
+const sfxClickPlus = new Audio("sound/plus.mp3");
+sfxClickPlus.volume = 0.6;
 const FishingLoopSound = {
-  audio: new Audio("sound/test-fishing.mp3"),
+  audio: new Audio("sound/loading.mp3"),
   play() {
     // ✅ 直接播放，不判斷 audioManager
     this.audio.loop = true;
@@ -174,9 +176,7 @@ async function showLeaderboard() {
   container.innerHTML = topPlayers
     .map(
       (p, i) => `
-    <div>${i + 1}. ${p.name} | Lv.${
-        p.level
-      } | 💰 ${p.money.toLocaleString()} G</div>
+    <div>${i + 1}. ${p.name} | Lv.${p.level}</div>
   `
     )
     .join("");
@@ -197,9 +197,7 @@ document
     content.innerHTML = topPlayers
       .map(
         (p, i) => `
-          <div>${i + 1}. ${p.name} | Lv.${
-          p.level
-        } | 💰 ${p.money.toLocaleString()} G</div>
+          <div>${i + 1}. ${p.name} | Lv.${p.level}</div>
           `
       )
       .join("");
@@ -357,6 +355,7 @@ const MAP_CONFIG = {
     priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.0,
     catchRateModifier: 1.0, // 正常上鉤率
+    multiCatcModifier: 1.0,
     name: "清澈川流",
     background: "images-webp/index/index3.webp",
     music: "sound/map1.mp3",
@@ -368,6 +367,7 @@ const MAP_CONFIG = {
     priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.1,
     catchRateModifier: 0.9,
+    multiCatcModifier: 0.8,
     name: "劍與魔法村",
     background: "images-webp/maps/map4.webp",
     requiredLevel: 50,
@@ -390,6 +390,7 @@ const MAP_CONFIG = {
     priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.2,
     catchRateModifier: 0.8, // 稍微難釣
+    multiCatcModifier: 0.55,
     name: "機械城河",
     background: "images-webp/maps/map2.webp",
     requiredLevel: 100,
@@ -403,7 +404,7 @@ const MAP_CONFIG = {
     requiredTicketName: "機械通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
-    music: "sound/map1.mp3",
+    music: "sound/map3.mp3",
     autoFishingAllowed: true,
   },
   map3: {
@@ -412,6 +413,7 @@ const MAP_CONFIG = {
     priceFormula: (prob, base) => Math.floor(base * Math.sqrt(1 / prob) * 2),
     rarePenalty: 1.3,
     catchRateModifier: 0.7, // 較難上鉤
+    multiCatcModifier: 0.3,
     name: "黃金遺址",
     background: "images-webp/maps/map3.webp",
     requiredLevel: 150,
@@ -634,7 +636,7 @@ const intervalTime = 16;
 
 function startPrecisionBar() {
   if (precisionInterval) return;
-  // FishingLoopSound.play();
+  FishingLoopSound.play();
   document.getElementById("precisionBarContainer").style.display = "flex";
   const track = document.getElementById("precisionTrack");
   const indicator = document.getElementById("precisionIndicator");
@@ -801,7 +803,7 @@ document.getElementById("precisionStopBtn").addEventListener("click", () => {
 
 // 關閉指示器
 function stopPrecisionBar() {
-  // FishingLoopSound.stop();
+  FishingLoopSound.stop();
   if (!precisionInterval) return;
   clearInterval(precisionInterval);
   precisionInterval = null;
@@ -913,13 +915,13 @@ function getRandomAutoFishingDelay() {
   // return 8000 + Math.random() * 5000;
   return 4500;
 }
-// 自訂釣魚上鉤率
+// 自動釣魚上鉤率
 function doFishing() {
   const buffs = getTotalBuffs();
   const catchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
   const rawSuccessRate =
     0.5 * catchRateBonus * currentMapConfig.catchRateModifier;
-  const successRate = Math.min(rawSuccessRate, 0.98); // 最終 cap 成功率
+  const successRate = Math.min(rawSuccessRate, 0.95); // 最終 cap 成功率
 
   if (Math.random() < successRate) {
     const fishType = getRandomFish();
@@ -1071,9 +1073,9 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0005 },
-    map4: { name: "黃銅礦", chance: 0.0005 },
-    map2: { name: "核廢料", chance: 0.0005 },
+    map1: { name: "隕石碎片", chance: 0.0002 },
+    map4: { name: "黃銅礦", chance: 0.0002 },
+    map2: { name: "核廢料", chance: 0.0002 },
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
@@ -1182,13 +1184,11 @@ const BUFF_TYPES = [
 const RARITY_TABLE = [
   { key: "common", label: "普通", buffCount: 1 },
   { key: "uncommon", label: "高級", buffCount: 2 },
-  { key: "rare", label: "稀有", buffCount: 3 },
 ];
 
 const RARITY_PROBABILITIES = [
-  { rarity: "普通", chance: 83.5 },
-  { rarity: "高級", chance: 15 },
-  { rarity: "稀有", chance: 1.5 },
+  { rarity: "普通", chance: 80 },
+  { rarity: "高級", chance: 20 },
 ];
 
 document.querySelector(".shop-chest").addEventListener("click", () => {
@@ -1876,9 +1876,6 @@ function proceedToMap(config, mapKey) {
         config
       );
       updateBackground(config.background);
-      document.getElementById(
-        "currentMapDisplay"
-      ).textContent = `目前地圖：${config.name}`;
       updateBackpackUI?.();
       playMapMusic(config.music);
     });
@@ -2487,6 +2484,7 @@ function updateStatPointModal() {
       if (remainingPoints > 0) {
         btn.style.display = "block";
         btn.onclick = () => {
+          playSfx(sfxClickPlus);
           allocatePoint(key);
           addClickBounce(btn);
         };
@@ -2552,8 +2550,9 @@ function buyRefineCrystal(amount, price) {
 function showEfficiencyModal() {
   const buffs = getTotalBuffs();
   const mapMod = currentMapConfig.catchRateModifier;
+  const mapMod2 = currentMapConfig.multiCatcModifier;
 
-  // 🎯 手動釣魚最高命中率（precisionRatio = 1）
+  // 🎯 手動釣魚命中率（precisionRatio = 1）
   const precisionRatio = 1;
   const manualCatchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
   const baseManual = 45 + precisionRatio * 25;
@@ -2564,71 +2563,27 @@ function showEfficiencyModal() {
   // 🤖 自動釣魚命中率
   const autoCatchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
   const rawAutoRate = 0.5 * autoCatchRateBonus * mapMod;
-  const autoRate = Math.min(rawAutoRate, 0.98);
+  const autoRate = Math.min(rawAutoRate, 0.95);
   document.getElementById("autoRate").textContent = (autoRate * 100).toFixed(2);
 
-  // 💎 傳奇魚倍率（mythic）
-  const manualMythicMult = computeRarityMultiplier(
-    "rarity-mythic",
-    "manual",
-    buffs
-  );
-  const autoMythicMult = computeRarityMultiplier(
-    "rarity-mythic",
-    "auto",
-    buffs
-  );
-
-  document.getElementById("manualMythicMultiplier").textContent =
-    manualMythicMult.toFixed(2);
-  document.getElementById("autoMythicMultiplier").textContent =
-    autoMythicMult.toFixed(2);
+  // 🐠 多魚上鉤率（觸發機率）+ 倍數（平均尾數影響）
+  const rawMultiChance = (buffs.multiCatchChance || 0) / 4.5;
+  const multiChance = Math.min(rawMultiChance * mapMod2, 90);
+  document.getElementById("multiCatchChance").textContent =
+    multiChance.toFixed(2);
 
   new bootstrap.Modal(document.getElementById("efficiencyModal")).show();
 }
 
-function computeRarityMultiplier(
-  rarityClass,
-  mode = "auto",
-  buffs = getTotalBuffs()
-) {
-  const penalty = currentMapConfig.rarePenalty;
-  const rareRateBonus = 1 + (buffs.increaseRareRate || 0) / 100;
-  const factor = mode === "manual" ? 0.1 : 0.05;
-  const precisionRatio = 1;
-
-  const filtered = fishTypes.filter(
-    (fish) => getRarityClass(fish.rawProbability) === rarityClass
-  );
-  console.table(
-    fishTypes
-      .filter((f) => getRarityClass(f.rawProbability) === "rarity-mythic")
-      .map((f) => ({ name: f.name, prob: f.rawProbability }))
-  );
-  if (filtered.length === 0) return 1;
-
-  const weightedNow = filtered.map((fish) => {
-    const rarityWeight = 1 / fish.probability;
-    const bias =
-      1 + (rarityWeight * precisionRatio * factor * rareRateBonus) / penalty;
-    return fish.probability * bias;
-  });
-
-  const weightedBase = filtered.map((fish) => {
-    const rarityWeight = 1 / fish.probability;
-    const bias = 1 + (rarityWeight * precisionRatio * factor * 1) / penalty;
-    return fish.probability * bias;
-  });
-
-  const sumNow = weightedNow.reduce((a, b) => a + b, 0);
-  const sumBase = weightedBase.reduce((a, b) => a + b, 0);
-
-  return sumNow / sumBase;
-}
 // 多魚判斷
 function tryMultiCatch(fishType) {
   const buffs = getTotalBuffs();
-  const chance = Math.min((buffs.multiCatchChance || 0) / 7, 90);
+  const mapMod = currentMapConfig.multiCatcModifier || 1;
+
+  // 🎯 加上地圖倍率影響
+  const rawChance = (buffs.multiCatchChance || 0) / 4.5;
+  const chance = Math.min(rawChance * mapMod, 90);
+
   const bonus = buffs.multiCatchMultiplier || 0;
   let finalCount = 1;
 
@@ -2945,6 +2900,14 @@ export function refreshAllUI() {
   updateCrystalUI();
 }
 window.addEventListener("DOMContentLoaded", async () => {
+  // ✅ PWA 支援
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("service-worker.js")
+      .then(() => console.log("✅ Service Worker registered"))
+      .catch((err) => console.error("SW registration failed:", err));
+  }
+
   preloadAllSfx();
   switchMap("map1");
   updateMoneyUI();
@@ -3072,12 +3035,4 @@ function formatRewardText(reward) {
     }
   }
   return parts.join("，");
-}
-
-// ✅ PWA 支援
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/service-worker.js")
-    .then(() => console.log("✅ Service Worker registered"))
-    .catch((err) => console.error("SW registration failed:", err));
 }

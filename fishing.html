@@ -65,8 +65,8 @@
         <div id="bottomInfo" class="bottom-info"></div>
 
         <!-- 顯示地圖 -->
-        <div id="currentMapDisplay" class="map-display">
-            目前地圖：清澈川流
+        <div id="currentMapDisplay" class="map-display map-info-btn fnc-anm">
+            目前地圖資訊
         </div>
 
         <!-- 顯示帳號 -->
@@ -751,13 +751,12 @@
             <div class="modal-content p-3">
                 <h5 class="modal-title">當前地圖釣魚效率</h5>
                 <div class="mt-3">
-                    <div class="effect-title">手動釣魚</div>
-                    <div>最高上鉤率：<span id="manualRate"></span>%</div>
-                    <div>傳奇魚提升最高倍率：<span id="manualMythicMultiplier"></span>倍</div>
-
-                    <div class="effect-title mt-2">自動釣魚</div>
-                    <div>上鉤率：<span id="autoRate"></span>%</div>
-                    <div>傳奇魚提升倍率：<span id="autoMythicMultiplier"></span>倍</div>
+                    <div class="effect-title">手動最高上鉤率(上限98%)</div>
+                    <div>目前:<span id="manualRate"></span>%</div>
+                    <div class="effect-title mt-2">自動釣魚上鉤率(上限95%)</div>
+                    <div>目前:<span id="autoRate"></span>%</div>
+                    <div class="effect-title mt-2">多魚上鉤率(上限90%)</div>
+                    <div>目前:<span id="multiCatchChance"></span>%</div>
                 </div>
                 <div class="text-center mt-3">
                     <button class="sell-btn fnc-anm" data-bs-dismiss="modal">關閉</button>

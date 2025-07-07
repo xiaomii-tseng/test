@@ -72,6 +72,16 @@ body {
   color: #4c2c00;
   border: 2px solid #4c2c00;
 }
+.map-info-btn {
+  font-size: 0.8rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  border: 2px solid #4c2c00;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
 #toggleModeBtn {
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -634,20 +644,14 @@ body {
 
 .map-display {
   position: absolute;
-  top: 57px;
-  left: 12px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
-  z-index: 999;
-  text-shadow: 1px 1px 5px black;
+  top: 63px;
+  left: 10px;
 }
 
 .account-display {
   position: absolute;
-  top: 80px;
-  left: 12px;
+  top: 108px;
+  left: 6px;
   padding: 6px 12px;
   border-radius: 8px;
   color: #fff;
@@ -743,8 +747,8 @@ body {
 
 #ticketTimer {
   position: fixed;
-  left: 12px;
-  top: 100px;
+  left: 6px;
+  top: 130px;
   padding: 8px 12px;
   color: #fff;
   border-radius: 6px;
@@ -901,7 +905,7 @@ body {
 }
 
 .effect-modal .effect-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: gold;
 }
 
