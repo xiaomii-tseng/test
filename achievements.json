@@ -1,6 +1,6 @@
 {
-    "reachLevel3": {
-        "title": "等級達到 10",
+    "reachLevel5": {
+        "title": "等級達到 5",
         "desc": "開寶箱體驗基金",
         "condition": {
             "type": "level",
@@ -10,15 +10,37 @@
             "money": 6000
         }
     },
-    "reachLevel25": {
-        "title": "等級達到 25",
+    "reachLevel15": {
+        "title": "等級達到 15",
         "desc": "解鎖提煉功能!",
         "condition": {
             "type": "level",
-            "value": 25
+            "value": 15
         },
         "reward": {
-            "refineCrystal": 10
+            "refineCrystal": 50
+        }
+    },
+    "reachLevel30": {
+        "title": "等級達到 30",
+        "desc": "升等獎勵",
+        "condition": {
+            "type": "level",
+            "value": 30
+        },
+        "reward": {
+            "money": 6000
+        }
+    },
+    "reachLevel40": {
+        "title": "等級達到 40",
+        "desc": "升等獎勵",
+        "condition": {
+            "type": "level",
+            "value": 40
+        },
+        "reward": {
+            "money": 8000
         }
     },
     "reachLevel50": {
@@ -32,6 +54,17 @@
             "mapPass": "ticket-map4"
         }
     },
+    "reachLevel60": {
+        "title": "等級達到 60",
+        "desc": "升等獎勵",
+        "condition": {
+            "type": "level",
+            "value": 60
+        },
+        "reward": {
+            "money": 10000
+        }
+    },
     "reachLevel75": {
         "title": "等級達到 75",
         "desc": "解鎖提煉功能二階段!",
@@ -40,7 +73,18 @@
             "value": 75
         },
         "reward": {
-            "refineCrystal": 40
+            "refineCrystal": 50
+        }
+    },
+    "reachLevel85": {
+        "title": "等級達到 80",
+        "desc": "升等獎勵",
+        "condition": {
+            "type": "level",
+            "value": 80
+        },
+        "reward": {
+            "money": 15000
         }
     },
     "reachLevel100": {
@@ -114,8 +158,19 @@
             "refineCrystal": 10
         }
     },
+    "moneySaver20000": {
+        "title": "第一筆資金",
+        "desc": "累計擁有金幣達 20,000",
+        "condition": {
+            "type": "money",
+            "value": 10000
+        },
+        "reward": {
+            "refineCrystal": 10
+        }
+    },
     "moneySaver50000": {
-        "title": "努力存錢",
+        "title": "努力存錢(一)",
         "desc": "累計擁有金幣達 50,000",
         "condition": {
             "type": "money",
@@ -125,12 +180,34 @@
             "statPoint": 1
         }
     },
-    "moneySaver100000": {
+    "moneySaver75000": {
         "title": "努力存錢(二)",
+        "desc": "累計擁有金幣達 75,000",
+        "condition": {
+            "type": "money",
+            "value": 75000
+        },
+        "reward": {
+            "statPoint": 1
+        }
+    },
+    "moneySaver100000": {
+        "title": "努力存錢(三)",
         "desc": "累計擁有金幣達 100,000",
         "condition": {
             "type": "money",
             "value": 100000
+        },
+        "reward": {
+            "statPoint": 1
+        }
+    },
+    "moneySaver250000": {
+        "title": "努力存錢(四)",
+        "desc": "累計擁有金幣達 250,000",
+        "condition": {
+            "type": "money",
+            "value": 500000
         },
         "reward": {
             "statPoint": 1
@@ -144,7 +221,18 @@
             "value": 500000
         },
         "reward": {
-            "statPoint": 2
+            "statPoint": 1
+        }
+    },
+    "moneySaver750000": {
+        "title": "我要成為百萬富翁",
+        "desc": "累計擁有金幣達 750,000",
+        "condition": {
+            "type": "money",
+            "value": 750000
+        },
+        "reward": {
+            "statPoint": 1
         }
     },
     "moneySaver1000000": {
@@ -155,7 +243,7 @@
             "value": 1000000
         },
         "reward": {
-            "statPoint": 4
+            "statPoint": 3
         }
     },
     "moneySaver2000000": {
@@ -166,7 +254,7 @@
             "value": 2000000
         },
         "reward": {
-            "statPoint": 6
+            "statPoint": 5
         }
     },
     "moneySaver5000000": {
@@ -177,7 +265,7 @@
             "value": 5000000
         },
         "reward": {
-            "statPoint": 8
+            "statPoint": 7
         }
     },
     "moneySaver10000000": {
@@ -200,7 +288,19 @@
         },
         "reward": {
             "money": 5000,
-            "refineCrystal": 10
+            "refineCrystal": 15
+        }
+    },
+    "fishCount300": {
+        "title": "抓到 300 隻魚啦!",
+        "desc": "釣到 300 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 300
+        },
+        "reward": {
+            "money": 7000,
+            "refineCrystal": 15
         }
     },
     "fishCount500": {
@@ -212,6 +312,18 @@
         },
         "reward": {
             "money": 10000,
+            "refineCrystal": 15
+        }
+    },
+    "fishCount750": {
+        "title": "抓到 750 隻魚啦!",
+        "desc": "釣到 750 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 750
+        },
+        "reward": {
+            "money": 15000,
             "refineCrystal": 20
         }
     },
@@ -223,8 +335,20 @@
             "value": 1000
         },
         "reward": {
-            "money": 15000,
-            "refineCrystal": 50
+            "money": 20000,
+            "refineCrystal": 30
+        }
+    },
+    "fishCount1500": {
+        "title": "抓到 1500 隻魚啦!",
+        "desc": "釣到 1500 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 1500
+        },
+        "reward": {
+            "money": 20000,
+            "refineCrystal": 40
         }
     },
     "fishCount2000": {
@@ -236,7 +360,19 @@
         },
         "reward": {
             "money": 20000,
-            "refineCrystal": 70
+            "refineCrystal": 50
+        }
+    },
+    "fishCount3500": {
+        "title": "抓到 3500 隻魚啦!",
+        "desc": "釣到 3500 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 3500
+        },
+        "reward": {
+            "money": 30000,
+            "refineCrystal": 60
         }
     },
     "fishCount5000": {
@@ -248,7 +384,19 @@
         },
         "reward": {
             "money": 30000,
-            "refineCrystal": 120
+            "refineCrystal": 70
+        }
+    },
+    "fishCount7500": {
+        "title": "抓到 7500 隻魚啦!",
+        "desc": "釣到 7500 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 7500
+        },
+        "reward": {
+            "money": 30000,
+            "refineCrystal": 80
         }
     },
     "fishCount10000": {
@@ -259,8 +407,20 @@
             "value": 10000
         },
         "reward": {
-            "money": 50000,
-            "refineCrystal": 180
+            "money": 30000,
+            "refineCrystal": 100
+        }
+    },
+    "fishCount15000": {
+        "title": "抓到 15000 隻魚啦!",
+        "desc": "釣到 15000 條魚",
+        "condition": {
+            "type": "fishCount",
+            "value": 15000
+        },
+        "reward": {
+            "money": 30000,
+            "refineCrystal": 120
         }
     },
     "fishCount20000": {
@@ -271,8 +431,8 @@
             "value": 20000
         },
         "reward": {
-            "money": 70000,
-            "refineCrystal": 250
+            "money": 30000,
+            "refineCrystal": 150
         }
     },
     "fishCount50000": {
@@ -283,8 +443,8 @@
             "value": 50000
         },
         "reward": {
-            "money": 100000,
-            "refineCrystal": 350
+            "money": 50000,
+            "refineCrystal": 200
         }
     },
     "fishCount100000": {
@@ -295,8 +455,8 @@
             "value": 100000
         },
         "reward": {
-            "money": 200000,
-            "refineCrystal": 500
+            "money": 100000,
+            "refineCrystal": 300
         }
     },
     "dexMap1_10": {
@@ -475,34 +635,51 @@
             "value": 10
         },
         "reward": {
+            "statPoint": 2
+        }
+    },
+    "mythicFish25": {
+        "title": "神話魚達人(一)",
+        "desc": "釣到 25 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 25
+        },
+        "reward": {
             "statPoint": 3
         }
     },
     "mythicFish50": {
-        "title": "神話魚達人",
+        "title": "神話魚達人(二)",
         "desc": "釣到 50 條神話魚",
         "condition": {
             "type": "mythicFish",
             "value": 50
         },
         "reward": {
-            "statPoint": 5
+            "statPoint": 4
         }
     },
     "mythicFish100": {
-        "title": "神話魚王者",
+        "title": "神話魚王者(一)",
         "desc": "釣到 100 條神話魚",
         "condition": {
             "type": "mythicFish",
             "value": 100
         },
         "reward": {
-            "statPoint": 7,
-            "divineMaterial": {
-                "隕石碎片": 1,
-                "黃銅礦": 1,
-                "核廢料": 1
-            }
+            "statPoint": 5
+        }
+    },
+    "mythicFish200": {
+        "title": "神話魚王者(二)",
+        "desc": "釣到 200 條神話魚",
+        "condition": {
+            "type": "mythicFish",
+            "value": 200
+        },
+        "reward": {
+            "statPoint": 6
         }
     },
     "mythicFish500": {
@@ -532,15 +709,26 @@
             "statPoint": 1
         }
     },
+    "chestDraw25": {
+        "title": "寶箱開不完(一)",
+        "desc": "累計開啟 25 次寶箱",
+        "condition": {
+            "type": "chestDraw",
+            "value": 25
+        },
+        "reward": {
+            "statPoint": 1
+        }
+    },
     "chestDraw50": {
-        "title": "寶箱開不完",
+        "title": "寶箱開不完(二)",
         "desc": "累計開啟 50 次寶箱",
         "condition": {
             "type": "chestDraw",
             "value": 50
         },
         "reward": {
-            "statPoint": 2
+            "statPoint": 1
         }
     },
     "chestDraw100": {

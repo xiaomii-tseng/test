@@ -1050,9 +1050,9 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0007 },
-    map4: { name: "黃銅礦", chance: 0.0007 },
-    map2: { name: "核廢料", chance: 0.0007 },
+    map1: { name: "隕石碎片", chance: 0.0005},
+    map4: { name: "黃銅礦", chance: 0.0005 },
+    map2: { name: "核廢料", chance: 0.0005 },
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
@@ -2045,16 +2045,16 @@ function updateCrystalUI() {
 // 精煉等級限制
 function getRefineLimitByLevel() {
   const level = loadLevel();
-  if (level >= 125) return 8;
-  if (level >= 75) return 6;
-  if (level >= 25) return 4;
+  if (level >= 125) return 10;
+  if (level >= 75) return 7;
+  if (level >= 15) return 4;
   return 0;
 }
 // 選擇提煉方式
 function openRefineChoiceModal(equip) {
   const level = loadLevel();
-  if (level < 25) {
-    showAlert("等級 25 解鎖提煉功能");
+  if (level < 15) {
+    showAlert("等級 15 解鎖提煉功能");
     return;
   }
   const modal = new bootstrap.Modal(
@@ -2089,7 +2089,7 @@ function openRefineModal(equip) {
   const ownedRaw = parseInt(localStorage.getItem(CRYSTAL_KEY), 10);
   const owned = isNaN(ownedRaw) ? 0 : ownedRaw;
 
-  const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20];
+  const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25];
   const previewIncrease = buffIncrements[refineLevel + 1];
 
   document.getElementById("refineEquipCard").innerHTML =
@@ -2113,7 +2113,7 @@ function openRefineModal(equip) {
   document.getElementById(
     "refineCrystalOwned"
   ).textContent = `目前擁有：${owned} 顆`;
-  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1, 0.08, 0.05];
   const currentRate = successRates[refineLevel] ?? 0;
   document.getElementById(
     "refineSuccessRate"
@@ -2131,7 +2131,7 @@ function refineEquipment(equip) {
 
   const refineLevel = equip.refineLevel ?? 0;
   const maxRefine = getRefineLimitByLevel();
-  if (refineLevel === 8) {
+  if (refineLevel === 10) {
     showAlert(`已達最高精煉!`);
     return;
   }
@@ -2151,7 +2151,7 @@ function refineEquipment(equip) {
   localStorage.setItem(CRYSTAL_KEY, crystals);
 
   // 成功率表
-  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+  const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1, 0.08, 0.05];
   const chance = successRates[refineLevel];
   const success = Math.random() < chance;
 
@@ -2161,7 +2161,7 @@ function refineEquipment(equip) {
     const index = Math.floor(Math.random() * equip.buffs.length);
 
     // 每級增加的數值表
-    const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20]; // index = refineLevel
+    const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25]; // index = refineLevel
     const increase = buffIncrements[equip.refineLevel] ?? 5; // fallback: default +5
 
     equip.buffs[index].value += increase;
@@ -2212,7 +2212,7 @@ function refineEquipment(equip) {
     const nextCost = (equip.refineLevel + 2) * 2;
     costInfo.textContent = `消耗提煉結晶：${nextCost} 顆`;
   }
-  const buffIncrements = [0, 3, 3, 4, 6, 7, 12, 15, 20];
+  const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25];
   const previewIncrease = buffIncrements[equip.refineLevel + 1] ?? 0;
 
   const buffPreview = document.getElementById("refineBuffPreview");
@@ -2226,7 +2226,7 @@ function refineEquipment(equip) {
 
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1];
+    const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1, 0.08, 0.05];
     const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
