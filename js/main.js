@@ -102,6 +102,7 @@ function preloadAllSfx() {
     sfxGod,
     sfxToggle,
     sfxFishingClick,
+    sfxClickPlus,
   ];
   sfxList.forEach(decodeAudioToBuffer);
 }
