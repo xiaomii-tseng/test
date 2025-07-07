@@ -1460,62 +1460,31 @@ function getEquippedItemByType(type) {
   return equipped[type] || null;
 }
 
-// 取得裝備數值
+// 把buff顯示到html
 function updateCharacterStats() {
-  const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
-
-  let stats = {
-    increaseCatchRate: 0,
-    increaseRareRate: 0,
-    increaseBigFishChance: 0,
-    increaseSellValue: 0,
-    increaseExpGain: 0,
-    multiCatchChance: 0,
-    multiCatchMultiplier: 0,
-  };
-
-  for (const slot in equipped) {
-    const item = equipped[slot];
-    if (!item || !item.buffs) continue;
-
-    for (const buff of item.buffs) {
-      if (stats.hasOwnProperty(buff.type)) {
-        stats[buff.type] += buff.value;
-      }
-    }
-  }
-
-  // ✅ 加上自選點數 bonus
-  const custom = JSON.parse(
-    localStorage.getItem("player-custom-bonus") || "{}"
-  );
-  for (const key in custom) {
-    if (stats.hasOwnProperty(key)) {
-      stats[key] += custom[key];
-    }
-  }
+  const stats = getTotalBuffs(); // ✅ 改這行就好！
 
   document.querySelector(
     ".increase-catch-rate"
-  ).textContent = `增加上鉤率：${stats.increaseCatchRate}%`;
+  ).textContent = `增加上鉤率：${Math.round(stats.increaseCatchRate)}%`;
   document.querySelector(
     ".increase-rare-rate"
-  ).textContent = `增加稀有率：${stats.increaseRareRate}%`;
+  ).textContent = `增加稀有率：${Math.round(stats.increaseRareRate)}%`;
   document.querySelector(
     ".increase-big-fish-chance"
-  ).textContent = `大體型機率：${stats.increaseBigFishChance}%`;
+  ).textContent = `大體型機率：${Math.round(stats.increaseBigFishChance)}%`;
   document.querySelector(
     ".increase-sellValue"
-  ).textContent = `增加販售額：${stats.increaseSellValue}%`;
+  ).textContent = `增加販售額：${Math.round(stats.increaseSellValue)}%`;
   document.querySelector(
     ".increase-exp-gain"
-  ).textContent = `經驗值加成：${stats.increaseExpGain}%`;
+  ).textContent = `經驗值加成：${Math.round(stats.increaseExpGain)}%`;
   document.querySelector(
     ".multi-catch-chance"
-  ).textContent = `多魚上鉤率：${stats.multiCatchChance}%`;
+  ).textContent = `多魚上鉤率：${Math.round(stats.multiCatchChance)}%`;
   document.querySelector(
     ".multi-catch-multiplier"
-  ).textContent = `多魚倍數值：${stats.multiCatchMultiplier}%`;
+  ).textContent = `多魚倍數值：${Math.round(stats.multiCatchMultiplier)}%`;
 }
 
 // 脫下裝備
@@ -1613,14 +1582,29 @@ function getTotalBuffs() {
     multiCatchMultiplier: 0,
   };
 
+  let godCount = 0;
+
   // ➕ 裝備 buff
   for (const item of Object.values(equipped)) {
-    if (!item?.buffs) continue;
+    if (!item) continue;
+
+    // 🎯 判斷名稱含「天神」即為天神裝
+    if (item.name?.includes("天神")) {
+      godCount++;
+    }
+
+    if (!item.buffs) continue;
     for (const buff of item.buffs) {
       if (buffs.hasOwnProperty(buff.type)) {
         buffs[buff.type] += buff.value;
       }
     }
+  }
+
+  // ➕ 天神裝額外 buff（每件 +8%）
+  const godBuff = godCount * 8;
+  for (const key in buffs) {
+    buffs[key] += godBuff;
   }
 
   // ➕ 自選點數 buff
@@ -2340,14 +2324,6 @@ function openDivineModal(equip) {
     const allEnough = Object.entries(reqs).every(
       ([name, { count }]) => (freshMaterials[name] || 0) >= count
     );
-    if (!allEnough) return showAlert("材料不足，無法神化");
-    playSfx(sfxGod);
-    // ✅ 扣材料
-    for (const [name, { count }] of Object.entries(reqs)) {
-      freshMaterials[name] -= count;
-    }
-    saveDivineMaterials(freshMaterials);
-
     // ✅ 對照表：原始名稱 → 神裝名稱
     const convertMap = {
       普通釣竿: "天神釣竿",
@@ -2374,6 +2350,14 @@ function openDivineModal(equip) {
 
     const newName = convertMap[equip.name];
     if (!newName) return showAlert("此裝備無法神化");
+    if (!allEnough) return showAlert("材料不足，無法神化");
+    // ✅ 扣材料
+    for (const [name, { count }] of Object.entries(reqs)) {
+      freshMaterials[name] -= count;
+    }
+    saveDivineMaterials(freshMaterials);
+
+    playSfx(sfxGod);
 
     // ✅ 從 item.json 讀神裝資料
     const res = await fetch("god.json");
