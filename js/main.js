@@ -804,7 +804,7 @@ function stopPrecisionBar() {
   const buffs = getTotalBuffs();
   const successChance = Math.min(
     Math.min(45 + precisionRatio * 25) *
-      ((buffs.increaseCatchRate * 0.45 + 100) / 100) *
+      ((buffs.increaseCatchRate * 0.5 + 100) / 100) *
       currentMapConfig.catchRateModifier,
     98
   );
@@ -905,7 +905,7 @@ function getRandomAutoFishingDelay() {
 // 自訂釣魚上鉤率
 function doFishing() {
   const buffs = getTotalBuffs();
-  const catchRateBonus = (buffs.increaseCatchRate * 0.45 + 100) / 100;
+  const catchRateBonus = (buffs.increaseCatchRate * 0.5 + 100) / 100;
   const rawSuccessRate =
     0.5 * catchRateBonus * currentMapConfig.catchRateModifier;
   const successRate = Math.min(rawSuccessRate, 0.98); // 最終 cap 成功率
