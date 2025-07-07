@@ -69,7 +69,7 @@ sfxGod.volume = 0.8;
 const sfxToggle = new Audio("sound/test-toggle.mp3");
 sfxToggle.volume = 0.7;
 const sfxFishingClick = new Audio("sound/getFish.mp3");
-sfxFishingClick.volume = 0.7;
+sfxFishingClick.volume = 0.3;
 const sfxClickPlus = new Audio("sound/plus.mp3");
 sfxClickPlus.volume = 0.6;
 const FishingLoopSound = {
@@ -77,7 +77,7 @@ const FishingLoopSound = {
   play() {
     // ✅ 直接播放，不判斷 audioManager
     this.audio.loop = true;
-    this.audio.volume = 0.3;
+    this.audio.volume = 0.2;
     this.audio.currentTime = 0;
     this.audio.play().catch(() => {});
   },
