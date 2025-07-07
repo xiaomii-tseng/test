@@ -1477,7 +1477,7 @@ function updateCharacterStats() {
   ).textContent = `大體型機率：${stats.increaseBigFishChance}%`;
   document.querySelector(
     ".increase-sellValue"
-  ).textContent = `增加販售金額：${stats.increaseSellValue}%`;
+  ).textContent = `增加販售額：${stats.increaseSellValue}%`;
   document.querySelector(
     ".increase-exp-gain"
   ).textContent = `經驗值加成：${stats.increaseExpGain}%`;
