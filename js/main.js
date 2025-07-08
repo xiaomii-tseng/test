@@ -2675,13 +2675,13 @@ document.getElementById("currentMapDisplay").addEventListener("click", () => {
   showEfficiencyModal();
 });
 document.getElementById("buyOre1").addEventListener("click", () => {
-  buyRefineCrystal(1, 1900);
+  buyRefineCrystal(1, 1500);
 });
 document.getElementById("buyOre10").addEventListener("click", () => {
-  buyRefineCrystal(10, 18500);
+  buyRefineCrystal(10, 14500);
 });
 document.getElementById("buyOre100").addEventListener("click", () => {
-  buyRefineCrystal(100, 180000);
+  buyRefineCrystal(100, 140000);
 });
 document.getElementById("openAchievementBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
