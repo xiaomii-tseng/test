@@ -1549,7 +1549,7 @@ function updateCharacterStats() {
 }
 
 // 脫下裝備
-document.querySelector(".cencel-equip-btn").addEventListener("click", () => {
+document.getElementById("unequipBtn").addEventListener("click", () => {
   const isEquipLocked = localStorage.getItem("disable-equip") === "1";
   if (isEquipLocked) {
     showAlert("此地圖禁止更換裝備");
@@ -2222,6 +2222,7 @@ function refineEquipment(equip) {
     showAlert(`已達目前精煉上限，等級提升即可繼續強化!`);
     return;
   }
+
   const cost = (refineLevel + 2) * 2;
   let crystals = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
   if (crystals < cost) {
@@ -2243,27 +2244,29 @@ function refineEquipment(equip) {
     equip.refineLevel++;
     const index = Math.floor(Math.random() * equip.buffs.length);
 
-    // 每級增加的數值表
-    const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25]; // index = refineLevel
-    const increase = buffIncrements[equip.refineLevel] ?? 5; // fallback: default +5
+    const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25];
+    const increase = buffIncrements[equip.refineLevel] ?? 5;
 
     equip.buffs[index].value += increase;
-
-    // showAlert(
-    //   `✅ 精煉成功！${
-    //     buffLabelMap[equip.buffs[index].type]
-    //   } 增加了 ${increase}%`
-    // );
   } else {
     playSfx(sfxFail);
-    // showAlert("❌ 精煉失敗，裝備等級未提升");
   }
 
-  // 儲存與更新
+  // 儲存與更新 ownedEquipment
   const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
   const idx = owned.findIndex((e) => e.id === equip.id);
   if (idx !== -1) owned[idx] = equip;
   localStorage.setItem(ownedEquipment, JSON.stringify(owned));
+
+  // ✅ 同步更新 equipped-items-v2（如果是穿戴中的裝備）
+  const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+  for (const slot in equipped) {
+    if (equipped[slot]?.id === equip.id) {
+      equipped[slot] = equip;
+      break;
+    }
+  }
+  localStorage.setItem(EQUIPPED_KEY, JSON.stringify(equipped));
 
   updateOwnedEquipListUI();
   updateCrystalUI?.();
@@ -2273,13 +2276,10 @@ function refineEquipment(equip) {
   const card = document.getElementById("refineEquipCard");
   if (card) {
     card.innerHTML = generateEquipCardHTML(equip);
-
-    // ✅ 插入內容後，再選到最外層卡片本體
     const actualCard = card.querySelector(".equipment-card");
-
     if (actualCard) {
       actualCard.classList.remove("forge-success", "forge-fail");
-      void actualCard.offsetWidth; // 強制重播動畫
+      void actualCard.offsetWidth;
       actualCard.classList.add(success ? "forge-success" : "forge-fail");
     }
   }
@@ -2295,25 +2295,23 @@ function refineEquipment(equip) {
     const nextCost = (equip.refineLevel + 2) * 2;
     costInfo.textContent = `消耗提煉結晶：${nextCost} 顆`;
   }
+
   const buffIncrements = [0, 3, 3, 4, 6, 7, 10, 12, 15, 20, 25];
   const previewIncrease = buffIncrements[equip.refineLevel + 1] ?? 0;
 
   const buffPreview = document.getElementById("refineBuffPreview");
   if (buffPreview) {
-    if (previewIncrease !== undefined) {
-      buffPreview.textContent = `效果：隨機 Buff 提升 ${previewIncrease}%`;
-    } else {
-      buffPreview.textContent = `效果：-`;
-    }
+    buffPreview.textContent = previewIncrease
+      ? `效果：隨機 Buff 提升 ${previewIncrease}%`
+      : `效果：-`;
   }
 
   const rateInfo = document.getElementById("refineSuccessRate");
   if (rateInfo) {
-    const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1, 0.08, 0.05];
     const currentRate = successRates[equip.refineLevel] ?? 0;
     rateInfo.textContent = `成功率：${Math.round(currentRate * 100)}%`;
   }
-  updateCrystalUI();
+
   const refineCrystalInfo = document.getElementById("refineCrystalOwned");
   if (refineCrystalInfo) {
     const current = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
@@ -2670,6 +2668,17 @@ function tryMultiCatch(fishType) {
 
 // 下面是 document
 // 綁定按鈕事件
+document.getElementById("refineEquippedBtn").addEventListener("click", () => {
+  const modalEl = document.getElementById("equipInfoModal");
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  if (modal) modal.hide();
+  const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+  if (!selectedEquippedSlot) return;
+  const equip = equipped[selectedEquippedSlot];
+  if (!equip) return;
+
+  openRefineChoiceModal(equip);
+});
 document.getElementById("currentMapDisplay").addEventListener("click", () => {
   playSfx(sfxOpen);
   showEfficiencyModal();

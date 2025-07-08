@@ -370,3 +370,8 @@
   box-shadow: 0px 0px 5px rgb(29, 29, 29);
   border: 2px solid #4c2c00;
 }
+
+.equip-all-btn{
+  margin: auto;
+  width: 80%;
+}
