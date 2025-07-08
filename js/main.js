@@ -2359,11 +2359,11 @@ function openDivineModal(equip) {
     .map(([name, { count, icon }]) => {
       const owned = loadDivineMaterials()[name] || 0;
       return `
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <img src="${icon}" width="30" height="30" alt="${name}" />
-          <span class="god-name">${name}：${owned}/${count}</span>
-        </div>
-      `;
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <img src="${icon}" width="30" height="30" alt="${name}" />
+                    <span class="god-name">${name}：${owned}/${count}</span>
+                </div>
+            `;
     })
     .join("");
 
@@ -2380,7 +2380,7 @@ function openDivineModal(equip) {
     const allEnough = Object.entries(reqs).every(
       ([name, { count }]) => (freshMaterials[name] || 0) >= count
     );
-    // ✅ 對照表：原始名稱 → 神裝名稱
+
     const convertMap = {
       普通釣竿: "天神釣竿",
       蚯蚓: "天神餌",
@@ -2407,6 +2407,7 @@ function openDivineModal(equip) {
     const newName = convertMap[equip.name];
     if (!newName) return showAlert("此裝備無法神化");
     if (!allEnough) return showAlert("材料不足，無法神化");
+
     // ✅ 扣材料
     for (const [name, { count }] of Object.entries(reqs)) {
       freshMaterials[name] -= count;
@@ -2415,7 +2416,7 @@ function openDivineModal(equip) {
 
     playSfx(sfxGod);
 
-    // ✅ 從 item.json 讀神裝資料
+    // ✅ 從 god.json 讀神裝資料
     const res = await fetch("god.json");
     const itemList = await res.json();
     const divineTemplate = itemList.find((i) => i.name === newName);
@@ -2430,20 +2431,37 @@ function openDivineModal(equip) {
       isFavorite: equip.isFavorite ?? false,
     };
 
-    // ✅ 替換裝備
+    // ✅ 替換背包裝備
     let owned = loadOwnedEquipments();
-    owned = owned.filter((e) => e.id !== equip.id);
-    owned.push(newEquip);
-    saveOwnedEquipments(owned);
+    const index = owned.findIndex((e) => e.id === equip.id);
+    if (index !== -1) {
+      // 有在背包中 → 替換
+      owned[index] = newEquip;
+      saveOwnedEquipments(owned);
+    } else {
+      // 沒在背包中 → 不 push，只更新穿戴裝備
+      saveOwnedEquipments(owned); // 還是儲存一下（維持穩定）
+    }
+
+    // ✅ 如果原裝備在穿戴中，也要同步更新 equipped-items-v2
+    const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
+    for (const slot in equipped) {
+      if (equipped[slot]?.id === equip.id) {
+        equipped[slot] = newEquip;
+        break;
+      }
+    }
+    localStorage.setItem(EQUIPPED_KEY, JSON.stringify(equipped));
 
     updateOwnedEquipListUI();
     updateCharacterStats?.();
     updateDivineUI?.();
-
+    updateEquippedUI();
     showAlert(`✨ 神化成功！你獲得了【${newName}】`);
     modal.hide();
   };
 }
+
 // 音效
 function playSfx(audioEl) {
   if (!userHasInteractedWithBgm || !isSoundEnabled) return;
