@@ -922,3 +922,31 @@ body {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #444;
+  font-size: 15px;
+  color: #fff;
+}
+
+.leaderboard-row .rank {
+  width: 40px;
+  font-weight: bold;
+  color: gold;
+}
+
+.leaderboard-row .name {
+  flex: 1;
+  padding-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-row .level {
+  min-width: 60px;
+  text-align: right;
+}

@@ -171,40 +171,47 @@ async function getTopPlayersByLevel(limitCount = 10) {
   return result;
 }
 
-async function showLeaderboard() {
-  const topPlayers = await getTopPlayersByLevel();
-  const container = document.getElementById("leaderboardContent");
-  container.innerHTML = topPlayers
-    .map(
-      (p, i) => `
-    <div>${i + 1}. ${p.name} | Lv.${p.level}</div>
-  `
-    )
-    .join("");
-  new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
-}
+// async function showLeaderboard() {
+//   const topPlayers = await getTopPlayersByLevel();
+//   const container = document.getElementById("leaderboardContent");
+//   container.innerHTML = topPlayers
+//     .map(
+//       (p, i) => `
+//     <div>${i + 1}. ${p.name} | Lv.${p.level}</div>
+//   `
+//     )
+//     .join("");
+//   new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
+// }
 
 document
   .getElementById("openLeaderboard")
   .addEventListener("click", async () => {
     playSfx(sfxOpen);
+
     const functionMenu = bootstrap.Modal.getInstance(
       document.getElementById("functionMenuModal")
     );
     if (functionMenu) functionMenu.hide();
 
-    const topPlayers = await getTopPlayersByLevel(); // ← 你前面提供的 function
+    const topPlayers = await getTopPlayersByLevel();
     const content = document.getElementById("leaderboardContent");
+
     content.innerHTML = topPlayers
       .map(
         (p, i) => `
-          <div>${i + 1}. ${p.name} | Lv.${p.level}</div>
-          `
+        <div class="leaderboard-row">
+          <div class="rank">#${i + 1}</div>
+          <div class="name">${p.name}</div>
+          <div class="level">Lv.${p.level}</div>
+        </div>
+      `
       )
       .join("");
 
     new bootstrap.Modal(document.getElementById("leaderboardModal")).show();
   });
+
 document.getElementById("logoutBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   signOut(auth)
