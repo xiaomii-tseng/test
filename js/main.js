@@ -989,7 +989,7 @@ function doFishing() {
     if (fishType) {
       tryMultiCatch(fishType);
     } else {
-      logCatch("沒釣到魚.");
+      logCatch("網路連線異常");
     }
   } else {
     logCatch("魚跑掉了...");

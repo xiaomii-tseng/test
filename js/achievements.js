@@ -129,22 +129,22 @@ export function claimAchievement(key) {
 
   showAlert(`🎁 已領取「${def.title}」成就獎勵！`);
 
-  const userId = localStorage.getItem("userId");
-  if (userId) {
-    const userRef = doc(db, "saves", userId);
-    const dataToSave = {
-      achievements: statusMap,
-      playerFishCount: parseInt(
-        localStorage.getItem("player-fish-count") || "0"
-      ),
-      mythicFishCount: parseInt(
-        localStorage.getItem("mythic-fish-count") || "0"
-      ),
-      playerChestCount: parseInt(
-        localStorage.getItem("player-chest-count") || "0"
-      ),
-    };
-    setDoc(userRef, dataToSave, { merge: true });
-  }
+  // const userId = localStorage.getItem("userId");
+  // if (userId) {
+  //   const userRef = doc(db, "saves", userId);
+  //   const dataToSave = {
+  //     achievements: statusMap,
+  //     playerFishCount: parseInt(
+  //       localStorage.getItem("player-fish-count") || "0"
+  //     ),
+  //     mythicFishCount: parseInt(
+  //       localStorage.getItem("mythic-fish-count") || "0"
+  //     ),
+  //     playerChestCount: parseInt(
+  //       localStorage.getItem("player-chest-count") || "0"
+  //     ),
+  //   };
+  //   setDoc(userRef, dataToSave, { merge: true });
+  // }
   refreshAllUI();
 }
