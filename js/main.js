@@ -1881,12 +1881,14 @@ function saveExp(exp) {
   localStorage.setItem(EXP_KEY, exp.toString());
 }
 function getExpForLevel(level) {
-  if (level >= 1 && level <= 50) {
+  if (level >= 1 && level <= 49) {
     return level * 100;
-  } else if (level >= 51 && level <= 100) {
-    return level * 200;
-  } else if (level >= 101) {
-    return level * 400;
+  } else if (level >= 50 && level <= 99) {
+    return level * 230;
+  } else if (level >= 100 && level <= 149) {
+    return level * 525;
+  } else if (level >= 150) {
+    return level * 1200;
   } else {
     return 0; // 處理 level < 1 的情況
   }
