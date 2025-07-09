@@ -3,8 +3,8 @@
   "short_name": "釣魚遊戲",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#323232",
-  "theme_color": "#4db8ff",
+  "background_color": "#00000000",
+  "theme_color": "#00000000",
   "icons": [
     {
       "src": "images-webp/icons/icon-192-v2.webp",

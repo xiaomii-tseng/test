@@ -1,6 +1,6 @@
 // 📁 自動釣魚遊戲主邏輯
 
-const GAME_VERSION = "2.6.0"; // 每次更新請手動更改版本號
+const GAME_VERSION = "3.0.0"; // 每次更新請手動更改版本號
 const STORAGE_KEY = "fishing-v3-backpack";
 const ownedEquipment = "owned-equipment-v2";
 const EQUIPPED_KEY = "equipped-items-v2";
