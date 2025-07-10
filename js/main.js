@@ -21,8 +21,8 @@ let currentMapKey = "map1"; // 預設地圖
 const chestCost = 30000; // 高級寶箱
 const CHEST_COST = 2000; // 普通寶箱
 const ticket1Price = 50000;
-const ticket2Price = 100000;
-const ticket3Price = 200000;
+const ticket2Price = 150000;
+const ticket3Price = 300000;
 const selectedFishIds = new Set();
 let fishTypes = [];
 let allFishTypes = [];
@@ -481,7 +481,7 @@ const MAP_CONFIG = {
     requiredTicketName: "黃金通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
-    music: "sound/map2.wav",
+    music: "sound/map3.mp3",
     autoFishingAllowed: true,
   },
 };
@@ -801,8 +801,8 @@ function exitMultiSelectMode() {
 }
 
 function batchSellSelected() {
-  if (selectedFishIds.size === 0) return; // ⛔ 若沒選取，直接不處理
-
+  if (selectedFishIds.size === 0) return playSfx(sfxClickPlus); // ⛔ 若沒選取，直接不處理
+  playSfx(sfxDelete);
   const buffs = getTotalBuffs();
   let rawTotal = 0;
   let finalTotal = 0;
@@ -1435,6 +1435,7 @@ function updateOwnedEquipListUI() {
 
     if (!equip.type.startsWith("ticket-")) {
       card.addEventListener("click", () => {
+        playSfx(sfxClickPlus);
         selectedEquipForAction = equip;
         openEquipActionModal(equip);
       });
@@ -1465,6 +1466,7 @@ function openEquipActionModal(selectedEquip) {
     document.getElementById("equipActionModal")
   );
   document.getElementById("refineBtn").onclick = () => {
+    playSfx(sfxClickPlus);
     modal.hide();
     openRefineChoiceModal(selectedEquip);
   };
@@ -1556,7 +1558,7 @@ document.getElementById("unequipBtn").addEventListener("click", () => {
     return;
   }
   if (!selectedEquippedSlot) return;
-
+  playSfx(sfxClickPlus);
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
   const owned = JSON.parse(localStorage.getItem(ownedEquipment) || "[]");
 
@@ -1589,6 +1591,7 @@ document.getElementById("unequipBtn").addEventListener("click", () => {
 // 顯示當前裝備資訊
 document.querySelectorAll(".slot").forEach((slotDiv) => {
   slotDiv.addEventListener("click", () => {
+    playSfx(sfxClickPlus)
     const slotKey = slotDiv.dataset.slot;
     const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
     const item = equipped[slotKey];
@@ -2689,6 +2692,7 @@ function tryMultiCatch(fishType) {
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("refineEquippedBtn").addEventListener("click", () => {
+  playSfx(sfxClickPlus)
   const modalEl = document.getElementById("equipInfoModal");
   const modal = bootstrap.Modal.getInstance(modalEl);
   if (modal) modal.hide();
@@ -2721,6 +2725,7 @@ document.getElementById("openAchievementBtn").addEventListener("click", () => {
   modal.show();
 });
 document.querySelector(".all-status-btn").addEventListener("click", () => {
+  playSfx(sfxClickPlus);
   updateStatPointModal(); // ← 更新內容
   new bootstrap.Modal(document.getElementById("statPointModal")).show();
 });
@@ -2909,10 +2914,10 @@ document.getElementById("selectAllBtn").addEventListener("click", () => {
   for (const fish of backpack) {
     selectedFishIds.add(fish.id);
   }
+  playSfx(sfxClickPlus);
   updateCardSelectionUI();
 });
 document.getElementById("multiSellBtn").addEventListener("click", () => {
-  playSfx(sfxDelete);
   batchSellSelected();
   exitMultiSelectMode();
   enterMultiSelectMode();
@@ -2920,6 +2925,7 @@ document.getElementById("multiSellBtn").addEventListener("click", () => {
 document
   .getElementById("cancelMultiSelectBtn")
   .addEventListener("click", () => {
+    playSfx(sfxClickPlus)
     exitMultiSelectMode();
     enterMultiSelectMode();
   });
@@ -2945,7 +2951,7 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
     showAlert("此裝備已收藏");
     return;
   }
-
+  playSfx(sfxDelete);
   // ⛏️ 計算這件裝備可獲得的提煉結晶
   const gained = (selectedEquipForAction.buffs || []).filter(
     (b) => b.type !== "note"
@@ -2979,6 +2985,7 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
 document
   .getElementById("confirmMultiSellResult")
   .addEventListener("click", () => {
+    playSfx(sfxClose);
     const modal = bootstrap.Modal.getInstance(
       document.getElementById("multiSellResultModal")
     );
