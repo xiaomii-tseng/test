@@ -713,8 +713,8 @@ function getRarityClass(rawProbability) {
   if (rawProbability > 0.3) return "rarity-uncommon"; // 高級：藍色
   if (rawProbability > 0.08) return "rarity-rare"; // 稀有：黃色
   if (rawProbability > 0.04) return "rarity-epic"; // 史詩：紫色
-  if (rawProbability > 0.01) return "rarity-legend"; // 神話：紅色
-  return "rarity-mythic"; // 傳奇：彩色邊框
+  if (rawProbability > 0.01) return "rarity-legend"; // 傳奇：紅色
+  return "rarity-mythic"; // 神話：彩色邊框
 }
 // 🎯 精度條控制
 let precisionInterval = null;

@@ -961,3 +961,23 @@ body {
 .ore-img-alert strong {
   color: gold;
 }
+
+/* 成就獎勵按鈕 */
+#openBossBackpackBtn {
+  position: absolute;
+  top: 128px;
+  right: 60px;
+  z-index: 10;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 2px solid #4c2c00;
+  width: auto;
+}
+#openBossBackpackBtn img {
+  width: 24px;
+  height: 24px;
+}
