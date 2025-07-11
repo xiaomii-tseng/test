@@ -1135,9 +1135,9 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0002 },
-    map4: { name: "黃銅礦", chance: 0.0002 },
-    map2: { name: "核廢料", chance: 0.0002 },
+    map1: { name: "隕石碎片", chance: 0.0005 },
+    map4: { name: "黃銅礦", chance: 0.0005 },
+    map2: { name: "核廢料", chance: 0.0005 },
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
