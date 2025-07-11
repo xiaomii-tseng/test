@@ -32,6 +32,30 @@ let userHasInteractedWithBgm = false;
 let isSoundEnabled = false;
 let isAutoFishing = false;
 let autoFishingTimeoutId = null;
+// 全域掉落表：每張地圖的附加掉落物
+const GLOBAL_DROP_TABLE = {
+  map1: [
+    {
+      name: "隕石碎片",
+      icon: "images-webp/icons/ore2.webp",
+      chance: 0.0005,
+    },
+  ],
+  map4: [
+    {
+      name: "黃銅礦",
+      icon: "images-webp/icons/ore3.webp",
+      chance: 0.0005,
+    },
+  ],
+  map2: [
+    {
+      name: "核廢料",
+      icon: "images-webp/icons/ore4.webp",
+      chance: 0.0005,
+    },
+  ],
+};
 const buffLabelMap = {
   increaseCatchRate: "增加上鉤率",
   increaseRareRate: "增加稀有率",
@@ -978,8 +1002,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  // return 8000 + Math.random() * 5000;
-  return 4500;
+  return 8000 + Math.random() * 5000;
+  // return 4500;
 }
 // 自動釣魚上鉤率
 function doFishing() {
@@ -1138,42 +1162,36 @@ function saveDivineMaterials(materials) {
 }
 // 神話道具
 function maybeDropDivineItem() {
-  const dropTable = {
-    map1: {
-      name: "隕石碎片",
-      icon: "images-webp/icons/ore2.webp",
-      chance: 0.0005,
-    },
-    map4: {
-      name: "黃銅礦",
-      icon: "images-webp/icons/ore3.webp",
-      chance: 0.0005,
-    },
-    map2: {
-      name: "核廢料",
-      icon: "images-webp/icons/ore4.webp",
-      chance: 0.0005,
-    },
-  };
-  const drop = dropTable[currentMapKey];
-  if (!drop || Math.random() >= drop.chance) return;
+  const drops = GLOBAL_DROP_TABLE[currentMapKey];
+  if (!drops || drops.length === 0) return;
 
   const materials = loadDivineMaterials();
-  materials[drop.name] = (materials[drop.name] || 0) + 1;
-  saveDivineMaterials(materials);
+  let hasAnyDrop = false;
 
-  showAlert(
-    `
-  <div class="d-flex flex-column align-items-center gap-2 ore-img-alert">
-    <img class="shiny" src="${drop.icon}" width="40" height="40" />
-    <div>發現了 <strong>${drop.name}</strong>！</div>
-  </div>
-`,
-    true
-  );
+  for (const item of drops) {
+    if (Math.random() < item.chance) {
+      materials[item.name] = (materials[item.name] || 0) + 1;
 
-  updateDivineUI?.(); // 若有 UI 更新函數就呼叫
+      showAlert(
+        `
+      <div class="d-flex flex-column align-items-center gap-2 ore-img-alert">
+        <img class="shiny" src="${item.icon}" width="40" height="40" />
+        <div>發現了 <strong>${item.name}</strong>！</div>
+      </div>
+    `,
+        true
+      );
+
+      hasAnyDrop = true;
+    }
+  }
+
+  if (hasAnyDrop) {
+    saveDivineMaterials(materials);
+    updateDivineUI?.();
+  }
 }
+
 function updateDivineUI() {
   const materials = loadDivineMaterials();
   const container = document.getElementById("divineItemList");
