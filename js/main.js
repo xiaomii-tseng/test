@@ -510,11 +510,12 @@ async function switchMap(mapKey) {
   );
 
   if (config.requiredEquipNames && !isFullDivineSet) {
-    const missing = config.requiredEquipNames.filter(
-      (name) => !equippedNames.includes(name)
-    );
-    if (missing.length > 0) {
-      return showAlert(`需要穿戴：${missing.join("、")}`);
+    const matchCount = equippedNames.filter((name) =>
+      config.requiredEquipNames.includes(name)
+    ).length;
+
+    if (matchCount < 3) {
+      return showAlert("需要穿戴任意三件對應裝備才能進入此地圖");
     }
   }
 
@@ -1591,7 +1592,7 @@ document.getElementById("unequipBtn").addEventListener("click", () => {
 // 顯示當前裝備資訊
 document.querySelectorAll(".slot").forEach((slotDiv) => {
   slotDiv.addEventListener("click", () => {
-    playSfx(sfxClickPlus)
+    playSfx(sfxClickPlus);
     const slotKey = slotDiv.dataset.slot;
     const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
     const item = equipped[slotKey];
@@ -2692,7 +2693,7 @@ function tryMultiCatch(fishType) {
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("refineEquippedBtn").addEventListener("click", () => {
-  playSfx(sfxClickPlus)
+  playSfx(sfxClickPlus);
   const modalEl = document.getElementById("equipInfoModal");
   const modal = bootstrap.Modal.getInstance(modalEl);
   if (modal) modal.hide();
@@ -2925,7 +2926,7 @@ document.getElementById("multiSellBtn").addEventListener("click", () => {
 document
   .getElementById("cancelMultiSelectBtn")
   .addEventListener("click", () => {
-    playSfx(sfxClickPlus)
+    playSfx(sfxClickPlus);
     exitMultiSelectMode();
     enterMultiSelectMode();
   });
