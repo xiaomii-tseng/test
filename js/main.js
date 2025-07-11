@@ -2650,8 +2650,8 @@ function showEfficiencyModal() {
   document.getElementById("autoRate").textContent = (autoRate * 100).toFixed(2);
 
   // 🐠 多魚上鉤率（觸發機率）+ 倍數（平均尾數影響）
-  const rawMultiChance = (buffs.multiCatchChance || 0) / 4.5;
-  const multiChance = Math.min(rawMultiChance * mapMod2, 90);
+  const rawMultiChance = (buffs.multiCatchChance || 0) / 3;
+  const multiChance = Math.min(rawMultiChance * mapMod2, 60);
   document.getElementById("multiCatchChance").textContent =
     multiChance.toFixed(2);
 
@@ -2664,15 +2664,15 @@ function tryMultiCatch(fishType) {
   const mapMod = currentMapConfig.multiCatcModifier || 1;
 
   // 🎯 加上地圖倍率影響
-  const rawChance = (buffs.multiCatchChance || 0) / 4.5;
-  const chance = Math.min(rawChance * mapMod, 90);
+  const rawChance = (buffs.multiCatchChance || 0) / 3;
+  const chance = Math.min(rawChance * mapMod, 60);
 
   const bonus = buffs.multiCatchMultiplier || 0;
   let finalCount = 1;
 
   if (Math.random() * 100 < chance) {
     const table = [
-      { count: 5, weight: 1 + bonus * 0.1 },
+      { count: 5, weight: 1 + bonus * 0.2 },
       { count: 4, weight: 3 + bonus * 0.6 },
       { count: 3, weight: 7 + bonus },
       { count: 2, weight: 500 + bonus * 3 },
