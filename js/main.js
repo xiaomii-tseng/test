@@ -69,6 +69,7 @@ const buffLabelMap = {
   multiCatchChance: "多魚成功率",
   multiCatchMultiplier: "多魚倍數提升",
 };
+
 // 音效
 const sfxOpen = new Audio("sound/test-open.mp3");
 sfxOpen.volume = 0.7;
@@ -1133,7 +1134,7 @@ function createFishInstance(fishType) {
 }
 
 // 🧳 新增魚到背包並保存
-function addFishToBackpack(fishType, count = 1) {
+function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
   let lastFishObj = null;
 
   const rarity = getRarityClass(fishType.rawProbability);
@@ -1144,14 +1145,19 @@ function addFishToBackpack(fishType, count = 1) {
     const fishObj = createFishInstance(fishType);
     fishObj.rarity = rarity;
     fishObj.image = fishType.image;
-    // ✅ 計算血量：價格 ×10 × 體型系數 × 稀有倍率 × 地圖倍率
+
+    // ✅ 計算血量
     fishObj.hp = Math.floor(
       ((fishObj.finalPrice * 10 * (100 + fishObj.size)) / 100) *
         rarityMultiplier *
         bossHpModifier
     );
 
-    if (rarity === "rarity-legend" || rarity === "rarity-mythic") {
+    // ✅ 判斷是否進待戰區
+    if (
+      !fromBossBattle &&
+      (rarity === "rarity-legend" || rarity === "rarity-mythic")
+    ) {
       saveToBossBackpack(fishObj);
       if (rarity === "rarity-mythic") {
         incrementCounter("mythic-fish-count");
@@ -2765,49 +2771,87 @@ function saveToBossBackpack(fish) {
   localStorage.setItem(storageKey, JSON.stringify(list));
 }
 function openBossBackpackModal() {
+  updateBossBackpackUI();
+  new bootstrap.Modal(document.getElementById("bossBackpackModal")).show();
+}
+function updateBossBackpackUI() {
   const list = JSON.parse(localStorage.getItem("boss-pending-fish") || "[]");
   const container = document.getElementById("bossBackpackContent");
 
   if (list.length === 0) {
-    container.innerHTML = `<div class="text-center text-muted">目前沒有待戰神話魚</div>`;
+    container.innerHTML = `<div class="text-center text-white">目前沒有待戰神話魚</div>`;
   } else {
     container.innerHTML = list
       .map((fish, index) => {
         const rarityClass =
           fish.rarity === "rarity-legend" ? "rarity-legend" : "rarity-mythic";
         return `
-      <div class="d-flex align-items-center boss-card ${rarityClass}" data-index="${index}">
-        <div class="boss-img-wrapper">
-          <img class="shiny" src="${fish.image}" />
+        <div class="d-flex align-items-center boss-card ${rarityClass}" data-index="${index}">
+          <div class="boss-img-wrapper">
+            <img class="shiny" src="${fish.image}" />
+          </div>
+          <div class="boss-info flex-grow-1">
+            <div class="fw-bold">${fish.name}</div>
+            <div>體型：${fish.size.toFixed(1)}%</div>
+            <div>稀有度：${
+              fish.rarity === "rarity-legend" ? "傳奇" : "神話"
+            }</div>
+            <div class="text-danger">HP：${(
+              fish.hp ?? 0
+            ).toLocaleString()}</div>
+          </div>
         </div>
-        <div class="boss-info flex-grow-1">
-          <div class="fw-bold">${fish.name}</div>
-          <div>體型：${fish.size.toFixed(1)}%</div>
-          <div>稀有度：${
-            fish.rarity === "rarity-legend" ? "傳奇" : "神話"
-          }</div>
-          <div class="text-danger">HP：${fish.hp.toLocaleString()}</div>
-        </div>
-      </div>
-    `;
+      `;
       })
       .join("");
-  }
-  container.querySelectorAll(".boss-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      const index = parseInt(card.getAttribute("data-index"));
-      openBossBattle(index);
+
+    // 綁定點擊事件
+    container.querySelectorAll(".boss-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const index = parseInt(card.getAttribute("data-index"));
+        openBossBattle(index);
+      });
     });
-  });
-  new bootstrap.Modal(document.getElementById("bossBackpackModal")).show();
+  }
 }
-// 開啟戰鬥 變數
+
+// 戰鬥變數
 let currentBossHp = 0;
-let bossTimer = 30;
+let bossTimer = 999;
 let timerInterval = null;
+let isBossFightActive = false;
+// BOSS的移動參數
+let bossMoveAngle = 0;
+let bossMoveSpeed = 3;
+let bossMoveLoop = null;
+let posX = 0;
+let posY = 0;
+let isBossMoving = false;
+let bossDamageMultiplier = 0.5;
+let bossSkillInterval = null;
+
+let userDamage = 10000;
+const BOSS_SKILL_POOL = {
+  清澈川流: {
+    "rarity-legend": ["teleport", "armor", "fast"],
+    "rarity-mythic": ["shadowClone"],
+  },
+  劍與魔法村: {
+    "rarity-legend": ["teleport", "armor", "fast"],
+    "rarity-mythic": ["invisible", "dive", "jam", "shrink"],
+  },
+  機械城河: {
+    "rarity-legend": ["fast", "teleport", "shrink"],
+    "rarity-mythic": ["shadowClone", "jam", "armor", "fast"],
+  },
+  黃金遺址: {
+    "rarity-legend": ["armor", "jam", "fast"],
+    "rarity-mythic": ["invisible", "teleport", "shadowClone", "jam"],
+  },
+};
 
 function startBossCountdown() {
-  bossTimer = 30;
+  bossTimer = bossTimer;
   document.getElementById("bossTimer").textContent = bossTimer;
 
   clearInterval(timerInterval);
@@ -2870,27 +2914,72 @@ function startBossFight(fish) {
       countdownText.classList.add("countdown-animate");
     } else {
       clearInterval(countdownInterval);
+      isBossFightActive = true;
       countdownOverlay.classList.add("hide");
       startBossCountdown();
     }
   }, 1000);
   startBossMovementLoop();
+  bossSkillInterval = setInterval(() => {
+    triggerRandomBossSkill(fish);
+  }, 5000 + Math.random() * 5000);
 }
 
 function endBossFight(success) {
   stopBossMovement();
-  document.getElementById("bossBattleOverlay").style.display = "none";
-  if (success) {
-    showAlert("🎉 挑戰成功！");
-    // 加魚進背包 & 從 boss-pending 移除（下一步）
-  } else {
-    showAlert("⏰ 挑戰失敗！");
-  }
-}
-function dealBossDamage(amount) {
-  if (currentBossHp <= 0) return;
+  isBossFightActive = false;
+  clearInterval(timerInterval);
 
-  currentBossHp = Math.max(currentBossHp - amount, 0);
+  const overlay = document.getElementById("bossBattleOverlay");
+  const messageBox = document.getElementById("bossResultMessage");
+
+  // ✅ 顯示結果
+  messageBox.textContent = success ? "釣上來啦！" : "魚逃走了...";
+  messageBox.classList.remove("hide");
+
+  // ✅ 處理待戰清單移除
+  const pendingList = JSON.parse(
+    localStorage.getItem("boss-pending-fish") || "[]"
+  );
+  const target = window.currentBossFish;
+
+  const updatedList = pendingList.filter((f) => {
+    // 用時間與名稱來比對唯一性（避免同名魚誤刪）
+    return !(f.id === target.id && f.caughtAt === target.caughtAt);
+  });
+
+  localStorage.setItem("boss-pending-fish", JSON.stringify(updatedList));
+
+  // ✅ 如果成功，加進正式背包
+  if (success) {
+    // 直接加入已完成的魚物件
+    const fish = window.currentBossFish;
+    backpack.push(fish);
+    saveBackpack();
+    updateBackpackUI();
+    refreshAllUI();
+    checkAchievements();
+    incrementCounter("player-fish-count");
+    addExp(fish.finalPrice);
+    updateFishDex(fish);
+    maybeDropDivineItem();
+    logCatchCard(fish, fish, 1);
+  }
+  updateBossBackpackUI();
+  // ✅ 關閉畫面延遲
+  setTimeout(() => {
+    messageBox.classList.add("hide");
+    overlay.style.display = "none";
+  }, 3000);
+}
+
+function dealBossDamage(amount) {
+  if (!isBossFightActive || currentBossHp <= 0) return;
+
+  // ✅ 套用傷害倍率（armor 技能會將 bossDamageMultiplier 設為 0.5）
+  const actualDamage = Math.floor(amount * bossDamageMultiplier);
+
+  currentBossHp = Math.max(currentBossHp - actualDamage, 0);
 
   const total = parseInt(
     document.getElementById("bossHpTotal").textContent.replace(/,/g, "")
@@ -2912,22 +3001,19 @@ function dealBossDamage(amount) {
   }
 }
 
-// BOSS的移動參數
-let bossMoveAngle = 0;
-let bossMoveSpeed = 2;
-let bossMoveLoop = null;
-
 function startBossMovementLoop() {
+  isBossMoving = true;
   const sprite = document.getElementById("bossSprite");
   const moveArea = document.getElementById("bossMoveArea");
 
-  let posX = moveArea.clientWidth / 2;
-  let posY = moveArea.clientHeight / 2;
+  posX = moveArea.clientWidth / 2;
+  posY = moveArea.clientHeight / 2;
 
   bossMoveAngle = Math.random() * 360;
   bossMoveSpeed = 1.5 + Math.random() * 2.5;
 
   function moveStep() {
+    if (!isBossMoving) return;
     const spriteW = sprite.offsetWidth;
     const spriteH = sprite.offsetHeight;
     const areaW = moveArea.clientWidth;
@@ -2940,17 +3026,22 @@ function startBossMovementLoop() {
     posX += dx * bossMoveSpeed;
     posY += dy * bossMoveSpeed;
 
-    const padding = 20;
-    if (posX < padding || posX > areaW - spriteW - padding) {
+    const halfW = spriteW / 2;
+    const halfH = spriteH / 2;
+
+    const maxOffsetX = halfW / 6; // 控制可超出寬度
+    const maxOffsetY = halfH / 6; // 控制可超出高度
+
+    if (posX < -maxOffsetX || posX > areaW + maxOffsetX) {
       bossMoveAngle = 180 - bossMoveAngle + (Math.random() * 30 - 15);
     }
-    if (posY < padding || posY > areaH - spriteH - padding) {
+    if (posY < -maxOffsetY || posY > areaH + maxOffsetY) {
       bossMoveAngle = -bossMoveAngle + (Math.random() * 30 - 15);
     }
 
     bossMoveAngle = (bossMoveAngle + 360) % 360;
 
-    // ✅ 水平翻轉邏輯（頭朝右就 scaleX(-1)）
+    // ✅ 水平翻轉
     const scaleX = dx >= 0 ? -1 : 1;
     sprite.style.setProperty("--scale-x", scaleX);
 
@@ -2964,18 +3055,221 @@ function startBossMovementLoop() {
 
   // 隨機改變方向與速度
   setInterval(() => {
-    bossMoveAngle += Math.random() * 90 - 45;
+    bossMoveAngle += Math.random() * 120 - 60;
     bossMoveSpeed = 1 + Math.random() * 4;
-  }, 1000 + Math.random() * 1000);
+  }, 800 + Math.random() * 1000);
 }
 
 function stopBossMovement() {
+  isBossMoving = false;
   if (bossMoveLoop) cancelAnimationFrame(bossMoveLoop);
 }
+
+let bossState = {
+  shrinking: false,
+  armor: false,
+  invisible: false,
+  // 其他狀態也可以集中管理
+};
+function triggerBossSkill(skillName) {
+  const sprite = document.getElementById("bossSprite");
+
+  switch (skillName) {
+    case "invisible":
+      // ✅ 隱形隨機 1~3 秒
+      const duration = 1500 + Math.random() * 2500; // 1000 ~ 3000 毫秒
+
+      sprite.style.opacity = "0.2";
+      sprite.style.pointerEvents = "none"; // 禁止點擊
+
+      setTimeout(() => {
+        sprite.style.opacity = "1";
+        sprite.style.pointerEvents = "auto";
+      }, duration);
+
+      break;
+
+    case "teleport":
+      {
+        // ✅ 暫停移動 loop
+        cancelAnimationFrame(bossMoveLoop);
+
+        const area = document.getElementById("bossMoveArea");
+        const spriteW = sprite.offsetWidth;
+        const spriteH = sprite.offsetHeight;
+        const areaW = area.clientWidth;
+        const areaH = area.clientHeight;
+
+        const newX = Math.random() * (areaW - spriteW) + spriteW / 2;
+        const newY = Math.random() * (areaH - spriteH) + spriteH / 2;
+
+        posX = newX;
+        posY = newY;
+
+        sprite.style.transition = "top 0.2s, left 0.2s";
+        sprite.style.left = `${newX}px`;
+        sprite.style.top = `${newY}px`;
+
+        // ✅ 0.2 秒後恢復移動
+        setTimeout(() => {
+          startBossMovementLoop(); // 重新啟動移動
+        }, 200);
+      }
+      break;
+
+    case "fast":
+      // ✅ 高速移動 → 移動速度變快 5 秒
+      bossMoveSpeed *= 4;
+      setTimeout(() => {
+        bossMoveSpeed /= 4;
+      }, 5000);
+      break;
+
+    case "dive":
+      // ✅ 沉入水中 → 3 秒滑到底部消失再出現
+      sprite.style.transition = "top 1s, opacity 1s";
+      sprite.style.opacity = "0";
+      sprite.style.top = "100%";
+      setTimeout(() => {
+        sprite.style.top = "10%";
+        sprite.style.opacity = "1";
+      }, 3000);
+      break;
+
+    case "shrink":
+      if (bossState.shrinking) break;
+      bossState.shrinking = true;
+
+      sprite.classList.add("shrinked");
+
+      setTimeout(() => {
+        sprite.classList.remove("shrinked");
+        bossState.shrinking = false;
+      }, 3000);
+      break;
+
+    case "armor":
+      // ✅ 鋼鐵鎧甲 → 減傷標記 5 秒
+      sprite.classList.add("armor"); // 可搭配 CSS 邊框效果
+      bossDamageMultiplier = 0.5; // 傷害減半
+      setTimeout(() => {
+        sprite.classList.remove("armor");
+        bossDamageMultiplier = 1;
+      }, 3000);
+      break;
+
+    case "shadowClone":
+      // ✅ 影分身 → 加入 2 個假分身干擾
+      spawnShadowClones(2); // 你需實作這個 helper
+      break;
+
+    case "jam":
+      // ✅ 電磁干擾 → 全畫面閃爍 3 秒，無法點擊
+      const overlay = document.getElementById("bossBattleOverlay");
+      overlay.classList.add("jammed"); // 可加白色閃爍動畫
+      // sprite.style.pointerEvents = "none";
+      setTimeout(() => {
+        overlay.classList.remove("jammed");
+        // sprite.style.pointerEvents = "auto";
+      }, 3000);
+      break;
+
+    default:
+      console.warn("未知技能:", skillName);
+  }
+  console.log("技能發動:", skillName);
+  console.log("BOSS 當前位置:", sprite.style.left, sprite.style.top);
+  // showBossSkillName(skillName); // ✅ 可選：顯示技能名稱提示（你可客製）
+}
+
+function spawnShadowClones(count = 2) {
+  const moveArea = document.getElementById("bossMoveArea");
+  const sprite = document.getElementById("bossSprite");
+  const spriteW = sprite.offsetWidth;
+  const spriteH = sprite.offsetHeight;
+  const areaW = moveArea.clientWidth;
+  const areaH = moveArea.clientHeight;
+
+  // ⏱️ 取得 BOSS 實際位置（相對 moveArea）
+  const bossRect = sprite.getBoundingClientRect();
+  const areaRect = moveArea.getBoundingClientRect();
+  const baseX = bossRect.left - areaRect.left + spriteW / 2;
+  const baseY = bossRect.top - areaRect.top + spriteH / 2;
+
+  for (let i = 0; i < count; i++) {
+    const clone = sprite.cloneNode(true);
+    clone.classList.remove("hit", "armor");
+    clone.classList.add("shadow-clone");
+    clone.removeAttribute("id");
+
+    // 初始位置
+    let posX = baseX;
+    let posY = baseY;
+
+    // 分別往左、右隨機角度散開
+    let angle = i === 0 ? 30 + Math.random() * 30 : 150 + Math.random() * 30;
+    let speed = 2 + Math.random() * 1.5;
+
+    // 設定初始樣式
+    clone.style.left = `${posX}px`;
+    clone.style.top = `${posY}px`;
+    clone.style.setProperty(
+      "--scale-x",
+      Math.cos((angle * Math.PI) / 180) >= 0 ? -1 : 1
+    );
+    clone.style.opacity = "1";
+    clone.style.pointerEvents = "none"; // 防止誤點
+
+    moveArea.appendChild(clone);
+
+    // 🧠 幻影移動邏輯
+    const moveClone = () => {
+      const rad = (angle * Math.PI) / 180;
+      posX += Math.cos(rad) * speed * 2;
+      posY += Math.sin(rad) * speed * 2;
+
+      // 邊界反彈
+      const padding = 20;
+      if (posX < padding || posX > areaW - spriteW + padding) {
+        angle = 180 - angle + (Math.random() * 30 - 15);
+      }
+      if (posY < padding || posY > areaH - spriteH + padding) {
+        angle = -angle + (Math.random() * 30 - 15);
+      }
+
+      angle = (angle + 360) % 360;
+      clone.style.setProperty("--scale-x", Math.cos(rad) >= 0 ? -1 : 1);
+      clone.style.left = `${posX}px`;
+      clone.style.top = `${posY}px`;
+
+      clone._moveLoop = requestAnimationFrame(moveClone);
+    };
+
+    moveClone();
+
+    // ⏳ 自動消失（例如 4 秒後）
+    setTimeout(() => {
+      cancelAnimationFrame(clone._moveLoop);
+      clone.remove();
+    }, 4000);
+  }
+}
+
+function triggerRandomBossSkill(fish) {
+  const map = currentMapConfig.name; // 預設地圖
+  const rarity = fish.rarity; // "rarity-legend" or "rarity-mythic"
+  const skillPool = BOSS_SKILL_POOL[map]?.[rarity] || [];
+
+  if (skillPool.length === 0) return;
+
+  const skill = skillPool[Math.floor(Math.random() * skillPool.length)];
+  triggerBossSkill(skill);
+}
+
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("bossSprite").onclick = () => {
-  dealBossDamage(10000); // 目前固定每次點扣 10000
+  dealBossDamage(userDamage);
 };
 document
   .getElementById("openBossBackpackBtn")

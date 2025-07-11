@@ -804,22 +804,23 @@
 
     <!-- BOSS 戰鬥場地 -->
     <div id="bossBattleOverlay" class="boss-battle-overlay">
+        <div id="bossResultMessage" class="boss-result-message hide"></div>
         <div id="bossCountdownOverlay" class="boss-countdown-overlay hide">
             <div id="bossCountdownText">3</div>
         </div>
         <div class="boss-hp-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-2 px-2">
-                <div class="boss-name" id="bossName">🔥 魔焰海鯊</div> <!-- ✅ 加 ID -->
+                <div class="boss-name" id="bossName"></div> <!-- ✅ 加 ID -->
                 <div class="boss-timer text-warning fw-bold">
-                    倒數 <span id="bossTimer">30</span> 秒
+                    倒數 <span id="bossTimer"></span> 秒
                 </div>
             </div>
             <div class="boss-hp-bar">
                 <div class="boss-hp-fill" id="bossHpFill"></div>
             </div>
             <div class="boss-hp-text">
-                <span id="bossHpCurrent">12345</span> /
-                <span id="bossHpTotal">20000</span>
+                <span id="bossHpCurrent"></span> /
+                <span id="bossHpTotal"></span>
             </div>
         </div>
 

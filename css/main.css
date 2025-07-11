@@ -1143,3 +1143,68 @@ body {
 #bossBattleOverlay {
   display: none;
 }
+
+.boss-result-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  /* padding: 1rem 2rem; */
+  /* background: rgba(0, 0, 0, 0.7); */
+  /* border: 2px solid white; */
+  /* border-radius: 10px; */
+  z-index: 99;
+  animation: fadeInScale 0.4s ease;
+}
+
+@keyframes fadeInScale {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.boss-result-message.hide {
+  display: none;
+}
+
+.boss-sprite.shrinked {
+  transform: translate(-50%, -50%) scale(0.5);
+  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scale(0.5);
+}
+
+.boss-sprite.armor {
+  box-shadow: 0 0 10px #aaa, 0 0 30px #ccc inset;
+  filter: grayscale(0.3);
+  border-radius: 50%;
+}
+
+@keyframes jamFlash {
+  0% {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.boss-battle-overlay.jammed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  animation: jamFlash 0.3s infinite;
+  pointer-events: none;
+  z-index: 20;
+}
