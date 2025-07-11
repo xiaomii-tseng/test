@@ -233,8 +233,8 @@ document
 const alertQueue = [];
 let alertShowing = false;
 
-export function showAlert(message) {
-  alertQueue.push(message);
+export function showAlert(message, isHtml = false) {
+  alertQueue.push({ message, isHtml }); // 包成物件
   if (!alertShowing) processNextAlert();
 }
 
@@ -245,20 +245,24 @@ export function processNextAlert() {
   }
 
   alertShowing = true;
-  const message = alertQueue.shift();
+  const { message, isHtml } = alertQueue.shift(); // 解構物件
 
   const modalEl = document.getElementById("customAlertModal");
   const modalContent = document.getElementById("customAlertContent");
-  modalContent.textContent = message;
+
+  if (isHtml) {
+    modalContent.innerHTML = message;
+  } else {
+    modalContent.textContent = message;
+  }
 
   const modal = new bootstrap.Modal(modalEl);
   modal.show();
 
-  // ✅ 等 modal 關閉後再顯示下一個
   modalEl.addEventListener(
     "hidden.bs.modal",
     () => {
-      setTimeout(processNextAlert, 200); // 可選 delay
+      setTimeout(processNextAlert, 200);
     },
     { once: true }
   );
@@ -1135,9 +1139,21 @@ function saveDivineMaterials(materials) {
 // 神話道具
 function maybeDropDivineItem() {
   const dropTable = {
-    map1: { name: "隕石碎片", chance: 0.0005 },
-    map4: { name: "黃銅礦", chance: 0.0005 },
-    map2: { name: "核廢料", chance: 0.0005 },
+    map1: {
+      name: "隕石碎片",
+      icon: "images-webp/icons/ore2.webp",
+      chance: 0.0005,
+    },
+    map4: {
+      name: "黃銅礦",
+      icon: "images-webp/icons/ore3.webp",
+      chance: 0.0005,
+    },
+    map2: {
+      name: "核廢料",
+      icon: "images-webp/icons/ore4.webp",
+      chance: 0.0005,
+    },
   };
   const drop = dropTable[currentMapKey];
   if (!drop || Math.random() >= drop.chance) return;
@@ -1146,7 +1162,16 @@ function maybeDropDivineItem() {
   materials[drop.name] = (materials[drop.name] || 0) + 1;
   saveDivineMaterials(materials);
 
-  showAlert(`你撿到了一個 ${drop.name}！`);
+  showAlert(
+    `
+  <div class="d-flex flex-column align-items-center gap-2 ore-img-alert">
+    <img class="shiny" src="${drop.icon}" width="40" height="40" />
+    <div>發現了 <strong>${drop.name}</strong>！</div>
+  </div>
+`,
+    true
+  );
+
   updateDivineUI?.(); // 若有 UI 更新函數就呼叫
 }
 function updateDivineUI() {

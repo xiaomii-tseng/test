@@ -952,3 +952,12 @@ body {
   min-width: 60px;
   text-align: right;
 }
+
+.ore-img-alert img {
+  width: 54px;
+  height: 54px;
+}
+
+.ore-img-alert strong {
+  color: gold;
+}
