@@ -787,6 +787,51 @@
         </div>
     </div>
 
+    <!-- 🧳 BOSS 待戰背包 Modal -->
+    <div class="modal fade" id="bossBackpackModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg boss-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">挑戰</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="bossBackpackContent">
+                    <!-- 卡片內容由 JS 動態生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOSS 戰鬥場地 -->
+    <div id="bossBattleOverlay" class="boss-battle-overlay">
+        <div id="bossCountdownOverlay" class="boss-countdown-overlay hide">
+            <div id="bossCountdownText">3</div>
+        </div>
+        <div class="boss-hp-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-2 px-2">
+                <div class="boss-name" id="bossName">🔥 魔焰海鯊</div> <!-- ✅ 加 ID -->
+                <div class="boss-timer text-warning fw-bold">
+                    倒數 <span id="bossTimer">30</span> 秒
+                </div>
+            </div>
+            <div class="boss-hp-bar">
+                <div class="boss-hp-fill" id="bossHpFill"></div>
+            </div>
+            <div class="boss-hp-text">
+                <span id="bossHpCurrent">12345</span> /
+                <span id="bossHpTotal">20000</span>
+            </div>
+        </div>
+
+        <div class="boss-move-area shiny" id="bossMoveArea">
+            <img id="bossSprite" src="" class="boss-sprite" /> <!-- ✅ 清掉 src -->
+        </div>
+    </div>
+
+
+
+
+
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered alert-modal">

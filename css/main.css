@@ -981,3 +981,165 @@ body {
   width: 24px;
   height: 24px;
 }
+
+.boss-modal .modal-content {
+  background-image: url("../images-webp/index/boss.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 100%;
+  margin: auto;
+  text-shadow: 0px 0px 2px black;
+}
+
+.boss-modal .modal-body {
+  max-height: 500px;
+}
+
+.boss-card {
+  background: rgba(29, 29, 29, 0.904);
+  border-radius: 10px;
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.boss-img-wrapper {
+  flex-shrink: 0;
+  padding-right: 30px;
+  padding-left: 5px;
+}
+
+.boss-img-wrapper img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.boss-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.boss-battle-overlay {
+  position: fixed;
+  inset: 0;
+  background: url("../images-webp/index/battle.webp") no-repeat center center /
+    cover;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.boss-hp-wrapper {
+  padding: 1rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.boss-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.boss-hp-bar {
+  width: 80%;
+  height: 20px;
+  background: #222;
+  border: 2px solid #fff;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.boss-hp-fill {
+  background: linear-gradient(to right, red, orange);
+  width: 100%;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.boss-hp-text {
+  color: #fff;
+  margin-top: 0.3rem;
+}
+
+.boss-move-area {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 🐟 BOSS 精靈圖片 */
+.boss-sprite {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1));
+  transition: top 0.2s linear, left 0.2s linear, transform 0.2s;
+}
+
+/* 🗯️ BOSS 受擊動畫（縮放 Y 軸） */
+.boss-sprite.hit {
+  animation: bossHitYBounce 0.2s ease-in-out;
+}
+
+@keyframes bossHitYBounce {
+  0% {
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scaleY(0.85);
+  }
+  100% {
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scaleY(1);
+  }
+}
+
+/* ⏱️ 倒數 UI */
+.boss-countdown-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.boss-countdown-overlay.hide {
+  display: none;
+}
+
+/* 🎬 倒數數字動畫 */
+@keyframes countdownPop {
+  0% {
+    transform: scale(5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.countdown-animate {
+  animation: countdownPop 0.3s ease;
+}
+
+/* ⚔️ 戰鬥主區塊預設隱藏 */
+#bossBattleOverlay {
+  display: none;
+}

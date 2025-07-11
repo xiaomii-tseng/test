@@ -56,6 +56,10 @@ const GLOBAL_DROP_TABLE = {
     },
   ],
 };
+const RARITY_HP_MULTIPLIERS = {
+  "rarity-legendary": 1,
+  "rarity-mythic": 2,
+};
 const buffLabelMap = {
   increaseCatchRate: "增加上鉤率",
   increaseRareRate: "增加稀有率",
@@ -444,6 +448,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.0,
     catchRateModifier: 1.0, // 正常上鉤率
     multiCatcModifier: 1.0,
+    bossHpModifier: 1.0,
     name: "清澈川流",
     background: "images-webp/index/index3.webp",
     music: "sound/map1.mp3",
@@ -456,6 +461,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.1,
     catchRateModifier: 0.9,
     multiCatcModifier: 0.8,
+    bossHpModifier: 1.25,
     name: "劍與魔法村",
     background: "images-webp/maps/map4.webp",
     requiredLevel: 50,
@@ -479,6 +485,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.2,
     catchRateModifier: 0.8, // 稍微難釣
     multiCatcModifier: 0.55,
+    bossHpModifier: 1.5,
     name: "機械城河",
     background: "images-webp/maps/map2.webp",
     requiredLevel: 100,
@@ -502,6 +509,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.3,
     catchRateModifier: 0.7, // 較難上鉤
     multiCatcModifier: 0.3,
+    bossHpModifier: 1.75,
     name: "黃金遺址",
     background: "images-webp/maps/map3.webp",
     requiredLevel: 150,
@@ -1128,13 +1136,35 @@ function createFishInstance(fishType) {
 function addFishToBackpack(fishType, count = 1) {
   let lastFishObj = null;
 
+  const rarity = getRarityClass(fishType.rawProbability);
+  const rarityMultiplier = RARITY_HP_MULTIPLIERS[rarity] || 1;
+  const bossHpModifier = currentMapConfig?.bossHpModifier || 1;
+
   for (let i = 0; i < count; i++) {
     const fishObj = createFishInstance(fishType);
-    backpack.push(fishObj);
+    fishObj.rarity = rarity;
+    fishObj.image = fishType.image;
+    // ✅ 計算血量：價格 ×10 × 體型系數 × 稀有倍率 × 地圖倍率
+    fishObj.hp = Math.floor(
+      ((fishObj.finalPrice * 10 * (100 + fishObj.size)) / 100) *
+        rarityMultiplier *
+        bossHpModifier
+    );
+
+    if (rarity === "rarity-legend" || rarity === "rarity-mythic") {
+      saveToBossBackpack(fishObj);
+      if (rarity === "rarity-mythic") {
+        incrementCounter("mythic-fish-count");
+      }
+      showAlert(`🐟 ${fishObj.name} 還在掙扎，趕快跟牠搏鬥！`);
+    } else {
+      backpack.push(fishObj);
+    }
+
     updateFishDex(fishObj);
     addExp(fishObj.finalPrice);
     maybeDropDivineItem();
-    lastFishObj = fishObj; // 留最後一隻作為 UI 顯示
+    lastFishObj = fishObj;
   }
 
   saveBackpack();
@@ -1145,11 +1175,6 @@ function addFishToBackpack(fishType, count = 1) {
 
   if (lastFishObj) {
     logCatchCard(lastFishObj, fishType, count);
-  }
-
-  const rarity = getRarityClass(fishType.rawProbability);
-  if (rarity === "rarity-mythic") {
-    incrementCounter("mythic-fish-count");
   }
 }
 
@@ -2732,9 +2757,229 @@ function tryMultiCatch(fishType) {
 
   addFishToBackpack(fishType, finalCount);
 }
+// 儲存進 BOSS 背包
+function saveToBossBackpack(fish) {
+  const storageKey = "boss-pending-fish";
+  const list = JSON.parse(localStorage.getItem(storageKey) || "[]");
+  list.push(fish);
+  localStorage.setItem(storageKey, JSON.stringify(list));
+}
+function openBossBackpackModal() {
+  const list = JSON.parse(localStorage.getItem("boss-pending-fish") || "[]");
+  const container = document.getElementById("bossBackpackContent");
 
+  if (list.length === 0) {
+    container.innerHTML = `<div class="text-center text-muted">目前沒有待戰神話魚</div>`;
+  } else {
+    container.innerHTML = list
+      .map((fish, index) => {
+        const rarityClass =
+          fish.rarity === "rarity-legend" ? "rarity-legend" : "rarity-mythic";
+        return `
+      <div class="d-flex align-items-center boss-card ${rarityClass}" data-index="${index}">
+        <div class="boss-img-wrapper">
+          <img class="shiny" src="${fish.image}" />
+        </div>
+        <div class="boss-info flex-grow-1">
+          <div class="fw-bold">${fish.name}</div>
+          <div>體型：${fish.size.toFixed(1)}%</div>
+          <div>稀有度：${
+            fish.rarity === "rarity-legend" ? "傳奇" : "神話"
+          }</div>
+          <div class="text-danger">HP：${fish.hp.toLocaleString()}</div>
+        </div>
+      </div>
+    `;
+      })
+      .join("");
+  }
+  container.querySelectorAll(".boss-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const index = parseInt(card.getAttribute("data-index"));
+      openBossBattle(index);
+    });
+  });
+  new bootstrap.Modal(document.getElementById("bossBackpackModal")).show();
+}
+// 開啟戰鬥 變數
+let currentBossHp = 0;
+let bossTimer = 30;
+let timerInterval = null;
+
+function startBossCountdown() {
+  bossTimer = 30;
+  document.getElementById("bossTimer").textContent = bossTimer;
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    bossTimer--;
+    document.getElementById("bossTimer").textContent = bossTimer;
+    if (bossTimer <= 0) {
+      clearInterval(timerInterval);
+      endBossFight(false); // 挑戰失敗
+    }
+  }, 1000);
+}
+async function openBossBattle(index) {
+  const list = JSON.parse(localStorage.getItem("boss-pending-fish") || "[]");
+  const fish = list[index];
+  if (!fish) return;
+
+  const confirmBattle = await customConfirm(`是否挑戰 ${fish.name}？`);
+  if (!confirmBattle) return;
+
+  // ✅ 儲存挑戰中 BOSS 到全域變數
+  window.currentBossFish = fish;
+  startBossFight(fish); // ← 真正開戰函式
+}
+
+function startBossFight(fish) {
+  document.getElementById("bossBattleOverlay").style.display = "flex";
+
+  // 更新名稱與圖片
+  document.getElementById("bossName").textContent = fish.name;
+  document.getElementById("bossSprite").src = fish.image;
+
+  // 設定血量
+  currentBossHp = fish.hp;
+  document.getElementById("bossHpCurrent").textContent =
+    currentBossHp.toLocaleString();
+  document.getElementById("bossHpTotal").textContent = fish.hp.toLocaleString();
+  document.getElementById("bossHpFill").style.width = "100%";
+
+  // 顯示倒數
+  const countdownOverlay = document.getElementById("bossCountdownOverlay");
+  const countdownText = document.getElementById("bossCountdownText");
+  countdownOverlay.classList.remove("hide");
+
+  let countdown = 3;
+  countdownText.textContent = countdown;
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+
+    if (countdown > 0) {
+      countdownText.textContent = countdown;
+      countdownText.classList.remove("countdown-animate");
+      void countdownText.offsetWidth;
+      countdownText.classList.add("countdown-animate");
+    } else if (countdown === 0) {
+      countdownText.textContent = "開始搏鬥!";
+      countdownText.classList.remove("countdown-animate");
+      void countdownText.offsetWidth;
+      countdownText.classList.add("countdown-animate");
+    } else {
+      clearInterval(countdownInterval);
+      countdownOverlay.classList.add("hide");
+      startBossCountdown();
+    }
+  }, 1000);
+  startBossMovementLoop();
+}
+
+function endBossFight(success) {
+  stopBossMovement();
+  document.getElementById("bossBattleOverlay").style.display = "none";
+  if (success) {
+    showAlert("🎉 挑戰成功！");
+    // 加魚進背包 & 從 boss-pending 移除（下一步）
+  } else {
+    showAlert("⏰ 挑戰失敗！");
+  }
+}
+function dealBossDamage(amount) {
+  if (currentBossHp <= 0) return;
+
+  currentBossHp = Math.max(currentBossHp - amount, 0);
+
+  const total = parseInt(
+    document.getElementById("bossHpTotal").textContent.replace(/,/g, "")
+  );
+  const percent = (currentBossHp / total) * 100;
+
+  document.getElementById("bossHpCurrent").textContent =
+    currentBossHp.toLocaleString();
+  document.getElementById("bossHpFill").style.width = `${percent}%`;
+
+  // ✅ 播放動畫（不影響 scaleX）
+  const sprite = document.getElementById("bossSprite");
+  sprite.classList.add("hit");
+  setTimeout(() => sprite.classList.remove("hit"), 200);
+
+  if (currentBossHp <= 0) {
+    clearInterval(timerInterval);
+    endBossFight(true);
+  }
+}
+
+// BOSS的移動參數
+let bossMoveAngle = 0;
+let bossMoveSpeed = 2;
+let bossMoveLoop = null;
+
+function startBossMovementLoop() {
+  const sprite = document.getElementById("bossSprite");
+  const moveArea = document.getElementById("bossMoveArea");
+
+  let posX = moveArea.clientWidth / 2;
+  let posY = moveArea.clientHeight / 2;
+
+  bossMoveAngle = Math.random() * 360;
+  bossMoveSpeed = 1.5 + Math.random() * 2.5;
+
+  function moveStep() {
+    const spriteW = sprite.offsetWidth;
+    const spriteH = sprite.offsetHeight;
+    const areaW = moveArea.clientWidth;
+    const areaH = moveArea.clientHeight;
+
+    const rad = (bossMoveAngle * Math.PI) / 180;
+    const dx = Math.cos(rad);
+    const dy = Math.sin(rad);
+
+    posX += dx * bossMoveSpeed;
+    posY += dy * bossMoveSpeed;
+
+    const padding = 20;
+    if (posX < padding || posX > areaW - spriteW - padding) {
+      bossMoveAngle = 180 - bossMoveAngle + (Math.random() * 30 - 15);
+    }
+    if (posY < padding || posY > areaH - spriteH - padding) {
+      bossMoveAngle = -bossMoveAngle + (Math.random() * 30 - 15);
+    }
+
+    bossMoveAngle = (bossMoveAngle + 360) % 360;
+
+    // ✅ 水平翻轉邏輯（頭朝右就 scaleX(-1)）
+    const scaleX = dx >= 0 ? -1 : 1;
+    sprite.style.setProperty("--scale-x", scaleX);
+
+    sprite.style.left = `${posX}px`;
+    sprite.style.top = `${posY}px`;
+
+    bossMoveLoop = requestAnimationFrame(moveStep);
+  }
+
+  bossMoveLoop = requestAnimationFrame(moveStep);
+
+  // 隨機改變方向與速度
+  setInterval(() => {
+    bossMoveAngle += Math.random() * 90 - 45;
+    bossMoveSpeed = 1 + Math.random() * 4;
+  }, 1000 + Math.random() * 1000);
+}
+
+function stopBossMovement() {
+  if (bossMoveLoop) cancelAnimationFrame(bossMoveLoop);
+}
 // 下面是 document
 // 綁定按鈕事件
+document.getElementById("bossSprite").onclick = () => {
+  dealBossDamage(10000); // 目前固定每次點扣 10000
+};
+document
+  .getElementById("openBossBackpackBtn")
+  .addEventListener("click", openBossBackpackModal);
 document.getElementById("refineEquippedBtn").addEventListener("click", () => {
   playSfx(sfxClickPlus);
   const modalEl = document.getElementById("equipInfoModal");
