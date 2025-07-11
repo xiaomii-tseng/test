@@ -2833,20 +2833,20 @@ let bossSkillInterval = null;
 let userDamage = 10000;
 const BOSS_SKILL_POOL = {
   清澈川流: {
-    "rarity-legend": ["teleport", "armor", "fast"],
-    "rarity-mythic": ["shadowClone", "armor", "fast"],
+    "rarity-legend": ["fast", "dive"],
+    "rarity-mythic": ["shadowClone", "fast"],
   },
   劍與魔法村: {
     "rarity-legend": ["teleport", "armor", "fast"],
-    "rarity-mythic": ["invisible", "dive", "jam", "shrink"],
+    "rarity-mythic": ["invisible", "dive", "shrink"],
   },
   機械城河: {
     "rarity-legend": ["fast", "teleport", "shrink"],
-    "rarity-mythic": ["shadowClone", "jam", "armor", "fast"],
+    "rarity-mythic": ["shadowClone", "armor", "fast"],
   },
   黃金遺址: {
-    "rarity-legend": ["armor", "jam", "fast"],
-    "rarity-mythic": ["invisible", "teleport", "shadowClone", "jam"],
+    "rarity-legend": ["armor", "fast"],
+    "rarity-mythic": ["invisible", "teleport", "shadowClone", "armor", "fast"],
   },
 };
 
@@ -3225,8 +3225,8 @@ function spawnShadowClones(count = 2) {
     // 🧠 幻影移動邏輯
     const moveClone = () => {
       const rad = (angle * Math.PI) / 180;
-      posX += Math.cos(rad) * speed * 2;
-      posY += Math.sin(rad) * speed * 2;
+      posX += Math.cos(rad) * speed * 1.5;
+      posY += Math.sin(rad) * speed * 1.5;
 
       // 邊界反彈
       const padding = 20;
