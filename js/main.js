@@ -3029,8 +3029,8 @@ function startBossMovementLoop() {
     const halfW = spriteW / 2;
     const halfH = spriteH / 2;
 
-    const maxOffsetX = halfW / 6; // 控制可超出寬度
-    const maxOffsetY = halfH / 6; // 控制可超出高度
+    const maxOffsetX = halfW / 10; // 控制可超出寬度
+    const maxOffsetY = halfH / 10; // 控制可超出高度
 
     if (posX < -maxOffsetX || posX > areaW + maxOffsetX) {
       bossMoveAngle = 180 - bossMoveAngle + (Math.random() * 30 - 15);
