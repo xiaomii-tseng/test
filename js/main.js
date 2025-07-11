@@ -1162,7 +1162,10 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
       if (rarity === "rarity-mythic") {
         incrementCounter("mythic-fish-count");
       }
-      showAlert(`🐟 ${fishObj.name} 還在掙扎，趕快跟牠搏鬥！`);
+      showAlert(
+        `<span class="fight-text">${fishObj.name}</span> 還在掙扎，趕快跟牠搏鬥！`,
+        true
+      );
     } else {
       backpack.push(fishObj);
     }
@@ -2834,19 +2837,26 @@ let userDamage = 10000;
 const BOSS_SKILL_POOL = {
   清澈川流: {
     "rarity-legend": ["fast", "dive"],
-    "rarity-mythic": ["shadowClone", "fast"],
+    "rarity-mythic": ["invisible", "armor", "fast", "dive"],
   },
   劍與魔法村: {
-    "rarity-legend": ["teleport", "armor", "fast"],
-    "rarity-mythic": ["invisible", "dive", "shrink"],
+    "rarity-legend": ["armor", "fast", "dive"],
+    "rarity-mythic": ["shadowClone", "teleport", "invisible", "dive", "shrink"],
   },
   機械城河: {
-    "rarity-legend": ["fast", "teleport", "shrink"],
-    "rarity-mythic": ["shadowClone", "armor", "fast"],
+    "rarity-legend": ["fast", "shrink"],
+    "rarity-mythic": ["shadowClone", "teleport", "armor", "fast"],
   },
   黃金遺址: {
     "rarity-legend": ["armor", "fast"],
-    "rarity-mythic": ["invisible", "teleport", "shadowClone", "armor", "fast"],
+    "rarity-mythic": [
+      "invisible",
+      "teleport",
+      "shadowClone",
+      "armor",
+      "fast",
+      "shrink",
+    ],
   },
 };
 
@@ -3137,6 +3147,7 @@ function triggerBossSkill(skillName) {
       break;
 
     case "shrink":
+      // 縮小術'
       if (bossState.shrinking) break;
       bossState.shrinking = true;
 
