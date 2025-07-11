@@ -38,7 +38,7 @@ const buffLabelMap = {
   increaseBigFishChance: "大體型機率",
   increaseSellValue: "增加販售金額",
   increaseExpGain: "經驗值加成",
-  multiCatchChance: "多魚上鉤率",
+  multiCatchChance: "多魚成功率",
   multiCatchMultiplier: "多魚倍數提升",
 };
 // 音效
@@ -1239,7 +1239,7 @@ const BUFF_TYPES = [
   { type: "increaseBigFishChance", label: "大體型魚機率" },
   { type: "increaseSellValue", label: "增加販售金額" },
   { type: "increaseExpGain", label: "經驗獲得加成" },
-  { type: "multiCatchChance", label: "多魚上鉤率" },
+  { type: "multiCatchChance", label: "多魚成功率" },
   { type: "multiCatchMultiplier", label: "多魚倍數值" },
 ];
 
@@ -1545,7 +1545,7 @@ function updateCharacterStats() {
   ).textContent = `經驗值加成：${Math.round(stats.increaseExpGain)}%`;
   document.querySelector(
     ".multi-catch-chance"
-  ).textContent = `多魚上鉤率：${Math.round(stats.multiCatchChance)}%`;
+  ).textContent = `多魚成功率：${Math.round(stats.multiCatchChance)}%`;
   document.querySelector(
     ".multi-catch-multiplier"
   ).textContent = `多魚倍數值：${Math.round(stats.multiCatchMultiplier)}%`;
@@ -2649,7 +2649,7 @@ function showEfficiencyModal() {
   const autoRate = Math.min(rawAutoRate, 0.95);
   document.getElementById("autoRate").textContent = (autoRate * 100).toFixed(2);
 
-  // 🐠 多魚上鉤率（觸發機率）+ 倍數（平均尾數影響）
+  // 🐠 多魚成功率（觸發機率）+ 倍數（平均尾數影響）
   const rawMultiChance = (buffs.multiCatchChance || 0) / 3;
   const multiChance = Math.min(rawMultiChance * mapMod2, 60);
   document.getElementById("multiCatchChance").textContent =
