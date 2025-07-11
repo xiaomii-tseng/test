@@ -2834,7 +2834,7 @@ let userDamage = 10000;
 const BOSS_SKILL_POOL = {
   清澈川流: {
     "rarity-legend": ["teleport", "armor", "fast"],
-    "rarity-mythic": ["shadowClone"],
+    "rarity-mythic": ["shadowClone", "armor", "fast"],
   },
   劍與魔法村: {
     "rarity-legend": ["teleport", "armor", "fast"],
