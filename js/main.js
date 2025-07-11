@@ -1002,8 +1002,8 @@ function addClickBounce(el) {
   );
 }
 function getRandomAutoFishingDelay() {
-  return 8000 + Math.random() * 5000;
-  // return 4500;
+  // return 5000 + Math.random() * 15000;
+  return 4500;
 }
 // 自動釣魚上鉤率
 function doFishing() {
