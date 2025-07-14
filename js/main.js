@@ -2836,8 +2836,8 @@ let bossSkillInterval = null;
 let userDamage = 10000;
 const BOSS_SKILL_POOL = {
   清澈川流: {
-    "rarity-legend": ["fast", "dive"],
-    "rarity-mythic": ["invisible", "armor", "fast", "dive"],
+    "rarity-legend": ["shadowClone"],
+    "rarity-mythic": ["shadowClone"],
   },
   劍與魔法村: {
     "rarity-legend": ["armor", "fast", "dive"],
@@ -3196,74 +3196,81 @@ function triggerBossSkill(skillName) {
 function spawnShadowClones(count = 2) {
   const moveArea = document.getElementById("bossMoveArea");
   const sprite = document.getElementById("bossSprite");
-  const spriteW = sprite.offsetWidth;
-  const spriteH = sprite.offsetHeight;
-  const areaW = moveArea.clientWidth;
-  const areaH = moveArea.clientHeight;
+  if (!moveArea || !sprite) {
+    console.warn("❌ 無法找到 bossMoveArea 或 bossSprite");
+    return;
+  }
 
-  // ⏱️ 取得 BOSS 實際位置（相對 moveArea）
-  const bossRect = sprite.getBoundingClientRect();
-  const areaRect = moveArea.getBoundingClientRect();
-  const baseX = bossRect.left - areaRect.left + spriteW / 2;
-  const baseY = bossRect.top - areaRect.top + spriteH / 2;
+  requestAnimationFrame(() => {
+    const spriteW = sprite.offsetWidth;
+    const spriteH = sprite.offsetHeight;
+    const areaW = moveArea.clientWidth;
+    const areaH = moveArea.clientHeight;
 
-  for (let i = 0; i < count; i++) {
-    const clone = sprite.cloneNode(true);
-    clone.classList.remove("hit", "armor");
-    clone.classList.add("shadow-clone");
-    clone.removeAttribute("id");
+    if (spriteW === 0 || spriteH === 0) {
+      console.warn("❌ Boss sprite 尚未渲染完成（寬高為 0）");
+      return;
+    }
 
-    // 初始位置
-    let posX = baseX;
-    let posY = baseY;
+    const bossRect = sprite.getBoundingClientRect();
+    const areaRect = moveArea.getBoundingClientRect();
+    const baseX = bossRect.left - areaRect.left + spriteW / 2;
+    const baseY = bossRect.top - areaRect.top + spriteH / 2;
 
-    // 分別往左、右隨機角度散開
-    let angle = i === 0 ? 30 + Math.random() * 30 : 150 + Math.random() * 30;
-    let speed = 2 + Math.random() * 1.5;
+    for (let i = 0; i < count; i++) {
+      const clone = sprite.cloneNode(false);
+      clone.classList.remove("hit", "armor");
+      clone.classList.add("shadow-clone");
+      clone.removeAttribute("id");
 
-    // 設定初始樣式
-    clone.style.left = `${posX}px`;
-    clone.style.top = `${posY}px`;
-    clone.style.setProperty(
-      "--scale-x",
-      Math.cos((angle * Math.PI) / 180) >= 0 ? -1 : 1
-    );
-    clone.style.opacity = "1";
-    clone.style.pointerEvents = "none"; // 防止誤點
+      let posX = baseX;
+      let posY = baseY;
 
-    moveArea.appendChild(clone);
+      let angle = i === 0 ? 30 + Math.random() * 30 : 150 + Math.random() * 30;
+      let speed = 2 + Math.random() * 1.5;
 
-    // 🧠 幻影移動邏輯
-    const moveClone = () => {
-      const rad = (angle * Math.PI) / 180;
-      posX += Math.cos(rad) * speed * 1.5;
-      posY += Math.sin(rad) * speed * 1.5;
-
-      // 邊界反彈
-      const padding = 20;
-      if (posX < padding || posX > areaW - spriteW + padding) {
-        angle = 180 - angle + (Math.random() * 30 - 15);
-      }
-      if (posY < padding || posY > areaH - spriteH + padding) {
-        angle = -angle + (Math.random() * 30 - 15);
-      }
-
-      angle = (angle + 360) % 360;
-      clone.style.setProperty("--scale-x", Math.cos(rad) >= 0 ? -1 : 1);
       clone.style.left = `${posX}px`;
       clone.style.top = `${posY}px`;
+      clone.style.setProperty(
+        "--scale-x",
+        Math.cos((angle * Math.PI) / 180) >= 0 ? -1 : 1
+      );
+      clone.style.opacity = "1";
+      clone.style.pointerEvents = "none";
 
-      clone._moveLoop = requestAnimationFrame(moveClone);
-    };
+      moveArea.appendChild(clone);
 
-    moveClone();
+      const moveClone = () => {
+        const rad = (angle * Math.PI) / 180;
+        posX += Math.cos(rad) * speed * 1.5;
+        posY += Math.sin(rad) * speed * 1.5;
 
-    // ⏳ 自動消失（例如 4 秒後）
-    setTimeout(() => {
-      cancelAnimationFrame(clone._moveLoop);
-      clone.remove();
-    }, 4000);
-  }
+        const padding = 20;
+        if (posX < padding || posX > areaW - spriteW + padding) {
+          angle = 180 - angle + (Math.random() * 30 - 15);
+        }
+        if (posY < padding || posY > areaH - spriteH + padding) {
+          angle = -angle + (Math.random() * 30 - 15);
+        }
+
+        angle = (angle + 360) % 360;
+        clone.style.setProperty("--scale-x", Math.cos(rad) >= 0 ? -1 : 1);
+        clone.style.left = `${posX}px`;
+        clone.style.top = `${posY}px`;
+
+        clone._moveLoop = requestAnimationFrame(moveClone);
+      };
+
+      moveClone();
+
+      setTimeout(() => {
+        cancelAnimationFrame(clone._moveLoop);
+        clone.remove();
+      }, 4000);
+    }
+
+    console.log(`✅ Shadow clones created (${count})`);
+  });
 }
 
 function triggerRandomBossSkill(fish) {
