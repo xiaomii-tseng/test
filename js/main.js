@@ -75,7 +75,7 @@ const sfxOpen = new Audio("sound/test-open.mp3");
 sfxOpen.volume = 0.7;
 const sfxClose = new Audio("sound/test-close.mp3");
 sfxClose.volume = 0.4;
-const sfxDoor = new Audio("sound/test-opendoor.mp3");
+const sfxDoor = new Audio("sound/opendoor.mp3");
 sfxDoor.volume = 0.6;
 const sfxEquip = new Audio("sound/test-equip.mp3");
 sfxEquip.volume = 0.6;
@@ -83,17 +83,17 @@ const sfxDelete = new Audio("sound/test-delete.mp3");
 sfxDelete.volume = 0.6;
 const sfxOpenFishBook = new Audio("sound/test-openfishbook.mp3");
 sfxOpenFishBook.volume = 0.6;
-const sfxFail = new Audio("sound/test-fail.mp3");
+const sfxFail = new Audio("sound/fail.mp3");
 sfxFail.volume = 0.6;
-const sfxSuccess = new Audio("sound/test-success.mp3");
+const sfxSuccess = new Audio("sound/success.mp3");
 sfxSuccess.volume = 0.8;
 const sfxRefine = new Audio("sound/test-refine.mp3");
 sfxRefine.volume = 0.5;
 const sfxTicket = new Audio("sound/test-ticket.mp3");
 sfxTicket.volume = 0.7;
-const sfxOpenChest = new Audio("sound/test-openChest.mp3");
+const sfxOpenChest = new Audio("sound/openChest.mp3");
 sfxOpenChest.volume = 0.7;
-const sfxGod = new Audio("sound/test-god.mp3");
+const sfxGod = new Audio("sound/god.mp3");
 sfxGod.volume = 0.8;
 const sfxToggle = new Audio("sound/test-toggle.mp3");
 sfxToggle.volume = 0.7;
@@ -518,7 +518,7 @@ const MAP_CONFIG = {
     requiredTicketName: "黃金通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
-    music: "sound/map3.mp3",
+    music: "sound/map4.mp3",
     autoFishingAllowed: true,
   },
 };
@@ -1145,6 +1145,7 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
     const fishObj = createFishInstance(fishType);
     fishObj.rarity = rarity;
     fishObj.image = fishType.image;
+    fishObj.maps = fishType.maps;
 
     // ✅ 計算血量
     fishObj.hp = Math.floor(
@@ -2766,6 +2767,42 @@ function tryMultiCatch(fishType) {
 
   addFishToBackpack(fishType, finalCount);
 }
+
+// ---------------戰鬥變數---------------
+
+let currentBossHp = 0;
+let bossTimer = 999;
+let timerInterval = null;
+let isBossFightActive = false;
+// BOSS的移動參數
+let bossMoveAngle = 0;
+let bossMoveSpeed = 3;
+let bossMoveLoop = null;
+let posX = 0;
+let posY = 0;
+let isBossMoving = false;
+let bossDamageMultiplier = 0.5;
+let bossSkillInterval = null;
+
+let userDamage = 10000;
+const BOSS_SKILL_POOL = {
+  清澈川流: {
+    "rarity-legend": ["fast"],
+    "rarity-mythic": ["fast", "armor", "dive"],
+  },
+  劍與魔法村: {
+    "rarity-legend": ["fast", "dive"],
+    "rarity-mythic": ["fast", "armor", "dive", "teleport"],
+  },
+  機械城河: {
+    "rarity-legend": ["fast", "dive", "teleport"],
+    "rarity-mythic": ["fast", "armor", "dive", "invisible", "jam"],
+  },
+  黃金遺址: {
+    "rarity-legend": ["fast", "dive", "teleport", "armor"],
+    "rarity-mythic": ["teleport", "armor", "dive", "invisible", "shrink"],
+  },
+};
 // 儲存進 BOSS 背包
 function saveToBossBackpack(fish) {
   const storageKey = "boss-pending-fish";
@@ -2817,49 +2854,6 @@ function updateBossBackpackUI() {
     });
   }
 }
-
-// 戰鬥變數
-let currentBossHp = 0;
-let bossTimer = 999;
-let timerInterval = null;
-let isBossFightActive = false;
-// BOSS的移動參數
-let bossMoveAngle = 0;
-let bossMoveSpeed = 3;
-let bossMoveLoop = null;
-let posX = 0;
-let posY = 0;
-let isBossMoving = false;
-let bossDamageMultiplier = 0.5;
-let bossSkillInterval = null;
-
-let userDamage = 10000;
-const BOSS_SKILL_POOL = {
-  清澈川流: {
-    "rarity-legend": ["shadowClone"],
-    "rarity-mythic": ["shadowClone"],
-  },
-  劍與魔法村: {
-    "rarity-legend": ["armor", "fast", "dive"],
-    "rarity-mythic": ["shadowClone", "teleport", "invisible", "dive", "shrink"],
-  },
-  機械城河: {
-    "rarity-legend": ["fast", "shrink"],
-    "rarity-mythic": ["shadowClone", "teleport", "armor", "fast"],
-  },
-  黃金遺址: {
-    "rarity-legend": ["armor", "fast"],
-    "rarity-mythic": [
-      "invisible",
-      "teleport",
-      "shadowClone",
-      "armor",
-      "fast",
-      "shrink",
-    ],
-  },
-};
-
 function startBossCountdown() {
   bossTimer = bossTimer;
   document.getElementById("bossTimer").textContent = bossTimer;
@@ -3169,10 +3163,10 @@ function triggerBossSkill(skillName) {
       }, 3000);
       break;
 
-    case "shadowClone":
-      // ✅ 影分身 → 加入 2 個假分身干擾
-      spawnShadowClones(2); // 你需實作這個 helper
-      break;
+    // case "shadowClone":
+    //   // ✅ 影分身 → 加入 2 個假分身干擾
+    //   spawnShadowClones(2); // 你需實作這個 helper
+    //   break;
 
     case "jam":
       // ✅ 電磁干擾 → 全畫面閃爍 3 秒，無法點擊
@@ -3274,8 +3268,8 @@ function spawnShadowClones(count = 2) {
 }
 
 function triggerRandomBossSkill(fish) {
-  const map = currentMapConfig.name; // 預設地圖
-  const rarity = fish.rarity; // "rarity-legend" or "rarity-mythic"
+  const map = fish.maps || currentMapKey; // ✅ 根據魚的來源地圖決定技能
+  const rarity = fish.rarity;
   const skillPool = BOSS_SKILL_POOL[map]?.[rarity] || [];
 
   if (skillPool.length === 0) return;
