@@ -101,6 +101,8 @@ const sfxFishingClick = new Audio("sound/getFish.mp3");
 sfxFishingClick.volume = 0.3;
 const sfxClickPlus = new Audio("sound/plus.mp3");
 sfxClickPlus.volume = 0.6;
+const sfxOpenMap = new Audio("sound/openMap.mp3");
+sfxOpenMap.volume = 0.6;
 const FishingLoopSound = {
   audio: new Audio("sound/loading.mp3"),
   play() {
@@ -2012,7 +2014,7 @@ function proceedToMap(config, mapKey) {
   currentMapKey = mapKey;
   currentMapConfig = config;
   localStorage.setItem("disable-equip", config.disableEquip ? "1" : "0");
-
+  playSfx(sfxOpenMap);
   fetch(config.json)
     .then((res) => res.json())
     .then((data) => {
