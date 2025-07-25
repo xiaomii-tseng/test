@@ -64,10 +64,11 @@ const buffLabelMap = {
   increaseCatchRate: "增加上鉤率",
   increaseRareRate: "增加稀有率",
   increaseBigFishChance: "大體型機率",
-  increaseSellValue: "增加販售金額",
+  increaseSellValue: "增加販售額",
   increaseExpGain: "經驗值加成",
   multiCatchChance: "多魚成功率",
-  multiCatchMultiplier: "多魚倍數提升",
+  multiCatchMultiplier: "多魚倍數值",
+  increaseBossDamage: "對頭目傷害",
 };
 
 // 音效
@@ -1149,9 +1150,9 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
     fishObj.image = fishType.image;
     fishObj.maps = fishType.maps;
 
-    // ✅ 計算血量
+    // ✅ 計算血量BOSSHP
     fishObj.hp = Math.floor(
-      ((fishObj.finalPrice * 10 * (100 + fishObj.size)) / 100) *
+      ((fishObj.finalPrice * (100 + fishObj.size)) / 100) *
         rarityMultiplier *
         bossHpModifier
     );
@@ -1316,11 +1317,12 @@ function updateBackpackUI() {
 const BUFF_TYPES = [
   { type: "increaseCatchRate", label: "增加上鉤率" },
   { type: "increaseRareRate", label: "增加稀有率" },
-  { type: "increaseBigFishChance", label: "大體型魚機率" },
-  { type: "increaseSellValue", label: "增加販售金額" },
-  { type: "increaseExpGain", label: "經驗獲得加成" },
+  { type: "increaseBigFishChance", label: "大體型機率" },
+  { type: "increaseSellValue", label: "增加販售額" },
+  { type: "increaseExpGain", label: "經驗值加成" },
   { type: "multiCatchChance", label: "多魚成功率" },
   { type: "multiCatchMultiplier", label: "多魚倍數值" },
+  { type: "increaseBossDamage", label: "對頭目傷害" },
 ];
 
 const RARITY_TABLE = [
@@ -1422,6 +1424,8 @@ function getBuffValue(type) {
       return randomInt(1, 15); // 較低起跳值，適合普通掉落
     case "multiCatchMultiplier":
       return randomInt(1, 5); // 較保守值，避免普通裝就出 x5
+    case "increaseBossDamage":
+      return randomInt(1, 10);
     default:
       return 1;
   }
@@ -1629,6 +1633,9 @@ function updateCharacterStats() {
   document.querySelector(
     ".multi-catch-multiplier"
   ).textContent = `多魚倍數值：${Math.round(stats.multiCatchMultiplier)}%`;
+  document.querySelector(
+    ".increase-boss-damage"
+  ).textContent = `對頭目傷害：${Math.round(stats.increaseBossDamage)}%`;
 }
 
 // 脫下裝備
@@ -1725,6 +1732,7 @@ function getTotalBuffs() {
     increaseExpGain: 0,
     multiCatchChance: 0,
     multiCatchMultiplier: 0,
+    increaseBossDamage: 0,
   };
 
   let godCount = 0;
@@ -1898,6 +1906,8 @@ function getHighTierBuffValue(type) {
       return randomInt(1, 40); // 多魚發動率，建議從 5% 起跳
     case "multiCatchMultiplier":
       return randomInt(1, 10); // 倍數影響建議範圍較低
+    case "increaseBossDamage":
+      return randomInt(1, 40);
     default:
       return 1;
   }
@@ -2773,7 +2783,7 @@ function tryMultiCatch(fishType) {
 // ---------------戰鬥變數---------------
 
 let currentBossHp = 0;
-let bossTimer = 999;
+let bossTimer = 30;
 let timerInterval = null;
 let isBossFightActive = false;
 // BOSS的移動參數
@@ -2786,7 +2796,28 @@ let isBossMoving = false;
 let bossDamageMultiplier = 0.5;
 let bossSkillInterval = null;
 
-let userDamage = 10000;
+// boss 邏輯區
+let userDamage = calculateUserDamage();
+
+function calculateUserDamage() {
+  const buffs = getTotalBuffs();
+  const level = loadLevel();
+
+  // 👉 排除 increaseBossDamage 再加總
+  const baseBuff = Object.entries(buffs)
+    .filter(([key]) => key !== "increaseBossDamage")
+    .reduce((sum, [, val]) => sum + val, 0);
+
+  const levelScale = level * 0.015;
+  const baseDamage = baseBuff * levelScale;
+
+  const bossBonus = buffs.increaseBossDamage;
+  const finalDamage = baseDamage * (1 + bossBonus / 100);
+  console.log(Math.floor(baseDamage), Math.floor(finalDamage));
+
+  return Math.floor(finalDamage);
+}
+
 const BOSS_SKILL_POOL = {
   清澈川流: {
     "rarity-legend": ["fast"],
@@ -2934,6 +2965,7 @@ function startBossFight(fish) {
 function endBossFight(success) {
   stopBossMovement();
   isBossFightActive = false;
+  clearInterval(bossSkillInterval);
   clearInterval(timerInterval);
 
   const overlay = document.getElementById("bossBattleOverlay");
