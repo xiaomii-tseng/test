@@ -137,10 +137,12 @@ function preloadAllSfx() {
     sfxToggle,
     sfxFishingClick,
     sfxClickPlus,
+    sfxOpenMap,
+    sfxHit,
   ];
   sfxList.forEach(decodeAudioToBuffer);
 }
-const webAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const webAudioCtx = new window.AudioContext();
 const audioBufferMap = new WeakMap();
 
 // 把 <audio> 轉成 Web Audio buffer（一次轉好）
@@ -2838,6 +2840,68 @@ const BOSS_SKILL_POOL = {
     "rarity-mythic": ["teleport", "armor", "dive", "invisible", "shrink"],
   },
 };
+// BOSS額外獎勵
+const BOSS_REWARD_TABLE = {
+  map1: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(8000, 15000), chance: 0.9 },
+      { type: "refineCrystal", amount: () => 1, chance: 0.5 },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(20000, 40000), chance: 1.0 },
+      { type: "refineCrystal", amount: () => 2, chance: 0.7 },
+    ],
+  },
+  map2: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(20000, 30000), chance: 0.9 },
+      {
+        type: "divineMaterial",
+        material: "核廢料",
+        amount: () => 1,
+        chance: 0.4,
+      },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(30000, 60000), chance: 1.0 },
+      { type: "refineCrystal", amount: () => 3, chance: 0.8 },
+      {
+        type: "divineMaterial",
+        material: "核廢料",
+        amount: () => 1,
+        chance: 0.7,
+      },
+    ],
+  },
+  map3: {
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(50000, 80000), chance: 1.0 },
+      { type: "refineCrystal", amount: () => 4, chance: 0.9 },
+      {
+        type: "divineMaterial",
+        material: "黃銅礦",
+        amount: () => 1,
+        chance: 0.6,
+      },
+    ],
+  },
+  map4: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(25000, 40000), chance: 0.9 },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(40000, 70000), chance: 1.0 },
+      { type: "refineCrystal", amount: () => 3, chance: 0.7 },
+      {
+        type: "divineMaterial",
+        material: "隕石碎片",
+        amount: () => 1,
+        chance: 0.5,
+      },
+    ],
+  },
+};
+
 // 儲存進 BOSS 背包
 function saveToBossBackpack(fish) {
   const storageKey = "boss-pending-fish";
@@ -3004,6 +3068,7 @@ function endBossFight(success) {
     addExp(fish.finalPrice);
     updateFishDex(fish);
     maybeDropDivineItem();
+    maybeDropBossReward();
     logCatchCard(fish, fish, 1);
   }
   updateBossBackpackUI();
@@ -3012,6 +3077,41 @@ function endBossFight(success) {
     messageBox.classList.add("hide");
     overlay.style.display = "none";
   }, 3000);
+}
+function maybeDropBossReward() {
+  const boss = window.currentBossFish;
+  if (!boss?.rarity || !Array.isArray(boss.maps)) return;
+
+  // 優先使用 boss 所屬的地圖與稀有度
+  const mapKey =
+    Object.keys(MAP_CONFIG).find((k) =>
+      boss.maps.includes(MAP_CONFIG[k].name)
+    ) || currentMapKey;
+
+  const rewardList = BOSS_REWARD_TABLE?.[mapKey]?.[boss.rarity] || [];
+  const candidates = rewardList.filter((r) => Math.random() < r.chance);
+  if (candidates.length === 0) return;
+
+  const reward = candidates[Math.floor(Math.random() * candidates.length)];
+  const amount = reward.amount();
+
+  if (reward.type === "money") {
+    const current = loadMoney();
+    localStorage.setItem("fishing-money", current + amount);
+    updateMoneyUI();
+    showAlert(`💰 擊敗 ${boss.name} 獲得 ${amount.toLocaleString()} 金幣！`);
+  } else if (reward.type === "refineCrystal") {
+    const count = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
+    localStorage.setItem(CRYSTAL_KEY, count + amount);
+    updateCrystalUI();
+    showAlert(`✨ 擊敗 ${boss.name} 獲得 ${amount} 顆提煉結晶！`);
+  } else if (reward.type === "divineMaterial") {
+    const materials = loadDivineMaterials();
+    materials[reward.material] = (materials[reward.material] || 0) + amount;
+    saveDivineMaterials(materials);
+    updateDivineUI?.();
+    showAlert(`🔮 擊敗 ${boss.name} 獲得神化材料：${reward.material}`);
+  }
 }
 
 function dealBossDamage(amount) {
@@ -3336,7 +3436,7 @@ function showBossSkillName(skillText) {
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("bossSprite").onclick = () => {
-  playSfx(sfxHit)
+  playSfx(sfxHit);
   dealBossDamage(userDamage);
 };
 document
