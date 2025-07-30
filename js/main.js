@@ -479,7 +479,7 @@ const MAP_CONFIG = {
     requiredTicketName: "魔法通行證",
     disableEquip: true,
     ticketDurationMs: 30 * 60 * 1000,
-    music: "sound/map1.mp3",
+    music: "sound/map2.mp3",
     autoFishingAllowed: true,
   },
   map2: {
@@ -2824,8 +2824,8 @@ const BOSS_SKILL_POOL = {
     "rarity-mythic": ["fast", "armor", "dive"],
   },
   劍與魔法村: {
-    "rarity-legend": ["fast", "dive"],
-    "rarity-mythic": ["fast", "armor", "dive", "teleport"],
+    "rarity-legend": ["fast", "dive", "shrink"],
+    "rarity-mythic": ["shrink", "armor", "dive", "teleport"],
   },
   機械城河: {
     "rarity-legend": ["fast", "dive", "teleport"],
@@ -2888,7 +2888,7 @@ function updateBossBackpackUI() {
   }
 }
 function startBossCountdown() {
-  bossTimer = bossTimer;
+  bossTimer = 30;
   document.getElementById("bossTimer").textContent = bossTimer;
 
   clearInterval(timerInterval);
@@ -2919,6 +2919,7 @@ function startBossFight(fish) {
 
   // 更新名稱與圖片
   document.getElementById("bossName").textContent = fish.name;
+  document.getElementById("bossSkillText").textContent = "";
   document.getElementById("bossSprite").src = fish.image;
 
   // 設定血量
@@ -3114,6 +3115,7 @@ function triggerBossSkill(skillName) {
 
   switch (skillName) {
     case "invisible":
+      showBossSkillName("隱形");
       // ✅ 隱形隨機 1~3 秒
       const duration = 1500 + Math.random() * 2500; // 1000 ~ 3000 毫秒
 
@@ -3128,6 +3130,7 @@ function triggerBossSkill(skillName) {
       break;
 
     case "teleport":
+      showBossSkillName("傳送");
       {
         // ✅ 暫停移動 loop
         cancelAnimationFrame(bossMoveLoop);
@@ -3156,14 +3159,16 @@ function triggerBossSkill(skillName) {
       break;
 
     case "fast":
+      showBossSkillName("高速移動");
       // ✅ 高速移動 → 移動速度變快 5 秒
-      bossMoveSpeed *= 4;
+      bossMoveSpeed *= 15;
       setTimeout(() => {
-        bossMoveSpeed /= 4;
-      }, 5000);
+        bossMoveSpeed /= 15;
+      }, 3000);
       break;
 
     case "dive":
+      showBossSkillName("遁隱");
       // ✅ 沉入水中 → 3 秒滑到底部消失再出現
       sprite.style.transition = "top 1s, opacity 1s";
       sprite.style.opacity = "0";
@@ -3175,6 +3180,7 @@ function triggerBossSkill(skillName) {
       break;
 
     case "shrink":
+      showBossSkillName("縮小術");
       // 縮小術'
       if (bossState.shrinking) break;
       bossState.shrinking = true;
@@ -3188,6 +3194,7 @@ function triggerBossSkill(skillName) {
       break;
 
     case "armor":
+      showBossSkillName("鋼鐵鎧甲");
       // ✅ 鋼鐵鎧甲 → 減傷標記 5 秒
       sprite.classList.add("armor"); // 可搭配 CSS 邊框效果
       bossDamageMultiplier = 0.5; // 傷害減半
@@ -3203,6 +3210,7 @@ function triggerBossSkill(skillName) {
     //   break;
 
     case "jam":
+      showBossSkillName("電磁干擾");
       // ✅ 電磁干擾 → 全畫面閃爍 3 秒，無法點擊
       const overlay = document.getElementById("bossBattleOverlay");
       overlay.classList.add("jammed"); // 可加白色閃爍動畫
@@ -3216,9 +3224,6 @@ function triggerBossSkill(skillName) {
     default:
       console.warn("未知技能:", skillName);
   }
-  console.log("技能發動:", skillName);
-  console.log("BOSS 當前位置:", sprite.style.left, sprite.style.top);
-  // showBossSkillName(skillName); // ✅ 可選：顯示技能名稱提示（你可客製）
 }
 
 function spawnShadowClones(count = 2) {
@@ -3310,6 +3315,20 @@ function triggerRandomBossSkill(fish) {
 
   const skill = skillPool[Math.floor(Math.random() * skillPool.length)];
   triggerBossSkill(skill);
+}
+
+function showBossSkillName(skillText) {
+  const el = document.getElementById("bossSkillText");
+
+  el.textContent = skillText;
+  el.classList.remove("hide");
+  el.classList.add("show");
+
+  clearTimeout(showBossSkillName._timeout);
+  showBossSkillName._timeout = setTimeout(() => {
+    el.classList.remove("show");
+    el.classList.add("hide");
+  }, 2000);
 }
 
 // 下面是 document

@@ -1177,9 +1177,9 @@ body {
 }
 
 .boss-sprite.shrinked {
-  transform: translate(-50%, -50%) scale(0.5);
-  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scale(0.5);
+  transform: translate(-50%, -50%) scale(var(--scale-x, 1), 0.3);
 }
+
 
 .boss-sprite.armor {
   box-shadow: 0 0 10px #aaa, 0 0 30px #ccc inset;
@@ -1212,4 +1212,25 @@ body {
 .fight-text {
   font-size: 1.2rem;
   color: gold;
+}
+
+.boss-skill-text {
+  z-index: 30;
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 2px 2px 5px black;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.boss-skill-text.show {
+  opacity: 1;
+}
+.boss-skill-text.hide {
+  opacity: 0;
 }

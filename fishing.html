@@ -688,7 +688,7 @@
                         <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
                             data-key="increaseSellValue">
                             <div class="d-flex justify-content-between w-75">
-                                <div class="status-text">增加販售金額</div>
+                                <div class="status-text">增加販售額</div>
                                 <div class="status-text value">+0%</div>
                             </div>
                             <div>
@@ -719,7 +719,18 @@
                         <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
                             data-key="multiCatchMultiplier">
                             <div class="d-flex justify-content-between w-75">
-                                <div class="status-text">多魚倍數提升</div>
+                                <div class="status-text">多魚倍數值</div>
+                                <div class="status-text value">+0%</div>
+                            </div>
+                            <div>
+                                <div class="status-btn fnc-anm add-btn">+1</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center status-buff rounded px-3 py-2 w-100"
+                            data-key="increaseBossDamage">
+                            <div class="d-flex justify-content-between w-75">
+                                <div class="status-text">對頭目傷害</div>
                                 <div class="status-text value">+0%</div>
                             </div>
                             <div>
@@ -812,6 +823,7 @@
         <div class="boss-hp-wrapper">
             <div class="d-flex justify-content-between align-items-center mb-2 px-2">
                 <div class="boss-name" id="bossName"></div> <!-- ✅ 加 ID -->
+                <div class="boss-skill-text hide" id="bossSkillText">測試文字</div>
                 <div class="boss-timer text-warning fw-bold">
                     倒數 <span id="bossTimer"></span> 秒
                 </div>
@@ -824,7 +836,6 @@
                 <span id="bossHpTotal"></span>
             </div>
         </div>
-
         <div class="boss-move-area shiny" id="bossMoveArea">
             <img id="bossSprite" src="" class="boss-sprite" /> <!-- ✅ 清掉 src -->
         </div>
