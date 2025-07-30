@@ -104,6 +104,8 @@ const sfxClickPlus = new Audio("sound/plus.mp3");
 sfxClickPlus.volume = 0.6;
 const sfxOpenMap = new Audio("sound/openMap.mp3");
 sfxOpenMap.volume = 0.6;
+const sfxHit = new Audio("sound/hit.mp3");
+sfxHit.volume = 0.6;
 const FishingLoopSound = {
   audio: new Audio("sound/loading.mp3"),
   play() {
@@ -3334,6 +3336,7 @@ function showBossSkillName(skillText) {
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("bossSprite").onclick = () => {
+  playSfx(sfxHit)
   dealBossDamage(userDamage);
 };
 document
