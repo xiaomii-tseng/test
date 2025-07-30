@@ -2842,62 +2842,48 @@ const BOSS_SKILL_POOL = {
 };
 // BOSS額外獎勵
 const BOSS_REWARD_TABLE = {
-  map1: {
+  清澈川流: {
     "rarity-legend": [
-      { type: "money", amount: () => randomInt(8000, 15000), chance: 0.9 },
-      { type: "refineCrystal", amount: () => 1, chance: 0.5 },
-    ],
-    "rarity-mythic": [
-      { type: "money", amount: () => randomInt(20000, 40000), chance: 1.0 },
-      { type: "refineCrystal", amount: () => 2, chance: 0.7 },
-    ],
-  },
-  map2: {
-    "rarity-legend": [
-      { type: "money", amount: () => randomInt(20000, 30000), chance: 0.9 },
+      { type: "money", amount: () => randomInt(1000, 5000), chance: 0.7 },
       {
-        type: "divineMaterial",
-        material: "核廢料",
-        amount: () => 1,
-        chance: 0.4,
-      },
-    ],
-    "rarity-mythic": [
-      { type: "money", amount: () => randomInt(30000, 60000), chance: 1.0 },
-      { type: "refineCrystal", amount: () => 3, chance: 0.8 },
-      {
-        type: "divineMaterial",
-        material: "核廢料",
-        amount: () => 1,
-        chance: 0.7,
-      },
-    ],
-  },
-  map3: {
-    "rarity-mythic": [
-      { type: "money", amount: () => randomInt(50000, 80000), chance: 1.0 },
-      { type: "refineCrystal", amount: () => 4, chance: 0.9 },
-      {
-        type: "divineMaterial",
-        material: "黃銅礦",
-        amount: () => 1,
-        chance: 0.6,
-      },
-    ],
-  },
-  map4: {
-    "rarity-legend": [
-      { type: "money", amount: () => randomInt(25000, 40000), chance: 0.9 },
-    ],
-    "rarity-mythic": [
-      { type: "money", amount: () => randomInt(40000, 70000), chance: 1.0 },
-      { type: "refineCrystal", amount: () => 3, chance: 0.7 },
-      {
-        type: "divineMaterial",
-        material: "隕石碎片",
-        amount: () => 1,
+        type: "refineCrystal",
+        amount: () => randomInt(2, 8),
         chance: 0.5,
       },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(3000, 8000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(5, 15), chance: 0.5 },
+    ],
+  },
+  劍與魔法村: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(5000, 10000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(8, 16), chance: 0.5 },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(8000, 13000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(12, 24), chance: 0.5 },
+    ],
+  },
+  機械城河: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(10000, 15000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(16, 24), chance: 0.5 },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(13000, 22000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(20, 32), chance: 0.9 },
+    ],
+  },
+  黃金遺址: {
+    "rarity-legend": [
+      { type: "money", amount: () => randomInt(15000, 20000), chance: 0.8 },
+      { type: "refineCrystal", amount: () => randomInt(24, 32), chance: 0.9 },
+    ],
+    "rarity-mythic": [
+      { type: "money", amount: () => randomInt(22000, 35000), chance: 0.8 },
+      { type: "refineCrystal", amount: () => randomInt(30, 50), chance: 0.7 },
     ],
   },
 };
@@ -3080,15 +3066,7 @@ function endBossFight(success) {
 }
 function maybeDropBossReward() {
   const boss = window.currentBossFish;
-  if (!boss?.rarity || !Array.isArray(boss.maps)) return;
-
-  // 優先使用 boss 所屬的地圖與稀有度
-  const mapKey =
-    Object.keys(MAP_CONFIG).find((k) =>
-      boss.maps.includes(MAP_CONFIG[k].name)
-    ) || currentMapKey;
-
-  const rewardList = BOSS_REWARD_TABLE?.[mapKey]?.[boss.rarity] || [];
+  const rewardList = BOSS_REWARD_TABLE?.[boss.maps]?.[boss.rarity] || [];
   const candidates = rewardList.filter((r) => Math.random() < r.chance);
   if (candidates.length === 0) return;
 
@@ -3155,6 +3133,7 @@ function startBossMovementLoop() {
 
   function moveStep() {
     if (!isBossMoving) return;
+
     const spriteW = sprite.offsetWidth;
     const spriteH = sprite.offsetHeight;
     const areaW = moveArea.clientWidth;
@@ -3167,19 +3146,28 @@ function startBossMovementLoop() {
     posX += dx * bossMoveSpeed;
     posY += dy * bossMoveSpeed;
 
-    const halfW = spriteW / 2;
-    const halfH = spriteH / 2;
+    const halfW = spriteW / 10;
+    const halfH = spriteH / 10;
 
-    const maxOffsetX = halfW / 10; // 控制可超出寬度
-    const maxOffsetY = halfH / 10; // 控制可超出高度
-
-    if (posX < -maxOffsetX || posX > areaW + maxOffsetX) {
+    // 🚫 限制 X 軸不出界
+    if (posX < halfW) {
+      posX = halfW;
+      bossMoveAngle = 180 - bossMoveAngle + (Math.random() * 30 - 15);
+    } else if (posX > areaW - halfW) {
+      posX = areaW - halfW;
       bossMoveAngle = 180 - bossMoveAngle + (Math.random() * 30 - 15);
     }
-    if (posY < -maxOffsetY || posY > areaH + maxOffsetY) {
+
+    // 🚫 限制 Y 軸不出界
+    if (posY < halfH) {
+      posY = halfH;
+      bossMoveAngle = -bossMoveAngle + (Math.random() * 30 - 15);
+    } else if (posY > areaH - halfH) {
+      posY = areaH - halfH;
       bossMoveAngle = -bossMoveAngle + (Math.random() * 30 - 15);
     }
 
+    // 🔄 確保角度介於 0~360
     bossMoveAngle = (bossMoveAngle + 360) % 360;
 
     // ✅ 水平翻轉
