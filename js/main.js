@@ -106,6 +106,8 @@ const sfxOpenMap = new Audio("sound/openMap.mp3");
 sfxOpenMap.volume = 0.6;
 const sfxHit = new Audio("sound/hit.mp3");
 sfxHit.volume = 0.6;
+const sfxBossSkill = new Audio("sound/boss-skill.mp3");
+sfxHit.volume = 0.6;
 const FishingLoopSound = {
   audio: new Audio("sound/loading.mp3"),
   play() {
@@ -139,6 +141,7 @@ function preloadAllSfx() {
     sfxClickPlus,
     sfxOpenMap,
     sfxHit,
+    sfxBossSkill,
   ];
   sfxList.forEach(decodeAudioToBuffer);
 }
@@ -2137,7 +2140,7 @@ function customConfirm(message) {
 }
 
 // 入場券
-export function addTicketToInventory(ticketType) {
+export function addTicketToInventory(ticketType, noshow = false) {
   const owned = JSON.parse(localStorage.getItem("owned-equipment-v2") || "[]");
 
   let name = "";
@@ -2180,6 +2183,9 @@ export function addTicketToInventory(ticketType) {
   owned.push(item);
   localStorage.setItem("owned-equipment-v2", JSON.stringify(owned));
   updateOwnedEquipListUI();
+  if (noshow) {
+    return;
+  }
   showAlert(`獲得 ${name}！`);
 }
 
@@ -2844,16 +2850,38 @@ const BOSS_SKILL_POOL = {
 const BOSS_REWARD_TABLE = {
   清澈川流: {
     "rarity-legend": [
-      { type: "money", amount: () => randomInt(1000, 5000), chance: 0.7 },
+      // { type: "money", amount: () => randomInt(1000, 5000), chance: 0.7 },
+      // { type: "refineCrystal", amount: () => randomInt(2, 8), chance: 0.5 },
+      // {
+      //   type: "divineMaterial",
+      //   material: "黃銅礦",
+      //   amount: () => 1,
+      //   chance: 0.01,
+      // },
       {
-        type: "refineCrystal",
-        amount: () => randomInt(2, 8),
-        chance: 0.5,
+        type: "mapTicket",
+        map: "map4",
+        name: "魔法通行證",
+        amount: () => 1,
+        chance: 1.0,
       },
     ],
     "rarity-mythic": [
-      { type: "money", amount: () => randomInt(3000, 8000), chance: 0.7 },
-      { type: "refineCrystal", amount: () => randomInt(5, 15), chance: 0.5 },
+      // { type: "money", amount: () => randomInt(3000, 8000), chance: 0.7 },
+      // { type: "refineCrystal", amount: () => randomInt(5, 15), chance: 0.5 },
+      // {
+      //   type: "divineMaterial",
+      //   material: "黃銅礦",
+      //   amount: () => 1,
+      //   chance: 0.01,
+      // },
+      {
+        type: "mapTicket",
+        map: "map4",
+        name: "魔法通行證",
+        amount: () => 1,
+        chance: 1.0,
+      },
     ],
   },
   劍與魔法村: {
@@ -2873,17 +2901,17 @@ const BOSS_REWARD_TABLE = {
     ],
     "rarity-mythic": [
       { type: "money", amount: () => randomInt(13000, 22000), chance: 0.7 },
-      { type: "refineCrystal", amount: () => randomInt(20, 32), chance: 0.9 },
+      { type: "refineCrystal", amount: () => randomInt(20, 32), chance: 0.5 },
     ],
   },
   黃金遺址: {
     "rarity-legend": [
       { type: "money", amount: () => randomInt(15000, 20000), chance: 0.8 },
-      { type: "refineCrystal", amount: () => randomInt(24, 32), chance: 0.9 },
+      { type: "refineCrystal", amount: () => randomInt(24, 32), chance: 0.5 },
     ],
     "rarity-mythic": [
       { type: "money", amount: () => randomInt(22000, 35000), chance: 0.8 },
-      { type: "refineCrystal", amount: () => randomInt(30, 50), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(30, 50), chance: 0.5 },
     ],
   },
 };
@@ -2967,6 +2995,7 @@ async function openBossBattle(index) {
 }
 
 function startBossFight(fish) {
+  playBossBgm();
   document.getElementById("bossBattleOverlay").style.display = "flex";
 
   // 更新名稱與圖片
@@ -3016,6 +3045,7 @@ function startBossFight(fish) {
 }
 
 function endBossFight(success) {
+  resumeMapBgm();
   stopBossMovement();
   isBossFightActive = false;
   clearInterval(bossSkillInterval);
@@ -3077,18 +3107,29 @@ function maybeDropBossReward() {
     const current = loadMoney();
     localStorage.setItem("fishing-money", current + amount);
     updateMoneyUI();
-    showAlert(`💰 擊敗 ${boss.name} 獲得 ${amount.toLocaleString()} 金幣！`);
+    showAlert(`${boss.name} 掉落 ${amount.toLocaleString()} 金幣！`);
   } else if (reward.type === "refineCrystal") {
     const count = parseInt(localStorage.getItem(CRYSTAL_KEY) || "0", 10);
     localStorage.setItem(CRYSTAL_KEY, count + amount);
     updateCrystalUI();
-    showAlert(`✨ 擊敗 ${boss.name} 獲得 ${amount} 顆提煉結晶！`);
+    showAlert(
+      `${boss.name} 掉落 <span class="fight-text">${amount} 顆提煉結晶</span>`
+    );
   } else if (reward.type === "divineMaterial") {
     const materials = loadDivineMaterials();
     materials[reward.material] = (materials[reward.material] || 0) + amount;
     saveDivineMaterials(materials);
     updateDivineUI?.();
-    showAlert(`🔮 擊敗 ${boss.name} 獲得神化材料：${reward.material}`);
+    showAlert(
+      `${boss.name} 掉落神化材料 <span class="fight-text">${reward.material}</span>!`
+    );
+  } else if (reward.type === "mapTicket") {
+    const typeKey = `ticket-${reward.map}`;
+    addTicketToInventory(typeKey, true);
+    showAlert(
+      `${boss.name} 掉落 <span class="fight-text">${reward.name}</span>！`,
+      true
+    );
   }
 }
 
@@ -3202,7 +3243,7 @@ let bossState = {
 };
 function triggerBossSkill(skillName) {
   const sprite = document.getElementById("bossSprite");
-
+  playSfx(sfxBossSkill);
   switch (skillName) {
     case "invisible":
       showBossSkillName("隱形");
@@ -3419,6 +3460,23 @@ function showBossSkillName(skillText) {
     el.classList.remove("show");
     el.classList.add("hide");
   }, 2000);
+}
+
+// === Boss BGM ===
+const BOSS_BGM_PATH = "sound/boss-bgm.mp3";
+let wasMapBgmBeforeBoss = null;
+
+function playBossBgm() {
+  // 記住原本地圖音樂路徑（其實 currentMapConfig.music 就是，但保險留一份）
+  wasMapBgmBeforeBoss = currentMapConfig?.music || wasMapBgmBeforeBoss;
+  // 直接借用既有的播放器，確保 loop / mute / icon 行為一致
+  playMapMusic(BOSS_BGM_PATH, true);
+}
+
+function resumeMapBgm() {
+  const path = wasMapBgmBeforeBoss || currentMapConfig?.music;
+  if (path) playMapMusic(path, true);
+  wasMapBgmBeforeBoss = null;
 }
 
 // 下面是 document
