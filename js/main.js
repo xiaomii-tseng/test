@@ -2859,37 +2859,37 @@ const BOSS_SKILL_POOL = {
 const BOSS_REWARD_TABLE = {
   清澈川流: {
     "rarity-legend": [
-      // { type: "money", amount: () => randomInt(1000, 5000), chance: 0.7 },
-      // { type: "refineCrystal", amount: () => randomInt(2, 8), chance: 0.5 },
-      // {
-      //   type: "divineMaterial",
-      //   material: "黃銅礦",
-      //   amount: () => 1,
-      //   chance: 0.01,
-      // },
+      { type: "money", amount: () => randomInt(1000, 5000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(2, 8), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "隕石碎片",
+        amount: () => 1,
+        chance: 0.01,
+      },
       {
         type: "mapTicket",
         map: "map4",
         name: "魔法通行證",
         amount: () => 1,
-        chance: 1.0,
+        chance: 0.04,
       },
     ],
     "rarity-mythic": [
-      // { type: "money", amount: () => randomInt(3000, 8000), chance: 0.7 },
-      // { type: "refineCrystal", amount: () => randomInt(5, 15), chance: 0.5 },
-      // {
-      //   type: "divineMaterial",
-      //   material: "黃銅礦",
-      //   amount: () => 1,
-      //   chance: 0.01,
-      // },
+      { type: "money", amount: () => randomInt(3000, 8000), chance: 0.7 },
+      { type: "refineCrystal", amount: () => randomInt(5, 15), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "隕石碎片",
+        amount: () => 1,
+        chance: 0.02,
+      },
       {
         type: "mapTicket",
         map: "map4",
         name: "魔法通行證",
         amount: () => 1,
-        chance: 1.0,
+        chance: 0.08,
       },
     ],
   },
@@ -2897,30 +2897,121 @@ const BOSS_REWARD_TABLE = {
     "rarity-legend": [
       { type: "money", amount: () => randomInt(5000, 10000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(8, 16), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "黃銅礦",
+        amount: () => 1,
+        chance: 0.01,
+      },
+      {
+        type: "mapTicket",
+        map: "map2",
+        name: "機械通行證",
+        amount: () => 1,
+        chance: 0.04,
+      },
     ],
     "rarity-mythic": [
       { type: "money", amount: () => randomInt(8000, 13000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(12, 24), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "黃銅礦",
+        amount: () => 1,
+        chance: 0.02,
+      },
+      {
+        type: "mapTicket",
+        map: "map2",
+        name: "機械通行證",
+        amount: () => 1,
+        chance: 0.08,
+      },
     ],
   },
   機械城河: {
     "rarity-legend": [
       { type: "money", amount: () => randomInt(10000, 15000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(16, 24), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "核廢料",
+        amount: () => 1,
+        chance: 0.01,
+      },
+      {
+        type: "mapTicket",
+        map: "map3",
+        name: "黃金通行證",
+        amount: () => 1,
+        chance: 0.04,
+      },
     ],
     "rarity-mythic": [
       { type: "money", amount: () => randomInt(13000, 22000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(20, 32), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "核廢料",
+        amount: () => 1,
+        chance: 0.02,
+      },
+      {
+        type: "mapTicket",
+        map: "map3",
+        name: "黃金通行證",
+        amount: () => 1,
+        chance: 0.08,
+      },
     ],
   },
   黃金遺址: {
     "rarity-legend": [
-      { type: "money", amount: () => randomInt(15000, 20000), chance: 0.8 },
+      { type: "money", amount: () => randomInt(15000, 20000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(24, 32), chance: 0.5 },
+      {
+        type: "mapTicket",
+        map: "map4",
+        name: "魔法通行證",
+        amount: () => 1,
+        chance: 0.1,
+      },
+      {
+        type: "mapTicket",
+        map: "map2",
+        name: "機械通行證",
+        amount: () => 1,
+        chance: 0.1,
+      },
+      {
+        type: "mapTicket",
+        map: "map3",
+        name: "黃金通行證",
+        amount: () => 1,
+        chance: 0.1,
+      },
     ],
     "rarity-mythic": [
-      { type: "money", amount: () => randomInt(22000, 35000), chance: 0.8 },
+      { type: "money", amount: () => randomInt(22000, 35000), chance: 0.7 },
       { type: "refineCrystal", amount: () => randomInt(30, 50), chance: 0.5 },
+      {
+        type: "divineMaterial",
+        material: "核廢料",
+        amount: () => 1,
+        chance: 0.025,
+      },
+      {
+        type: "divineMaterial",
+        material: "黃銅礦",
+        amount: () => 1,
+        chance: 0.025,
+      },
+      {
+        type: "divineMaterial",
+        material: "隕石碎片",
+        amount: () => 1,
+        chance: 0.025,
+      },
     ],
   },
 };
@@ -2933,7 +3024,7 @@ function saveToBossBackpack(fish) {
   localStorage.setItem(storageKey, JSON.stringify(list));
 }
 function openBossBackpackModal() {
-  userDamage = calculateUserDamage();  
+  userDamage = calculateUserDamage();
   updateBossBackpackUI();
   updatePlayerDamageUI(userDamage);
   new bootstrap.Modal(document.getElementById("bossBackpackModal")).show();
