@@ -112,7 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("equipped-items-v2", "{}");
         localStorage.setItem("fish-dex-v2", "[]");
         localStorage.setItem("player-stat-points", "1"); // 🟡 初始1點
-        localStorage.setItem("fishing-achievements-v1","{}");
+        localStorage.setItem("fishing-achievements-v1", "{}");
+        localStorage.setItem("boss-pending-fish", "[]");
         localStorage.setItem(
           "player-custom-bonus",
           JSON.stringify({
@@ -213,6 +214,10 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem(
         "player-custom-bonus",
         JSON.stringify(data.playerCustomBonus || {})
+      );
+      localStorage.setItem(
+        "boss-pending-fish",
+        JSON.stringify(data.bossPendingFish || [])
       );
     }
 

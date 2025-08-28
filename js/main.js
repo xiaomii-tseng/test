@@ -343,6 +343,9 @@ function collectSaveData() {
     achievements: JSON.parse(
       localStorage.getItem("fishing-achievements-v1") || "{}"
     ),
+    bossPendingFish: JSON.parse(
+      localStorage.getItem("boss-pending-fish") || "[]"
+    ),
   };
 }
 function saveToCloud() {
