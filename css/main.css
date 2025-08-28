@@ -1234,3 +1234,7 @@ body {
 .boss-skill-text.hide {
   opacity: 0;
 }
+
+#playerDamage{
+  color: yellow;
+}

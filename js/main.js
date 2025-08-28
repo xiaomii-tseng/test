@@ -2812,6 +2812,13 @@ let bossSkillInterval = null;
 // boss 邏輯區
 let userDamage = calculateUserDamage();
 
+updatePlayerDamageUI(userDamage);
+function updatePlayerDamageUI(dmg) {
+  const el = document.getElementById("playerDamage");
+  if (!el) return; // 防呆：元素不存在就略過
+  el.textContent = `玩家傷害: ${Math.round(dmg)}`; // 想要小數可改成 toFixed(1/2)
+}
+
 function calculateUserDamage() {
   const buffs = getTotalBuffs();
   const level = loadLevel();
@@ -2826,7 +2833,6 @@ function calculateUserDamage() {
 
   const bossBonus = buffs.increaseBossDamage;
   const finalDamage = baseDamage * (1 + bossBonus / 100);
-  console.log(Math.floor(baseDamage), Math.floor(finalDamage));
 
   return Math.floor(finalDamage);
 }
@@ -2927,7 +2933,9 @@ function saveToBossBackpack(fish) {
   localStorage.setItem(storageKey, JSON.stringify(list));
 }
 function openBossBackpackModal() {
+  userDamage = calculateUserDamage();  
   updateBossBackpackUI();
+  updatePlayerDamageUI(userDamage);
   new bootstrap.Modal(document.getElementById("bossBackpackModal")).show();
 }
 function updateBossBackpackUI() {
