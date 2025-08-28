@@ -2849,19 +2849,19 @@ function calculateUserDamage() {
   const buffs = getTotalBuffs() || {};
   const level = Number(loadLevel()) || 1;
 
-  // 👉 排除 increaseBossDamage 再加總
-  const baseBuff = Object.entries(buffs)
+  // 排除 increaseBossDamage，並把 baseBuff 設下限 150
+  const baseBuffRaw = Object.entries(buffs)
     .filter(([key]) => key !== "increaseBossDamage")
     .reduce((sum, [, val]) => sum + (Number(val) || 0), 0);
+  const baseBuff = Math.max(baseBuffRaw, 150);
 
-  const levelScale = level * 0.015 + 1;
+  // 每級 +1.5%（在 1 的基礎上成長）
+  const levelScale = 1 + level * 0.015;
+
   const baseDamage = baseBuff * levelScale;
 
-  // ⬇️ 若 baseDamage < 200，改用 200 作為計算基礎
-  const effectiveBaseDamage = Math.max(baseDamage, 200);
-
   const bossBonus = Number(buffs.increaseBossDamage) || 0;
-  const finalDamage = effectiveBaseDamage * (1 + bossBonus / 100);
+  const finalDamage = baseDamage * (1 + bossBonus / 100);
 
   return Math.floor(finalDamage);
 }
