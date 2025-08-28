@@ -149,7 +149,7 @@
     },
     "moneySaver10000": {
         "title": "第一筆資金",
-        "desc": "累計擁有金幣達 10,000",
+        "desc": "擁有金幣達 10,000",
         "condition": {
             "type": "money",
             "value": 10000
@@ -160,7 +160,7 @@
     },
     "moneySaver20000": {
         "title": "第二筆資金",
-        "desc": "累計擁有金幣達 20,000",
+        "desc": "擁有金幣達 20,000",
         "condition": {
             "type": "money",
             "value": 20000
@@ -171,7 +171,7 @@
     },
     "moneySaver50000": {
         "title": "努力存錢(一)",
-        "desc": "累計擁有金幣達 50,000",
+        "desc": "擁有金幣達 50,000",
         "condition": {
             "type": "money",
             "value": 50000
@@ -182,7 +182,7 @@
     },
     "moneySaver75000": {
         "title": "努力存錢(二)",
-        "desc": "累計擁有金幣達 75,000",
+        "desc": "擁有金幣達 75,000",
         "condition": {
             "type": "money",
             "value": 75000
@@ -193,7 +193,7 @@
     },
     "moneySaver100000": {
         "title": "努力存錢(三)",
-        "desc": "累計擁有金幣達 100,000",
+        "desc": "擁有金幣達 100,000",
         "condition": {
             "type": "money",
             "value": 100000
@@ -204,7 +204,7 @@
     },
     "moneySaver250000": {
         "title": "努力存錢(四)",
-        "desc": "累計擁有金幣達 250,000",
+        "desc": "擁有金幣達 250,000",
         "condition": {
             "type": "money",
             "value": 250000
@@ -215,7 +215,7 @@
     },
     "moneySaver500000": {
         "title": "半百萬富翁",
-        "desc": "累計擁有金幣達 500,000",
+        "desc": "擁有金幣達 500,000",
         "condition": {
             "type": "money",
             "value": 500000
@@ -226,7 +226,7 @@
     },
     "moneySaver750000": {
         "title": "我要成為百萬富翁",
-        "desc": "累計擁有金幣達 750,000",
+        "desc": "擁有金幣達 750,000",
         "condition": {
             "type": "money",
             "value": 750000
@@ -237,7 +237,7 @@
     },
     "moneySaver1000000": {
         "title": "百萬富翁",
-        "desc": "累計擁有金幣達 1,000,000",
+        "desc": "擁有金幣達 1,000,000",
         "condition": {
             "type": "money",
             "value": 1000000
@@ -248,7 +248,7 @@
     },
     "moneySaver2000000": {
         "title": "兩百萬富翁",
-        "desc": "累計擁有金幣達 2,000,000",
+        "desc": "擁有金幣達 2,000,000",
         "condition": {
             "type": "money",
             "value": 2000000
@@ -259,7 +259,7 @@
     },
     "moneySaver5000000": {
         "title": "五百萬富翁",
-        "desc": "累計擁有金幣達 5,000,000",
+        "desc": "擁有金幣達 5,000,000",
         "condition": {
             "type": "money",
             "value": 5000000
@@ -270,7 +270,7 @@
     },
     "moneySaver10000000": {
         "title": "千萬富翁",
-        "desc": "累計擁有金幣達 10,000,000",
+        "desc": "擁有金幣達 10,000,000",
         "condition": {
             "type": "money",
             "value": 10000000

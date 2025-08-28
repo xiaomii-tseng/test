@@ -88,6 +88,8 @@ const sfxFail = new Audio("sound/fail.mp3");
 sfxFail.volume = 0.6;
 const sfxSuccess = new Audio("sound/success.mp3");
 sfxSuccess.volume = 0.8;
+const sfxBossBag = new Audio("sound/test-success.mp3");
+sfxBossBag.volume = 0.8;
 const sfxRefine = new Audio("sound/test-refine.mp3");
 sfxRefine.volume = 0.5;
 const sfxTicket = new Audio("sound/test-ticket.mp3");
@@ -142,6 +144,7 @@ function preloadAllSfx() {
     sfxOpenMap,
     sfxHit,
     sfxBossSkill,
+    sfxBossBag,
   ];
   sfxList.forEach(decodeAudioToBuffer);
 }
@@ -1158,7 +1161,7 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
     const fishObj = createFishInstance(fishType);
     fishObj.rarity = rarity;
     fishObj.image = fishType.image;
-    fishObj.maps = fishType.maps;
+    fishObj.maps = currentMapConfig?.name;
 
     // ✅ 計算血量BOSSHP
     fishObj.hp = Math.floor(
@@ -1857,29 +1860,52 @@ function saveFishDex(dexList) {
 function updateFishDex(fish) {
   const dex = JSON.parse(localStorage.getItem(FISH_DEX_KEY) || "[]");
   const existing = dex.find((d) => d.name === fish.name);
-  const fishType = fishTypes.find((f) => f.name === fish.name);
 
-  const rarity = getRarityClass(fishType.rawProbability);
-  const maps = fishType.maps || "未知";
+  // 先從「全地圖魚表」找，找不到再退回當前地圖
+  const def =
+    (Array.isArray(allFishTypes) &&
+      allFishTypes.find((f) => f.name === fish.name)) ||
+    (Array.isArray(fishTypes) && fishTypes.find((f) => f.name === fish.name)) ||
+    null;
+
+  // 稀有度：優先用本次魚物件帶的（打王也有），否則用魚表 rawProbability 推算；最後保底成普通
+  const rarity =
+    fish.rarity || (def ? getRarityClass(def.rawProbability) : "rarity-common");
+
+  // 地圖：allFishTypes 會有 maps 陣列；沒有的話就用魚物件身上的單一地圖名稱；再不行顯示「未知」
+  const mapsArr = Array.isArray(def?.maps)
+    ? def.maps
+    : fish.maps
+    ? [fish.maps]
+    : [];
+  const maps = mapsArr.length ? mapsArr.join("、") : "未知";
 
   if (!existing) {
     dex.push({
       name: fish.name,
-      maxSize: fish.size,
-      maxPrice: fish.finalPrice,
-      firstCaught: fish.caughtAt,
-      rarity: rarity,
-      maps: maps,
+      maxSize: Number(fish.size) || 0,
+      maxPrice: Number(fish.finalPrice) || 0,
+      firstCaught: fish.caughtAt || new Date().toISOString(),
+      rarity,
+      maps,
     });
   } else {
-    existing.maxSize = Math.max(existing.maxSize, fish.size);
-    existing.maxPrice = Math.max(existing.maxPrice, fish.finalPrice);
-    existing.firstCaught =
-      new Date(fish.caughtAt) < new Date(existing.firstCaught)
-        ? fish.caughtAt
-        : existing.firstCaught;
-    existing.rarity = rarity; // 確保更新稀有度（若機率資料更新）
-    existing.maps = maps; // ✅ 加入/更新 maps 欄位
+    existing.maxSize = Math.max(
+      Number(existing.maxSize) || 0,
+      Number(fish.size) || 0
+    );
+    existing.maxPrice = Math.max(
+      Number(existing.maxPrice) || 0,
+      Number(fish.finalPrice) || 0
+    );
+    // 取最早的首次時間
+    const oldTime = new Date(existing.firstCaught || 0).getTime();
+    const newTime = new Date(fish.caughtAt || 0).getTime();
+    if (!isNaN(newTime) && (isNaN(oldTime) || newTime < oldTime)) {
+      existing.firstCaught = fish.caughtAt;
+    }
+    existing.rarity = rarity; // 若表格更新，能反映新稀有度
+    existing.maps = maps; // 補上/更新出沒地圖
   }
 
   localStorage.setItem(FISH_DEX_KEY, JSON.stringify(dex));
@@ -2820,19 +2846,22 @@ function updatePlayerDamageUI(dmg) {
 }
 
 function calculateUserDamage() {
-  const buffs = getTotalBuffs();
-  const level = loadLevel();
+  const buffs = getTotalBuffs() || {};
+  const level = Number(loadLevel()) || 1;
 
   // 👉 排除 increaseBossDamage 再加總
   const baseBuff = Object.entries(buffs)
     .filter(([key]) => key !== "increaseBossDamage")
-    .reduce((sum, [, val]) => sum + val, 0);
+    .reduce((sum, [, val]) => sum + (Number(val) || 0), 0);
 
-  const levelScale = level * 0.015;
+  const levelScale = level * 0.015 + 1;
   const baseDamage = baseBuff * levelScale;
 
-  const bossBonus = buffs.increaseBossDamage;
-  const finalDamage = baseDamage * (1 + bossBonus / 100);
+  // ⬇️ 若 baseDamage < 200，改用 200 作為計算基礎
+  const effectiveBaseDamage = Math.max(baseDamage, 200);
+
+  const bossBonus = Number(buffs.increaseBossDamage) || 0;
+  const finalDamage = effectiveBaseDamage * (1 + bossBonus / 100);
 
   return Math.floor(finalDamage);
 }
@@ -3024,6 +3053,7 @@ function saveToBossBackpack(fish) {
   localStorage.setItem(storageKey, JSON.stringify(list));
 }
 function openBossBackpackModal() {
+  playSfx(sfxBossBag);
   userDamage = calculateUserDamage();
   updateBossBackpackUI();
   updatePlayerDamageUI(userDamage);
@@ -3566,19 +3596,38 @@ function showBossSkillName(skillText) {
 
 // === Boss BGM ===
 const BOSS_BGM_PATH = "sound/boss-bgm.mp3";
-let wasMapBgmBeforeBoss = null;
+let wasMapBgmBeforeBoss = null; // 開戰前的音樂路徑
+let wasMapKeyBeforeBoss = null; // 開戰前的地圖鍵值 (map1/map2/...)
 
+/** 進入 BOSS 戰：記住地圖鍵值與曲目後切換到 BOSS BGM */
 function playBossBgm() {
-  // 記住原本地圖音樂路徑（其實 currentMapConfig.music 就是，但保險留一份）
-  wasMapBgmBeforeBoss = currentMapConfig?.music || wasMapBgmBeforeBoss;
-  // 直接借用既有的播放器，確保 loop / mute / icon 行為一致
+  // 記住開戰前所在地圖與其曲目
+  wasMapKeyBeforeBoss =
+    typeof currentMapKey !== "undefined" ? currentMapKey : null;
+  wasMapBgmBeforeBoss = currentMapConfig?.music ?? null;
+
+  // 播放 BOSS 曲 (沿用既有播放器，確保 loop/mute/icon 一致)
   playMapMusic(BOSS_BGM_PATH, true);
 }
 
+/** 結束 BOSS 戰：用「開戰前的地圖鍵值」還原曲目 */
 function resumeMapBgm() {
-  const path = wasMapBgmBeforeBoss || currentMapConfig?.music;
+  // 優先用開戰前的地圖鍵值，其次用目前地圖；最後回退到 map1 的曲目
+  const mapKey =
+    wasMapKeyBeforeBoss ??
+    (typeof currentMapKey !== "undefined" ? currentMapKey : null);
+
+  const path =
+    wasMapBgmBeforeBoss ??
+    (mapKey && MAP_CONFIG?.[mapKey]?.music) ??
+    currentMapConfig?.music ??
+    MAP_CONFIG?.map1?.music; // 最終保底：map1
+
   if (path) playMapMusic(path, true);
+
+  // 清理暫存
   wasMapBgmBeforeBoss = null;
+  wasMapKeyBeforeBoss = null;
 }
 
 // 下面是 document
