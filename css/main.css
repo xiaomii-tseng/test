@@ -1079,28 +1079,33 @@ body {
   overflow: hidden;
 }
 
-/* 🐟 BOSS 精靈圖片 */
+/* 🐟 BOSS 精靈圖片（保持原定位與翻轉，但把等比縮放抽成變數） */
 .boss-sprite {
+  --scale: 1; /* 等比縮放 */
   position: absolute;
   width: 150px;
   height: 150px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1));
+  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scale(var(--scale)); /* ← 新增 */
+  transform-origin: center;
   transition: top 0.2s linear, left 0.2s linear, transform 0.2s;
 }
 
 /* 🗯️ BOSS 受擊動畫（縮放 Y 軸） */
+/* 🗯️ 受擊動畫：在目前等比縮放的基礎上做 Y 軸壓縮 → 回彈 */
 .boss-sprite.hit {
   animation: bossHitYBounce 0.2s ease-in-out;
 }
 
 @keyframes bossHitYBounce {
   0% {
-    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scaleY(0.85);
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1))
+      scale(var(--scale)) scaleY(0.85);
   }
   100% {
-    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scaleY(1);
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1))
+      scale(var(--scale)) scaleY(1);
   }
 }
 
@@ -1177,12 +1182,17 @@ body {
 }
 
 .boss-sprite.shrinked {
-  transform: translate(-50%, -50%) scale(var(--scale-x, 1), 0.3);
+  --scale: 0.3;
 }
-
 
 .boss-sprite.armor {
   box-shadow: 0 0 10px #aaa, 0 0 30px #ccc inset;
+  filter: grayscale(0.3);
+  border-radius: 50%;
+}
+
+.boss-sprite.superarmor {
+  box-shadow: 0 0 10px #c41b1b, 0 0 30px #ff0000 inset;
   filter: grayscale(0.3);
   border-radius: 50%;
 }
@@ -1235,6 +1245,6 @@ body {
   opacity: 0;
 }
 
-#playerDamage{
+#playerDamage {
   color: yellow;
 }

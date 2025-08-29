@@ -478,7 +478,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.1,
     catchRateModifier: 0.9,
     multiCatcModifier: 0.8,
-    bossHpModifier: 1.25,
+    bossHpModifier: 1.4,
     name: "劍與魔法村",
     background: "images-webp/maps/map4.webp",
     requiredLevel: 50,
@@ -502,7 +502,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.2,
     catchRateModifier: 0.8, // 稍微難釣
     multiCatcModifier: 0.55,
-    bossHpModifier: 1.5,
+    bossHpModifier: 2.0,
     name: "機械城河",
     background: "images-webp/maps/map2.webp",
     requiredLevel: 100,
@@ -526,7 +526,7 @@ const MAP_CONFIG = {
     rarePenalty: 1.3,
     catchRateModifier: 0.7, // 較難上鉤
     multiCatcModifier: 0.3,
-    bossHpModifier: 1.75,
+    bossHpModifier: 3,
     name: "黃金遺址",
     background: "images-webp/maps/map3.webp",
     requiredLevel: 150,
@@ -2849,11 +2849,11 @@ function calculateUserDamage() {
   const buffs = getTotalBuffs() || {};
   const level = Number(loadLevel()) || 1;
 
-  // 排除 increaseBossDamage，並把 baseBuff 設下限 150
+  // 排除 increaseBossDamage，並把 baseBuff 設下限 50
   const baseBuffRaw = Object.entries(buffs)
     .filter(([key]) => key !== "increaseBossDamage")
     .reduce((sum, [, val]) => sum + (Number(val) || 0), 0);
-  const baseBuff = Math.max(baseBuffRaw, 150);
+  const baseBuff = Math.max(baseBuffRaw, 50);
 
   // 每級 +1.5%（在 1 的基礎上成長）
   const levelScale = 1 + level * 0.015;
@@ -2877,11 +2877,18 @@ const BOSS_SKILL_POOL = {
   },
   機械城河: {
     "rarity-legend": ["fast", "dive", "teleport"],
-    "rarity-mythic": ["fast", "armor", "dive", "invisible", "jam"],
+    "rarity-mythic": [
+      "fast",
+      "armor",
+      "superarmor",
+      "dive",
+      "invisible",
+      "jam",
+    ],
   },
   黃金遺址: {
     "rarity-legend": ["fast", "dive", "teleport", "armor"],
-    "rarity-mythic": ["teleport", "armor", "dive", "invisible", "shrink"],
+    "rarity-mythic": ["superarmor", "dive", "invisible", "shrink"],
   },
 };
 // BOSS額外獎勵
@@ -2911,7 +2918,7 @@ const BOSS_REWARD_TABLE = {
         type: "divineMaterial",
         material: "隕石碎片",
         amount: () => 1,
-        chance: 0.02,
+        chance: 0.015,
       },
       {
         type: "mapTicket",
@@ -2947,7 +2954,7 @@ const BOSS_REWARD_TABLE = {
         type: "divineMaterial",
         material: "黃銅礦",
         amount: () => 1,
-        chance: 0.02,
+        chance: 0.015,
       },
       {
         type: "mapTicket",
@@ -2983,7 +2990,7 @@ const BOSS_REWARD_TABLE = {
         type: "divineMaterial",
         material: "核廢料",
         amount: () => 1,
-        chance: 0.02,
+        chance: 0.015,
       },
       {
         type: "mapTicket",
@@ -3003,21 +3010,21 @@ const BOSS_REWARD_TABLE = {
         map: "map4",
         name: "魔法通行證",
         amount: () => 1,
-        chance: 0.1,
+        chance: 0.05,
       },
       {
         type: "mapTicket",
         map: "map2",
         name: "機械通行證",
         amount: () => 1,
-        chance: 0.1,
+        chance: 0.05,
       },
       {
         type: "mapTicket",
         map: "map3",
         name: "黃金通行證",
         amount: () => 1,
-        chance: 0.1,
+        chance: 0.05,
       },
     ],
     "rarity-mythic": [
@@ -3467,6 +3474,17 @@ function triggerBossSkill(skillName) {
       }, 3000);
       break;
 
+    case "superarmor":
+      showBossSkillName("終極鎧甲");
+      // ✅ 鋼鐵鎧甲 → 減傷標記 5 秒
+      sprite.classList.add("superarmor"); // 可搭配 CSS 邊框效果
+      bossDamageMultiplier = 0.9; // 傷害減少90%
+      setTimeout(() => {
+        sprite.classList.remove("superarmor");
+        bossDamageMultiplier = 1;
+      }, 3000);
+      break;
+
     // case "shadowClone":
     //   // ✅ 影分身 → 加入 2 個假分身干擾
     //   spawnShadowClones(2); // 你需實作這個 helper
@@ -3515,7 +3533,7 @@ function spawnShadowClones(count = 2) {
 
     for (let i = 0; i < count; i++) {
       const clone = sprite.cloneNode(false);
-      clone.classList.remove("hit", "armor");
+      clone.classList.remove("hit", "armor", "superarmor");
       clone.classList.add("shadow-clone");
       clone.removeAttribute("id");
 
@@ -3635,6 +3653,7 @@ function resumeMapBgm() {
 document.getElementById("bossSprite").onclick = () => {
   playSfx(sfxHit);
   dealBossDamage(userDamage);
+  console.log(userDamage);
 };
 document
   .getElementById("openBossBackpackBtn")
