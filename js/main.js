@@ -2832,7 +2832,7 @@ let bossMoveLoop = null;
 let posX = 0;
 let posY = 0;
 let isBossMoving = false;
-let bossDamageMultiplier = 0.5;
+let bossDamageMultiplier = 1;
 let bossSkillInterval = null;
 
 // boss 邏輯區
@@ -3478,7 +3478,7 @@ function triggerBossSkill(skillName) {
       showBossSkillName("終極鎧甲");
       // ✅ 鋼鐵鎧甲 → 減傷標記 5 秒
       sprite.classList.add("superarmor"); // 可搭配 CSS 邊框效果
-      bossDamageMultiplier = 0.9; // 傷害減少90%
+      bossDamageMultiplier = 0.1; // 傷害減少90%
       setTimeout(() => {
         sprite.classList.remove("superarmor");
         bossDamageMultiplier = 1;
