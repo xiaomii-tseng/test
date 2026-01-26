@@ -219,6 +219,7 @@ onAuthStateChanged(auth, async (user) => {
         "boss-pending-fish",
         JSON.stringify(data.bossPendingFish || [])
       );
+      localStorage.setItem("fishing-potions-v1", JSON.stringify(data.potions));
     }
 
     // ✅ 成功登入 → 導向遊戲

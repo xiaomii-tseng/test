@@ -251,7 +251,9 @@ body {
   text-shadow: 0 0 4px #000;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 .bottom-info.show {
   opacity: 1;
@@ -1089,7 +1091,10 @@ body {
   left: 50%;
   transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scale(var(--scale)); /* ← 新增 */
   transform-origin: center;
-  transition: top 0.2s linear, left 0.2s linear, transform 0.2s;
+  transition:
+    top 0.2s linear,
+    left 0.2s linear,
+    transform 0.2s;
 }
 
 /* 🗯️ BOSS 受擊動畫（縮放 Y 軸） */
@@ -1186,13 +1191,17 @@ body {
 }
 
 .boss-sprite.armor {
-  box-shadow: 0 0 10px #aaa, 0 0 30px #ccc inset;
+  box-shadow:
+    0 0 10px #aaa,
+    0 0 30px #ccc inset;
   filter: grayscale(0.3);
   border-radius: 50%;
 }
 
 .boss-sprite.superarmor {
-  box-shadow: 0 0 10px #c41b1b, 0 0 30px #ff0000 inset;
+  box-shadow:
+    0 0 10px #c41b1b,
+    0 0 30px #ff0000 inset;
   filter: grayscale(0.3);
   border-radius: 50%;
 }
@@ -1247,4 +1256,29 @@ body {
 
 #playerDamage {
   color: yellow;
+}
+
+.ready-modal .modal-content {
+  background-image: url("../images-webp/index/boss.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 100%;
+  margin: auto;
+  text-shadow: 0px 0px 2px black;
+}
+
+/* 藥水按鈕樣式 */
+#prepPotionList .btn {
+  background-color: rgba(0, 0, 0, 0.6); /* 半透明黑底 */
+  border: 1px solid #777;
+  backdrop-filter: blur(2px); /* 如果瀏覽器支援，會有毛玻璃效果 */
+}
+
+/* 選中時 (黃色邊框那個) */
+#prepPotionList .btn-warning {
+  background-color: rgba(255, 193, 7, 0.2) !important; /* 微黃底 */
+  border: 2px solid #ffc107;
+  color: #ffc107;
 }

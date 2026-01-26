@@ -196,7 +196,7 @@ async function getTopPlayersByLevel(limitCount = 10) {
   const q = query(
     collection(db, "saves"),
     orderBy("level", "desc"),
-    limit(limitCount)
+    limit(limitCount),
   );
   const querySnapshot = await getDocs(q);
   const result = [];
@@ -232,7 +232,7 @@ document
     playSfx(sfxOpen);
 
     const functionMenu = bootstrap.Modal.getInstance(
-      document.getElementById("functionMenuModal")
+      document.getElementById("functionMenuModal"),
     );
     if (functionMenu) functionMenu.hide();
 
@@ -247,7 +247,7 @@ document
           <div class="name">${p.name}</div>
           <div class="level">Lv.${p.level}</div>
         </div>
-      `
+      `,
       )
       .join("");
 
@@ -306,7 +306,7 @@ export function processNextAlert() {
     () => {
       setTimeout(processNextAlert, 200);
     },
-    { once: true }
+    { once: true },
   );
 }
 
@@ -315,10 +315,10 @@ function collectSaveData() {
   return {
     backpack: JSON.parse(localStorage.getItem("fishing-v3-backpack") || "[]"),
     ownedEquipment: JSON.parse(
-      localStorage.getItem("owned-equipment-v2") || "[]"
+      localStorage.getItem("owned-equipment-v2") || "[]",
     ),
     equippedItems: JSON.parse(
-      localStorage.getItem("equipped-items-v2") || "{}"
+      localStorage.getItem("equipped-items-v2") || "{}",
     ),
     fishDex: JSON.parse(localStorage.getItem("fish-dex-v2") || "[]"),
     level: parseInt(localStorage.getItem("fishing-player-level-v1") || "1", 10),
@@ -326,29 +326,30 @@ function collectSaveData() {
     money: parseInt(localStorage.getItem("fishing-money") || "0", 10),
     refineCrystal: parseInt(localStorage.getItem("refine-crystal") || "0", 10),
     divineMaterials: JSON.parse(
-      localStorage.getItem("divine-materials") || "{}"
+      localStorage.getItem("divine-materials") || "{}",
     ),
     customBonus: JSON.parse(
-      localStorage.getItem("player-custom-bonus") || "{}"
+      localStorage.getItem("player-custom-bonus") || "{}",
     ),
     statPoints: parseInt(localStorage.getItem("player-stat-points") || "0", 10),
     playerFishCount: parseInt(localStorage.getItem("player-fish-count") || "0"),
     mythicFishCount: parseInt(localStorage.getItem("mythic-fish-count") || "0"),
     playerChestCount: parseInt(
-      localStorage.getItem("player-chest-count") || "0"
+      localStorage.getItem("player-chest-count") || "0",
     ),
     playerAchievementPoints: parseInt(
-      localStorage.getItem("player-achievement-points") || "0"
+      localStorage.getItem("player-achievement-points") || "0",
     ),
     playerCustomBonus: JSON.parse(
-      localStorage.getItem("player-custom-bonus") || "{}"
+      localStorage.getItem("player-custom-bonus") || "{}",
     ),
     achievements: JSON.parse(
-      localStorage.getItem("fishing-achievements-v1") || "{}"
+      localStorage.getItem("fishing-achievements-v1") || "{}",
     ),
     bossPendingFish: JSON.parse(
-      localStorage.getItem("boss-pending-fish") || "[]"
+      localStorage.getItem("boss-pending-fish") || "[]",
     ),
+    potions: JSON.parse(localStorage.getItem("fishing-potions-v1") || "{}"),
   };
 }
 function saveToCloud() {
@@ -397,7 +398,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   await loadAchievements();
   // ✅ 直接顯示版本資訊 Modal（每次都顯示）
   const versionModal = new bootstrap.Modal(
-    document.getElementById("versionModal")
+    document.getElementById("versionModal"),
   );
   versionModal.show();
 
@@ -441,7 +442,7 @@ async function loadAllFishTypes() {
     const data = await res.json();
     const processed = assignPriceByProbability(
       normalizeFishProbabilities(data),
-      config
+      config,
     );
 
     for (const fish of processed) {
@@ -554,17 +555,17 @@ async function switchMap(mapKey) {
 
   // 裝備檢查
   const equipped = JSON.parse(
-    localStorage.getItem("equipped-items-v2") || "{}"
+    localStorage.getItem("equipped-items-v2") || "{}",
   );
   const equippedNames = Object.values(equipped).map((e) => e?.name || "");
   const requiredParts = ["rod", "bait", "hat", "shoes", "outfit"];
   const isFullDivineSet = requiredParts.every((part) =>
-    equipped[part]?.name?.startsWith("天神")
+    equipped[part]?.name?.startsWith("天神"),
   );
 
   if (config.requiredEquipNames && !isFullDivineSet) {
     const matchCount = equippedNames.filter((name) =>
-      config.requiredEquipNames.includes(name)
+      config.requiredEquipNames.includes(name),
     ).length;
 
     if (matchCount < 3) {
@@ -576,7 +577,7 @@ async function switchMap(mapKey) {
   if (config.ticketDurationMs) {
     const entryTime = parseInt(
       localStorage.getItem(`map-entry-${mapKey}`) || "0",
-      10
+      10,
     );
     if (entryTime > 0) {
       const now = Date.now();
@@ -592,17 +593,17 @@ async function switchMap(mapKey) {
   // 通行證檢查 + 提示 + 移除
   if (config.requiredTicketName) {
     let ownedEquipments = JSON.parse(
-      localStorage.getItem("owned-equipment-v2") || "[]"
+      localStorage.getItem("owned-equipment-v2") || "[]",
     );
     const index = ownedEquipments.findIndex(
-      (e) => e.name === config.requiredTicketName
+      (e) => e.name === config.requiredTicketName,
     );
     if (index === -1) {
       return showAlert(`缺少通行證：${config.requiredTicketName}`);
     }
 
     const confirm = await customConfirm(
-      `即將消耗【${config.requiredTicketName}】，是否繼續？提醒: 此地圖無法更換裝備`
+      `即將消耗【${config.requiredTicketName}】，是否繼續？提醒: 此地圖無法更換裝備`,
     );
     if (!confirm) return;
 
@@ -876,7 +877,7 @@ function batchSellSelected() {
   // 更新資料
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
   const newMoney = currentMoney + finalTotal;
   localStorage.setItem("fishing-money", newMoney);
@@ -933,7 +934,7 @@ function stopPrecisionBar() {
     Math.min(45 + precisionRatio * 25) *
       ((buffs.increaseCatchRate * 0.5 + 100) / 100) *
       currentMapConfig.catchRateModifier,
-    98
+    98,
   );
   const isSuccess = Math.random() * 100 < successChance;
 
@@ -1023,7 +1024,7 @@ function addClickBounce(el) {
     () => {
       el.classList.remove("click-bounce");
     },
-    { once: true }
+    { once: true },
   );
 }
 function getRandomAutoFishingDelay() {
@@ -1058,7 +1059,7 @@ function startAutoFishing() {
     doFishing(false); // 執行一次釣魚
     autoFishingTimeoutId = setTimeout(
       scheduleNext,
-      getRandomAutoFishingDelay()
+      getRandomAutoFishingDelay(),
     );
   };
   // 初始延遲觸發第一次釣魚
@@ -1167,7 +1168,7 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
     fishObj.hp = Math.floor(
       ((fishObj.finalPrice * (100 + fishObj.size)) / 100) *
         rarityMultiplier *
-        bossHpModifier
+        bossHpModifier,
     );
 
     // ✅ 判斷是否進待戰區
@@ -1181,7 +1182,7 @@ function addFishToBackpack(fishType, count = 1, fromBossBattle = false) {
       }
       showAlert(
         `<span class="fight-text">${fishObj.name}</span> 還在掙扎，趕快跟牠搏鬥！`,
-        true
+        true,
       );
     } else {
       backpack.push(fishObj);
@@ -1230,7 +1231,7 @@ function maybeDropDivineItem() {
         <div>發現了 <strong>${item.name}</strong>！</div>
       </div>
     `,
-        true
+        true,
       );
 
       hasAnyDrop = true;
@@ -1267,7 +1268,7 @@ function updateMoneyUI() {
   if (el)
     el.textContent = parseInt(
       localStorage.getItem("fishing-money") || "0",
-      10
+      10,
     ).toLocaleString();
 }
 function saveMoney() {
@@ -1351,7 +1352,7 @@ const RARITY_PROBABILITIES = [
 document.querySelector(".shop-chest").addEventListener("click", () => {
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
 
   if (currentMoney < CHEST_COST) {
@@ -1406,7 +1407,7 @@ function getRandomRarity() {
   }
   return RARITY_TABLE.find(
     (r) =>
-      r.label === RARITY_PROBABILITIES[RARITY_PROBABILITIES.length - 1].rarity
+      r.label === RARITY_PROBABILITIES[RARITY_PROBABILITIES.length - 1].rarity,
   );
 }
 
@@ -1462,7 +1463,7 @@ function showEquipmentGetModal(equip) {
   `;
 
   const modal = new bootstrap.Modal(
-    document.getElementById("equipmentGetModal")
+    document.getElementById("equipmentGetModal"),
   );
   modal.show();
 }
@@ -1561,7 +1562,7 @@ function toggleFavoriteEquip(id) {
 // 選取的裝備
 function openEquipActionModal(selectedEquip) {
   const modal = new bootstrap.Modal(
-    document.getElementById("equipActionModal")
+    document.getElementById("equipActionModal"),
   );
   document.getElementById("refineBtn").onclick = () => {
     playSfx(sfxClickPlus);
@@ -1625,30 +1626,22 @@ function getEquippedItemByType(type) {
 function updateCharacterStats() {
   const stats = getTotalBuffs(); // ✅ 改這行就好！
 
-  document.querySelector(
-    ".increase-catch-rate"
-  ).textContent = `增加上鉤率：${Math.round(stats.increaseCatchRate)}%`;
-  document.querySelector(
-    ".increase-rare-rate"
-  ).textContent = `增加稀有率：${Math.round(stats.increaseRareRate)}%`;
-  document.querySelector(
-    ".increase-big-fish-chance"
-  ).textContent = `大體型機率：${Math.round(stats.increaseBigFishChance)}%`;
-  document.querySelector(
-    ".increase-sellValue"
-  ).textContent = `增加販售額：${Math.round(stats.increaseSellValue)}%`;
-  document.querySelector(
-    ".increase-exp-gain"
-  ).textContent = `經驗值加成：${Math.round(stats.increaseExpGain)}%`;
-  document.querySelector(
-    ".multi-catch-chance"
-  ).textContent = `多魚成功率：${Math.round(stats.multiCatchChance)}%`;
-  document.querySelector(
-    ".multi-catch-multiplier"
-  ).textContent = `多魚倍數值：${Math.round(stats.multiCatchMultiplier)}%`;
-  document.querySelector(
-    ".increase-boss-damage"
-  ).textContent = `對頭目傷害：${Math.round(stats.increaseBossDamage)}%`;
+  document.querySelector(".increase-catch-rate").textContent =
+    `增加上鉤率：${Math.round(stats.increaseCatchRate)}%`;
+  document.querySelector(".increase-rare-rate").textContent =
+    `增加稀有率：${Math.round(stats.increaseRareRate)}%`;
+  document.querySelector(".increase-big-fish-chance").textContent =
+    `大體型機率：${Math.round(stats.increaseBigFishChance)}%`;
+  document.querySelector(".increase-sellValue").textContent =
+    `增加販售額：${Math.round(stats.increaseSellValue)}%`;
+  document.querySelector(".increase-exp-gain").textContent =
+    `經驗值加成：${Math.round(stats.increaseExpGain)}%`;
+  document.querySelector(".multi-catch-chance").textContent =
+    `多魚成功率：${Math.round(stats.multiCatchChance)}%`;
+  document.querySelector(".multi-catch-multiplier").textContent =
+    `多魚倍數值：${Math.round(stats.multiCatchMultiplier)}%`;
+  document.querySelector(".increase-boss-damage").textContent =
+    `對頭目傷害：${Math.round(stats.increaseBossDamage)}%`;
 }
 
 // 脫下裝備
@@ -1681,7 +1674,7 @@ document.getElementById("unequipBtn").addEventListener("click", () => {
 
   // 關閉 Modal
   const modal = bootstrap.Modal.getInstance(
-    document.getElementById("equipInfoModal")
+    document.getElementById("equipInfoModal"),
   );
   if (modal) modal.hide();
 
@@ -1708,8 +1701,8 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
           <div class="equipment-top d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
               <img src="${item.image}" class="equipment-icon" alt="${
-        item.name
-      }" />
+                item.name
+              }" />
               <div class="equipment-name">${getEquipDisplayName(item)}</div>
             </div>
             <div class="equipment-fav">${isFav}</div>
@@ -1723,7 +1716,7 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
       `;
 
       const modal = new bootstrap.Modal(
-        document.getElementById("equipInfoModal")
+        document.getElementById("equipInfoModal"),
       );
       modal.show();
     }
@@ -1734,7 +1727,7 @@ document.querySelectorAll(".slot").forEach((slotDiv) => {
 function getTotalBuffs() {
   const equipped = JSON.parse(localStorage.getItem(EQUIPPED_KEY) || "{}");
   const custom = JSON.parse(
-    localStorage.getItem("player-custom-bonus") || "{}"
+    localStorage.getItem("player-custom-bonus") || "{}",
   );
 
   const buffs = {
@@ -1806,18 +1799,17 @@ function renderFishBook() {
 
   // 🔍 篩出該地圖出現的所有魚種
   const filteredFishTypes = allFishTypes.filter(
-    (fish) => !mapName || (fish.maps || []).includes(mapName)
+    (fish) => !mapName || (fish.maps || []).includes(mapName),
   );
 
   // 🧮 計算該地圖中有幾種魚被發現
   const filteredDiscoveredCount = filteredFishTypes.filter((fish) =>
-    discoveredNames.includes(fish.name)
+    discoveredNames.includes(fish.name),
   ).length;
 
   // 🧾 顯示進度 (目前地圖已發現 / 地圖總魚種)
-  document.getElementById(
-    "fishBookProgress"
-  ).textContent = `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
+  document.getElementById("fishBookProgress").textContent =
+    `(${filteredDiscoveredCount}/${filteredFishTypes.length})`;
 
   for (const fishType of allFishTypes) {
     const data = dex.find((d) => d.name === fishType.name);
@@ -1840,10 +1832,10 @@ function renderFishBook() {
         <div class="fish-text">最大尺寸：${data.maxSize.toFixed(1)} %</div>
         <div class="fish-text">最高售價：${data.maxPrice} G</div>
         <div class="fish-text">首次釣到：${new Date(
-          data.firstCaught
+          data.firstCaught,
         ).toLocaleDateString()}</div>
         <div class="fish-text">出沒地圖：${(fishType.maps || []).join(
-          "、"
+          "、",
         )}</div>
       </div>
     `;
@@ -1876,8 +1868,8 @@ function updateFishDex(fish) {
   const mapsArr = Array.isArray(def?.maps)
     ? def.maps
     : fish.maps
-    ? [fish.maps]
-    : [];
+      ? [fish.maps]
+      : [];
   const maps = mapsArr.length ? mapsArr.join("、") : "未知";
 
   if (!existing) {
@@ -1892,11 +1884,11 @@ function updateFishDex(fish) {
   } else {
     existing.maxSize = Math.max(
       Number(existing.maxSize) || 0,
-      Number(fish.size) || 0
+      Number(fish.size) || 0,
     );
     existing.maxPrice = Math.max(
       Number(existing.maxPrice) || 0,
-      Number(fish.finalPrice) || 0
+      Number(fish.finalPrice) || 0,
     );
     // 取最早的首次時間
     const oldTime = new Date(existing.firstCaught || 0).getTime();
@@ -1952,7 +1944,7 @@ function getHighTierBuffValue(type) {
 document.querySelector(".chest2").addEventListener("click", () => {
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
 
   if (currentMoney < chestCost) return showAlert("金錢不足！");
@@ -2066,7 +2058,7 @@ function proceedToMap(config, mapKey) {
     .then((data) => {
       fishTypes = assignPriceByProbability(
         normalizeFishProbabilities(data),
-        config
+        config,
       );
       updateBackground(config.background);
       updateBackpackUI?.();
@@ -2106,7 +2098,7 @@ setInterval(() => {
 
   const entryTime = parseInt(
     localStorage.getItem(`map-entry-${currentMapKey}`) || "0",
-    10
+    10,
   );
   if (!entryTime) {
     timerEl.style.display = "none";
@@ -2139,7 +2131,7 @@ setInterval(() => {
 function customConfirm(message) {
   return new Promise((resolve) => {
     const modal = new bootstrap.Modal(
-      document.getElementById("customConfirmModal")
+      document.getElementById("customConfirmModal"),
     );
     document.getElementById("customConfirmMessage").textContent = message;
 
@@ -2276,7 +2268,7 @@ function openRefineChoiceModal(equip) {
     return;
   }
   const modal = new bootstrap.Modal(
-    document.getElementById("refineChoiceModal")
+    document.getElementById("refineChoiceModal"),
   );
   modal.show();
 
@@ -2297,7 +2289,7 @@ function openRefineChoiceModal(equip) {
 function openRefineModal(equip) {
   selectedEquipForAction = equip;
   const modal = new bootstrap.Modal(
-    document.getElementById("refineEquipModal")
+    document.getElementById("refineEquipModal"),
   );
   modal.show();
 
@@ -2312,30 +2304,24 @@ function openRefineModal(equip) {
 
   document.getElementById("refineEquipCard").innerHTML =
     generateEquipCardHTML(equip);
-  document.getElementById(
-    "refineLevelInfo"
-  ).textContent = `目前等級：+${refineLevel}`;
+  document.getElementById("refineLevelInfo").textContent =
+    `目前等級：+${refineLevel}`;
   if (previewIncrease !== undefined) {
-    document.getElementById(
-      "refineBuffPreview"
-    ).textContent = `效果：隨機 Buff 提升 ${previewIncrease}%`;
-    document.getElementById(
-      "refineCrystalCost"
-    ).textContent = `消耗提煉結晶：${cost} 顆`;
+    document.getElementById("refineBuffPreview").textContent =
+      `效果：隨機 Buff 提升 ${previewIncrease}%`;
+    document.getElementById("refineCrystalCost").textContent =
+      `消耗提煉結晶：${cost} 顆`;
   } else {
     document.getElementById("refineBuffPreview").textContent = `效果：-`;
-    document.getElementById(
-      "refineCrystalCost"
-    ).textContent = `消耗提煉結晶：-`;
+    document.getElementById("refineCrystalCost").textContent =
+      `消耗提煉結晶：-`;
   }
-  document.getElementById(
-    "refineCrystalOwned"
-  ).textContent = `目前擁有：${owned} 顆`;
+  document.getElementById("refineCrystalOwned").textContent =
+    `目前擁有：${owned} 顆`;
   const successRates = [0.8, 0.75, 0.7, 0.6, 0.5, 0.3, 0.2, 0.1, 0.08, 0.05];
   const currentRate = successRates[refineLevel] ?? 0;
-  document.getElementById(
-    "refineSuccessRate"
-  ).textContent = `成功率：${Math.round(currentRate * 100)}%`;
+  document.getElementById("refineSuccessRate").textContent =
+    `成功率：${Math.round(currentRate * 100)}%`;
   document.getElementById("confirmRefineBtn").onclick = () =>
     refineEquipment(equip);
 }
@@ -2513,7 +2499,7 @@ function openDivineModal(equip) {
     const freshMaterials = loadDivineMaterials();
 
     const allEnough = Object.entries(reqs).every(
-      ([name, { count }]) => (freshMaterials[name] || 0) >= count
+      ([name, { count }]) => (freshMaterials[name] || 0) >= count,
     );
 
     const convertMap = {
@@ -2645,17 +2631,17 @@ function syncStatPointsWithLevel(levelFromParam = null) {
   const fromLevel = level;
   const fromAchievement = parseInt(
     localStorage.getItem("player-achievement-points") || "0",
-    10
+    10,
   );
   const expectedTotal = fromLevel + fromAchievement;
 
   const custom = JSON.parse(
-    localStorage.getItem("player-custom-bonus") || "{}"
+    localStorage.getItem("player-custom-bonus") || "{}",
   );
   const usedPoints = Object.values(custom).reduce((a, b) => a + b, 0);
   const currentPoints = parseInt(
     localStorage.getItem("player-stat-points") || "0",
-    10
+    10,
   );
 
   const totalOwned = usedPoints + currentPoints;
@@ -2664,7 +2650,7 @@ function syncStatPointsWithLevel(levelFromParam = null) {
   if (diff > 0) {
     localStorage.setItem(
       "player-stat-points",
-      (currentPoints + diff).toString()
+      (currentPoints + diff).toString(),
     );
   }
 }
@@ -2672,7 +2658,7 @@ function syncStatPointsWithLevel(levelFromParam = null) {
 function updateStatPointModal() {
   const pointsRaw = parseInt(localStorage.getItem("player-stat-points") || "0");
   const custom = JSON.parse(
-    localStorage.getItem("player-custom-bonus") || "{}"
+    localStorage.getItem("player-custom-bonus") || "{}",
   );
 
   const usedPoints = Object.values(custom).reduce((a, b) => a + b, 0);
@@ -2712,7 +2698,7 @@ window.allocatePoint = function (type) {
   if (points <= 0) return;
 
   const custom = JSON.parse(
-    localStorage.getItem("player-custom-bonus") || "{}"
+    localStorage.getItem("player-custom-bonus") || "{}",
   );
   custom[type] = (custom[type] || 0) + 1;
   localStorage.setItem("player-custom-bonus", JSON.stringify(custom));
@@ -2737,7 +2723,7 @@ function incrementCounter(key) {
 function buyRefineCrystal(amount, price) {
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
   if (currentMoney < price) {
     return showAlert("金錢不足！");
@@ -2747,7 +2733,7 @@ function buyRefineCrystal(amount, price) {
   localStorage.setItem("fishing-money", (currentMoney - price).toString());
   const currentCrystal = parseInt(
     localStorage.getItem("refine-crystal") || "0",
-    10
+    10,
   );
   localStorage.setItem("refine-crystal", (currentCrystal + amount).toString());
 
@@ -3106,8 +3092,8 @@ function updateBossBackpackUI() {
     });
   }
 }
-function startBossCountdown() {
-  bossTimer = 30;
+function startBossCountdown(extraTime = 0) {
+  bossTimer = 30 + extraTime;
   document.getElementById("bossTimer").textContent = bossTimer;
 
   clearInterval(timerInterval);
@@ -3120,36 +3106,167 @@ function startBossCountdown() {
     }
   }, 1000);
 }
+// 暫存玩家在準備視窗選了哪些藥水
+let selectedPotions = { time: false, damage: false, gold: false };
+let pendingBossIndex = null; // 暫存要打哪一隻
+
 async function openBossBattle(index) {
   const list = JSON.parse(localStorage.getItem("boss-pending-fish") || "[]");
   const fish = list[index];
   if (!fish) return;
 
-  const confirmBattle = await customConfirm(`是否挑戰 ${fish.name}？`);
-  if (!confirmBattle) return;
-
-  // ✅ 儲存挑戰中 BOSS 到全域變數
+  // 1. 儲存目標與重置選擇
+  pendingBossIndex = index;
   window.currentBossFish = fish;
-  startBossFight(fish); // ← 真正開戰函式
+  selectedPotions = { time: false, damage: false, gold: false };
+
+  // 2. 更新準備視窗 UI
+  document.getElementById("prepBossName").textContent = fish.name;
+  document.getElementById("prepBossImage").src = fish.image;
+  document.getElementById("prepBossHp").textContent = fish.hp.toLocaleString();
+
+  updatePrepPotionButtons(); // 更新按鈕狀態
+
+  // 3. 顯示 Modal (關閉原本的背包 Modal)
+  const backpackModal = bootstrap.Modal.getInstance(
+    document.getElementById("bossBackpackModal"),
+  );
+  if (backpackModal) backpackModal.hide();
+
+  new bootstrap.Modal(document.getElementById("bossPrepModal")).show();
 }
 
-function startBossFight(fish) {
+// 更新準備視窗的藥水按鈕
+function updatePrepPotionButtons() {
+  const container = document.getElementById("prepPotionList");
+  const potions = loadPotions();
+
+  const potionTypes = [
+    { key: "time", icon: "⏱️", name: "時間" },
+    { key: "damage", icon: "⚔️", name: "力量" },
+    { key: "gold", icon: "💰", name: "貪婪" },
+  ];
+
+  container.innerHTML = potionTypes
+    .map((p) => {
+      const count = potions[p.key] || 0;
+      const isSelected = selectedPotions[p.key];
+      // 如果沒庫存且未選中，則 disable
+      const isDisabled = count <= 0 && !isSelected;
+      const btnClass = isSelected ? "btn-warning" : "btn-outline-secondary";
+
+      return `
+      <button class="btn ${btnClass} position-relative potion-prep-btn" 
+              onclick="togglePotion('${p.key}')" 
+              ${isDisabled ? "disabled" : ""}>
+        ${p.icon} ${p.name}
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          ${count}
+        </span>
+      </button>
+    `;
+    })
+    .join("");
+}
+
+// 點擊藥水按鈕 (切換選擇狀態)
+window.togglePotion = function (key) {
+  const potions = loadPotions();
+  // 如果是取消選取：直接取消
+  if (selectedPotions[key]) {
+    selectedPotions[key] = false;
+  }
+  // 如果是選取：檢查是否有庫存
+  else {
+    if ((potions[key] || 0) > 0) {
+      selectedPotions[key] = true;
+    } else {
+      showAlert("藥水庫存不足！");
+      return;
+    }
+  }
+  playSfx(sfxClickPlus);
+  updatePrepPotionButtons();
+};
+
+document.getElementById("startBossFightBtn").addEventListener("click", () => {
+  // 1. 關閉準備 Modal
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("bossPrepModal"),
+  );
+  modal.hide();
+
+  // 2. 實際扣除藥水 (消耗邏輯)
+  const potions = loadPotions();
+  // 重置戰鬥狀態
+  battlePotionState = { damageActive: false, goldActive: false };
+  let timeBonus = 0;
+
+  if (selectedPotions.time) {
+    potions.time--;
+    timeBonus = 10;
+  }
+  if (selectedPotions.damage) {
+    potions.damage--;
+    battlePotionState.damageActive = true;
+  }
+  if (selectedPotions.gold) {
+    potions.gold--;
+    battlePotionState.goldActive = true;
+  }
+
+  // 儲存扣除後的藥水庫存
+  savePotions(potions);
+
+  // 3. 開始戰鬥
+  const fish = window.currentBossFish;
+
+  // 這裡稍微修改 startBossFight 的呼叫方式，傳入時間加成
+  startBossFight(fish, timeBonus);
+});
+
+// ✨ 1. 修改函式參數：加入 extraTime (預設為 0)
+function startBossFight(fish, extraTime = 0) {
   playBossBgm();
   document.getElementById("bossBattleOverlay").style.display = "flex";
 
-  // 更新名稱與圖片
+  // ✨ 2. 新增：更新戰鬥介面的藥水狀態 (讓按鈕亮燈)
+  // 先移除所有亮燈狀態
+  document.querySelectorAll("#bossPotionBar .btn").forEach((btn) => {
+    btn.classList.remove("btn-warning");
+    btn.classList.add("btn-dark");
+  });
+
+  // 如果這場有開傷害藥水，亮燈
+  if (battlePotionState.damageActive) {
+    const btn = document.getElementById("usePotionDamage");
+    if (btn) {
+      btn.classList.remove("btn-dark");
+      btn.classList.add("btn-warning");
+    }
+  }
+  // 如果這場有開金幣藥水，亮燈
+  if (battlePotionState.goldActive) {
+    const btn = document.getElementById("usePotionGold");
+    if (btn) {
+      btn.classList.remove("btn-dark");
+      btn.classList.add("btn-warning");
+    }
+  }
+  // 更新剩餘數量文字
+  updatePotionUI();
+
+  // --- 以下是原本的 UI 初始化 (保持不變) ---
   document.getElementById("bossName").textContent = fish.name;
   document.getElementById("bossSkillText").textContent = "";
   document.getElementById("bossSprite").src = fish.image;
 
-  // 設定血量
   currentBossHp = fish.hp;
   document.getElementById("bossHpCurrent").textContent =
     currentBossHp.toLocaleString();
   document.getElementById("bossHpTotal").textContent = fish.hp.toLocaleString();
   document.getElementById("bossHpFill").style.width = "100%";
 
-  // 顯示倒數
   const countdownOverlay = document.getElementById("bossCountdownOverlay");
   const countdownText = document.getElementById("bossCountdownText");
   countdownOverlay.classList.remove("hide");
@@ -3174,13 +3291,57 @@ function startBossFight(fish) {
       clearInterval(countdownInterval);
       isBossFightActive = true;
       countdownOverlay.classList.add("hide");
-      startBossCountdown();
+
+      // ✨ 3. 修改：把額外時間傳進倒數計時器
+      startBossCountdown(extraTime);
     }
   }, 1000);
+
   startBossMovementLoop();
-  bossSkillInterval = setInterval(() => {
-    triggerRandomBossSkill(fish);
-  }, 5000 + Math.random() * 5000);
+  bossSkillInterval = setInterval(
+    () => {
+      triggerRandomBossSkill(fish);
+    },
+    5000 + Math.random() * 5000,
+  );
+}
+
+// ==========================================
+// 🧪 藥水系統核心變數與函式 (請補上這段)
+// ==========================================
+const POTION_KEY = "fishing-potions-v1";
+
+// 戰鬥中的藥水狀態 (全域變數)
+let battlePotionState = {
+  damageActive: false,
+  goldActive: false,
+};
+
+// 讀取藥水庫存
+function loadPotions() {
+  return JSON.parse(
+    localStorage.getItem(POTION_KEY) || '{ "time": 0, "damage": 0, "gold": 0 }',
+  );
+}
+
+// 儲存藥水庫存
+function savePotions(data) {
+  localStorage.setItem(POTION_KEY, JSON.stringify(data));
+}
+
+// 更新戰鬥介面上的藥水數量 (startBossFight 會用到)
+function updatePotionUI() {
+  const potions = loadPotions();
+
+  // 避免找不到元素報錯 (使用 ?.textContent 或先檢查)
+  const elTime = document.getElementById("countPotionTime");
+  if (elTime) elTime.textContent = potions.time || 0;
+
+  const elDmg = document.getElementById("countPotionDamage");
+  if (elDmg) elDmg.textContent = potions.damage || 0;
+
+  const elGold = document.getElementById("countPotionGold");
+  if (elGold) elGold.textContent = potions.gold || 0;
 }
 
 function endBossFight(success) {
@@ -3199,7 +3360,7 @@ function endBossFight(success) {
 
   // ✅ 處理待戰清單移除
   const pendingList = JSON.parse(
-    localStorage.getItem("boss-pending-fish") || "[]"
+    localStorage.getItem("boss-pending-fish") || "[]",
   );
   const target = window.currentBossFish;
 
@@ -3252,7 +3413,7 @@ function maybeDropBossReward() {
     localStorage.setItem(CRYSTAL_KEY, count + amount);
     updateCrystalUI();
     showAlert(
-      `${boss.name} 掉落 <span class="fight-text">${amount} 顆提煉結晶</span>`
+      `${boss.name} 掉落 <span class="fight-text">${amount} 顆提煉結晶</span>`,
     );
   } else if (reward.type === "divineMaterial") {
     const materials = loadDivineMaterials();
@@ -3260,14 +3421,14 @@ function maybeDropBossReward() {
     saveDivineMaterials(materials);
     updateDivineUI?.();
     showAlert(
-      `${boss.name} 掉落神化材料 <span class="fight-text">${reward.material}</span>!`
+      `${boss.name} 掉落神化材料 <span class="fight-text">${reward.material}</span>!`,
     );
   } else if (reward.type === "mapTicket") {
     const typeKey = `ticket-${reward.map}`;
     addTicketToInventory(typeKey, true);
     showAlert(
       `${boss.name} 掉落 <span class="fight-text">${reward.name}</span>！`,
-      true
+      true,
     );
   }
 }
@@ -3281,7 +3442,7 @@ function dealBossDamage(amount) {
   currentBossHp = Math.max(currentBossHp - actualDamage, 0);
 
   const total = parseInt(
-    document.getElementById("bossHpTotal").textContent.replace(/,/g, "")
+    document.getElementById("bossHpTotal").textContent.replace(/,/g, ""),
   );
   const percent = (currentBossHp / total) * 100;
 
@@ -3363,10 +3524,13 @@ function startBossMovementLoop() {
   bossMoveLoop = requestAnimationFrame(moveStep);
 
   // 隨機改變方向與速度
-  setInterval(() => {
-    bossMoveAngle += Math.random() * 120 - 60;
-    bossMoveSpeed = 1 + Math.random() * 4;
-  }, 800 + Math.random() * 1000);
+  setInterval(
+    () => {
+      bossMoveAngle += Math.random() * 120 - 60;
+      bossMoveSpeed = 1 + Math.random() * 4;
+    },
+    800 + Math.random() * 1000,
+  );
 }
 
 function stopBossMovement() {
@@ -3547,7 +3711,7 @@ function spawnShadowClones(count = 2) {
       clone.style.top = `${posY}px`;
       clone.style.setProperty(
         "--scale-x",
-        Math.cos((angle * Math.PI) / 180) >= 0 ? -1 : 1
+        Math.cos((angle * Math.PI) / 180) >= 0 ? -1 : 1,
       );
       clone.style.opacity = "1";
       clone.style.pointerEvents = "none";
@@ -3648,6 +3812,77 @@ function resumeMapBgm() {
   wasMapKeyBeforeBoss = null;
 }
 
+// ==========================================
+// 📦 道具寶箱與戰前準備系統
+// ==========================================
+
+const ITEM_CHEST_COST = 100000; // 寶箱價格
+
+// 道具寶箱內容與機率 (權重)
+const ITEM_CHEST_TABLE = [
+  { type: "crystal", amount: 20, weight: 35, name: "提煉結晶 x20" },
+  { type: "crystal", amount: 60, weight: 30, name: "提煉結晶 x60" },
+  { type: "crystal", amount: 100, weight: 20, name: "提煉結晶 x100" },
+  { type: "potion", key: "time", weight: 5, name: "時間藥水" },
+  { type: "potion", key: "damage", weight: 5, name: "力量藥水" },
+  { type: "potion", key: "gold", weight: 5, name: "貪婪藥水" },
+];
+
+// 購買道具寶箱
+document.getElementById("buyItemChest")?.addEventListener("click", () => {
+  const currentMoney = loadMoney();
+
+  if (currentMoney < ITEM_CHEST_COST) {
+    return showAlert("金錢不足！");
+  }
+
+  // 1. 扣錢
+  localStorage.setItem(
+    "fishing-money",
+    (currentMoney - ITEM_CHEST_COST).toString(),
+  );
+  updateMoneyUI();
+
+  // 2. 抽獎邏輯
+  const totalWeight = ITEM_CHEST_TABLE.reduce(
+    (sum, item) => sum + item.weight,
+    0,
+  );
+  let random = Math.random() * totalWeight;
+  let reward = null;
+
+  for (const item of ITEM_CHEST_TABLE) {
+    if (random < item.weight) {
+      reward = item;
+      break;
+    }
+    random -= item.weight;
+  }
+
+  // 3. 發放獎勵
+  playSfx(sfxOpenChest);
+
+  if (reward.type === "crystal") {
+    // 結晶直接加
+    const currentCrystals = parseInt(
+      localStorage.getItem(CRYSTAL_KEY) || "0",
+      10,
+    );
+    localStorage.setItem(
+      CRYSTAL_KEY,
+      (currentCrystals + reward.amount).toString(),
+    );
+    updateCrystalUI();
+    showAlert(`獲得：<span class="text-info">${reward.name}</span>`, true);
+  } else if (reward.type === "potion") {
+    // 藥水存入庫存
+    const potions = loadPotions();
+    potions[reward.key] = (potions[reward.key] || 0) + 1;
+    savePotions(potions);
+    showAlert(`獲得：<span class="text-warning">${reward.name}</span>`, true);
+  }
+});
+
 // 下面是 document
 // 綁定按鈕事件
 document.getElementById("bossSprite").onclick = () => {
@@ -3687,7 +3922,7 @@ document.getElementById("openAchievementBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   renderAchievementList();
   const modal = new bootstrap.Modal(
-    document.getElementById("achievementModal")
+    document.getElementById("achievementModal"),
   );
   modal.show();
 });
@@ -3699,7 +3934,7 @@ document.querySelector(".all-status-btn").addEventListener("click", () => {
 document.getElementById("soundCheckBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   const modal = bootstrap.Modal.getInstance(
-    document.getElementById("soundSettingModal")
+    document.getElementById("soundSettingModal"),
   );
   modal?.hide(); // ✅ 關閉 modal
 });
@@ -3707,7 +3942,7 @@ document.getElementById("SoundBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   // updateSoundModalButtons(); // 確保每次開都顯示正確狀態
   const modal = new bootstrap.Modal(
-    document.getElementById("soundSettingModal")
+    document.getElementById("soundSettingModal"),
   );
   modal.show();
 });
@@ -3764,7 +3999,7 @@ document.getElementById("buyMap4Ticket").addEventListener("click", () => {
   const price = ticket1Price;
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
 
   if (currentMoney < price) return showAlert("金錢不足！");
@@ -3779,7 +4014,7 @@ document.getElementById("buyMap2Ticket").addEventListener("click", () => {
   const price = ticket2Price;
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
 
   if (currentMoney < price) return showAlert("金錢不足！");
@@ -3796,7 +4031,7 @@ document.getElementById("buyMap3Ticket").addEventListener("click", () => {
   const price = ticket3Price;
   const currentMoney = parseInt(
     localStorage.getItem("fishing-money") || "0",
-    10
+    10,
   );
 
   if (currentMoney < price) return showAlert("金錢不足！");
@@ -3835,7 +4070,7 @@ document
     showAlert(
       `已拆解 ${
         beforeCount - list.length
-      } 件裝備，獲得 ${gainedCrystals} 顆提煉結晶！`
+      } 件裝備，獲得 ${gainedCrystals} 顆提煉結晶！`,
     );
     updateCrystalUI?.();
   });
@@ -3843,7 +4078,7 @@ document
 document.getElementById("openMaps").addEventListener("click", () => {
   playSfx(sfxOpen);
   const functionMenu = bootstrap.Modal.getInstance(
-    document.getElementById("functionMenuModal")
+    document.getElementById("functionMenuModal"),
   );
   if (functionMenu) {
     functionMenu.hide();
@@ -3853,14 +4088,14 @@ document.getElementById("openMaps").addEventListener("click", () => {
 document.getElementById("openFunctionMenu").addEventListener("click", () => {
   playSfx(sfxOpen);
   const modal = new bootstrap.Modal(
-    document.getElementById("functionMenuModal")
+    document.getElementById("functionMenuModal"),
   );
   modal.show();
 });
 document.getElementById("openFishBook").addEventListener("click", () => {
   playSfx(sfxOpenFishBook);
   const functionMenu = bootstrap.Modal.getInstance(
-    document.getElementById("functionMenuModal")
+    document.getElementById("functionMenuModal"),
   );
   if (functionMenu) {
     functionMenu.hide();
@@ -3921,7 +4156,7 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
   playSfx(sfxDelete);
   // ⛏️ 計算這件裝備可獲得的提煉結晶
   const gained = (selectedEquipForAction.buffs || []).filter(
-    (b) => b.type !== "note"
+    (b) => b.type !== "note",
   ).length;
 
   // ⛏️ 更新結晶數量
@@ -3939,7 +4174,7 @@ document.getElementById("dismantleBtn").addEventListener("click", () => {
 
   // 關閉 Modal
   const modal = bootstrap.Modal.getInstance(
-    document.getElementById("equipActionModal")
+    document.getElementById("equipActionModal"),
   );
   if (modal) modal.hide();
 
@@ -3954,7 +4189,7 @@ document
   .addEventListener("click", () => {
     playSfx(sfxClose);
     const modal = bootstrap.Modal.getInstance(
-      document.getElementById("multiSellResultModal")
+      document.getElementById("multiSellResultModal"),
     );
     if (modal) modal.hide();
   });
@@ -3983,7 +4218,7 @@ export function renderAchievementList() {
       const rankA = getRank(statusMap[keyA]);
       const rankB = getRank(statusMap[keyB]);
       return rankA - rankB;
-    }
+    },
   );
 
   for (const [key, def] of sortedEntries) {
@@ -4011,8 +4246,8 @@ export function renderAchievementList() {
       <div class="small">${def.desc}</div>
       <div class="text-info mt-1 mb-2">🎁 ${rewardStr}</div>
       <button class="btn ${btnClass}" ${
-      disabled ? "disabled" : ""
-    } data-key="${key}">${btnText}</button>
+        disabled ? "disabled" : ""
+      } data-key="${key}">${btnText}</button>
     `;
 
     const btn = card.querySelector("button");
