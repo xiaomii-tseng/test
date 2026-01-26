@@ -1,0 +1,122 @@
+[
+    {
+        "name": "普通釣竿",
+        "probability": 50,
+        "image": "images-webp/equip/rod1.webp",
+        "type": "rod"
+    },
+    {
+        "name": "魔劍釣竿",
+        "probability": 5,
+        "image": "images-webp/equip/rod4.webp",
+        "type": "rod"
+    },
+    {
+        "name": "金屬釣竿",
+        "probability": 20,
+        "image": "images-webp/equip/rod2.webp",
+        "type": "rod"
+    },
+    {
+        "name": "黃金釣竿",
+        "probability": 5,
+        "image": "images-webp/equip/rod3.webp",
+        "type": "rod"
+    },
+    {
+        "name": "蚯蚓",
+        "probability": 5,
+        "image": "images-webp/equip/bait1.webp",
+        "type": "bait"
+    },
+    {
+        "name": "魔法小蝦",
+        "probability": 5,
+        "image": "images-webp/equip/bait2.webp",
+        "type": "bait"
+    },
+    {
+        "name": "金屬餌",
+        "probability": 5,
+        "image": "images-webp/equip/bait3.webp",
+        "type": "bait"
+    },
+    {
+        "name": "黃金",
+        "probability": 5,
+        "image": "images-webp/equip/bait4.webp",
+        "type": "bait"
+    },
+    {
+        "name": "漁夫帽",
+        "probability": 5,
+        "image": "images-webp/equip/hat1.webp",
+        "type": "hat"
+    },
+    {
+        "name": "魔法帽",
+        "probability": 5,
+        "image": "images-webp/equip/hat4.webp",
+        "type": "hat"
+    },
+    {
+        "name": "金屬頭盔",
+        "probability": 5,
+        "image": "images-webp/equip/hat2.webp",
+        "type": "hat"
+    },
+    {
+        "name": "黃金帽",
+        "probability": 5,
+        "image": "images-webp/equip/hat3.webp",
+        "type": "hat"
+    },
+    {
+        "name": "防風外套",
+        "probability": 5,
+        "image": "images-webp/equip/outfit1.webp",
+        "type": "outfit"
+    },
+    {
+        "name": "魔法長袍",
+        "probability": 5,
+        "image": "images-webp/equip/outfit4.webp",
+        "type": "outfit"
+    },
+    {
+        "name": "金屬盔甲",
+        "probability": 5,
+        "image": "images-webp/equip/outfit2.webp",
+        "type": "outfit"
+    },
+    {
+        "name": "黃金外套",
+        "probability": 5,
+        "image": "images-webp/equip/outfit3.webp",
+        "type": "outfit"
+    },
+    {
+        "name": "長靴",
+        "probability": 5,
+        "image": "images-webp/equip/shoes1.webp",
+        "type": "shoes"
+    },
+    {
+        "name": "魔法長靴",
+        "probability": 5,
+        "image": "images-webp/equip/shoes4.webp",
+        "type": "shoes"
+    },
+    {
+        "name": "金屬鞋",
+        "probability": 5,
+        "image": "images-webp/equip/shoes2.webp",
+        "type": "shoes"
+    },
+    {
+        "name": "黃金拖鞋",
+        "probability": 5,
+        "image": "images-webp/equip/shoes3.webp",
+        "type": "shoes"
+    }
+]

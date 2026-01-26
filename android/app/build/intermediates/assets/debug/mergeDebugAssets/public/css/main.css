@@ -1,0 +1,1250 @@
+/* 主畫面 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+  overflow: hidden;
+  height: 100%;
+  background: black;
+
+  font-family: "Noto Sans TC", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+.game-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.game-ui {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* 金錢 */
+.status-box {
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  top: 10px;
+  left: 2.5%;
+  width: 95%;
+  padding: 3px 6px 6px 6px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: #d4b389;
+  color: #4c2c00;
+  /* box-shadow: 2px 2px 20px rgb(4, 49, 60); */
+  border: 2px solid #4c2c00;
+  z-index: 10;
+}
+.coin-icon {
+  width: 26px;
+  height: 26px;
+}
+#coinCount {
+  font-size: 1rem;
+}
+/* 模式切換按鈕 */
+.mode-toggle {
+  position: absolute;
+  top: 63px;
+  right: 10px;
+  z-index: 10;
+}
+.mode-btn {
+  font-size: 0.8rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  border: 2px solid #4c2c00;
+}
+.map-info-btn {
+  font-size: 0.8rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  border: 2px solid #4c2c00;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+#toggleModeBtn {
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+/* 成就獎勵按鈕 */
+#openAchievementBtn {
+  position: absolute;
+  top: 128px;
+  right: 10px;
+  z-index: 10;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 2px solid #4c2c00;
+  width: auto;
+}
+#openAchievementBtn img {
+  width: 24px;
+  height: 24px;
+}
+/* 下方功能按鈕 */
+.bottom-menu {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  padding: 0 1.5rem;
+  z-index: 2;
+  gap: 10px;
+}
+.fnc-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 15px;
+  padding: 0.5rem;
+  width: 35%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 2px 2px 20px rgb(4, 49, 60);
+  color: #4c2c00;
+  border: 3px solid #4c2c00;
+  background-color: #d4b389;
+}
+.fnc-btn .icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+}
+
+/* 背包 */
+.backpack-modal {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.599);
+  color: #dedede;
+}
+.backpack-modal .modal-header {
+  border-bottom: 2px solid #8b6b4a;
+}
+.backpack-modal .modal-body {
+  height: 500px;
+  overflow-y: auto;
+  background-color: rgba(53, 53, 53, 0.495); /* 半透明背景 */
+  padding: 1rem;
+}
+.modal-title {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0px #000;
+}
+.select-body {
+  border: 2px solid #6b4f30;
+}
+/* 魚的卡片 */
+.fish-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(29, 29, 29, 0.763);
+  border: 2px solid #fff;
+  border-radius: 10px;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.fish-icon {
+  margin: 0 0 0.5rem 0;
+  width: 60px;
+  height: 60px;
+}
+.fish-info {
+  align-items: center;
+}
+.fish-info .fish-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+}
+.fish-info .fish-count,
+.fish-info .fish-probability,
+.fish-info .fish-value,
+.fish-info .fish-rarity {
+  font-size: 0.85rem;
+  margin: 1px 0;
+}
+.fish-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 👉 一排兩張 */
+  gap: 12px; /* 卡片間距 */
+}
+.big-card .fish-icon {
+  margin: 0 0 0.5rem 0;
+  width: 100px;
+  height: 100px;
+}
+.big-card .fish-name {
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+}
+.big-card .fish-count,
+.big-card .fish-probability,
+.big-card .fish-value,
+.big-card .fish-rarity,
+.big-card .fish-size {
+  font-size: 1rem;
+  margin: 1px 0;
+}
+.big-card .fish-info {
+  margin-bottom: 15px;
+}
+/* 點擊動畫 */
+@keyframes clickBounce {
+  0% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.click-bounce {
+  animation: clickBounce 0.2s ease;
+}
+
+/* 釣魚資訊 */
+.bottom-info {
+  position: absolute;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0); /* ✅ 水平真正置中 */
+  width: 170px; /* ✅ 固定寬度會更好控制，也可用 max-width */
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 4px #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.bottom-info.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px); /* ✅ 對應要一起加 translateX */
+}
+/* 精度條容器：畫面中央顯示 */
+.precision-bar-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* 可選：使容器稍微半透明遮罩背景，提升可見度 */
+  /* background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 8px; */
+  z-index: 1000; /* 確保蓋在其他元素之上 */
+}
+
+/* 精度條槽背景 */
+.precision-track {
+  position: relative;
+  width: 300px;
+  height: 50px;
+  /* 從紅到綠的漸層，表示成功率從低到高 */
+  background: linear-gradient(to right, #ff5050, #50ff50);
+  border: 3px solid #4c2c00;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 2px 2px 20px rgb(4, 49, 60);
+}
+
+/* 指示器 */
+.precision-indicator {
+  position: absolute;
+  top: -4px; /* 讓指示器稍微高出槽，以清楚可見 */
+  left: 0;
+  width: 6px;
+  height: 55px;
+  border: 1px solid #ffffff;
+  background: #321d00;
+  border-radius: 4px;
+}
+
+/* 停止按鈕（可依需求客製化或套用現有樣式） */
+.precision-stop-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 24px;
+  cursor: pointer;
+  /* 可選：自訂按鈕外觀以符合遊戲風格 */
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 20px rgb(4, 49, 60);
+  border-radius: 15px;
+  border: 2px solid #4c2c00;
+}
+
+/* 停止按鈕動畫 */
+.heartbeat {
+  animation: heartbeat 1s infinite ease-in-out;
+}
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.15);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+}
+
+/* 釣魚中文字 + 動畫 */
+.fishing-status {
+  position: absolute;
+  top: 200px;
+  left: 30%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: pulseText 3s ease-in-out infinite;
+  z-index: 1000;
+  text-shadow: 2px 2px 0px #000000;
+  pointer-events: none;
+}
+@keyframes pulseText {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+}
+
+/* 販賣框 */
+.sell-modal {
+  border: 4px solid #6b4f30;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.803);
+  color: #fff;
+}
+.sell-modal .modal-header {
+  border-bottom: 2px solid #8b6b4a;
+  background-color: #cba27a;
+}
+.sell-modal .modal-body {
+  background-color: #8b6b4a;
+  padding: 1rem;
+  font-size: 1rem;
+}
+.sell-modal .modal-footer {
+  border-top: 2px solid #8b6b4a;
+  background-color: #cba27a;
+}
+#sellTotal {
+  font-size: 1rem;
+  color: gold;
+  font-weight: bold;
+}
+#sellQuantity {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bold;
+}
+.sell-btn {
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+.custom-modal-width {
+  width: 80vw;
+}
+
+/* 排序選單 */
+#sortSelect {
+  border: 4px solid #3e2e1c;
+  border-radius: 15px;
+  background-color: #6d563f;
+  color: #eeeeee;
+}
+
+/* 魚的卡片邊框 */
+.rarity-common {
+  border: 2px solid #ccc;
+}
+.rarity-uncommon {
+  border: 2px solid #4da6ff; /* 藍 */
+}
+.rarity-rare {
+  border: 2px solid #ffe066; /* 黃 */
+}
+.rarity-epic {
+  border: 2px solid #c17aff; /* 紫 */
+}
+.rarity-legend {
+  border: 2px solid #ff4d4d; /* 紅 */
+}
+.rarity-mythic {
+  border: 2px solid;
+  border-image: linear-gradient(
+      45deg,
+      red,
+      orange,
+      yellow,
+      green,
+      blue,
+      indigo,
+      violet
+    )
+    1;
+}
+
+#maxSellBtn {
+  border: 1px solid white;
+  color: #fff;
+}
+
+.fish-size {
+  font-size: 0.7rem;
+}
+
+.fish-card-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.fish-card.selected {
+  outline: 3px solid gold;
+  transform: scale(1.02);
+}
+.batch-sell-bar {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.selled-modal .modal-content {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  animation: pop-in 0.3s ease-out;
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #646464;
+  border-radius: 12px;
+  width: 80%;
+  margin: auto;
+}
+
+#confirmMultiSellResult {
+  width: 70px;
+  margin-block: 10px;
+  margin-inline: auto;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 5px 10px 5px 10px;
+  border-radius: 8px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.info-modal .modal-content {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  animation: pop-in 0.3s ease-out;
+  background-image: url("../images-webp/index/backpackbg.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #646464;
+  border-radius: 12px;
+  width: 80%;
+  margin: auto;
+  z-index: 50;
+}
+
+.info-modal .modal-body {
+  height: 300px;
+  overflow-y: auto;
+}
+
+#versionConfirmBtn {
+  width: 90px;
+  margin-block: 10px;
+  margin-inline: auto;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 5px 10px 5px 10px;
+  border-radius: 8px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.version-info {
+  margin-top: 3px;
+  margin-right: 5px;
+  font-size: 0.6rem;
+  text-align: end;
+}
+
+.version {
+  color: #50ff50;
+}
+
+.exp {
+  font-size: 1rem;
+}
+
+.level {
+  font-size: 1rem;
+}
+
+.level-up-toast {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  background: gold;
+  color: #ffffff;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  text-shadow: 2px 2px 0 #000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  border-radius: 12px;
+  width: 250px;
+  text-align: center;
+}
+.level-up-toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.shop-title {
+  color: yellow;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+.menu-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+}
+.search-modal .modal-content {
+  background-image: url("../images-webp/index/search.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+}
+.search-modal h6 {
+  color: #50ff50;
+}
+.search-modal span {
+  color: #ffbc37;
+}
+.cloud-btn {
+  margin: auto;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 80px 10px 80px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.alert-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #a2a2a2;
+  color: #fff;
+  width: 60%;
+  margin: auto;
+}
+
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  transition: background-image 2.8s ease-in-out;
+}
+
+.background-wrapper.auto-mode {
+  background-image: url("../images-webp/index/index3.webp");
+}
+.background-wrapper.manual-mode {
+  background-image: url("../images-webp/index/index3.webp");
+}
+
+.map-display {
+  position: absolute;
+  top: 63px;
+  left: 10px;
+}
+
+.account-display {
+  position: absolute;
+  top: 108px;
+  left: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 999;
+  text-shadow: 1px 1px 5px black;
+}
+
+.map-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  color: #fff;
+  width: 90%;
+  margin: auto;
+}
+
+.map-btn {
+  font-weight: bold;
+  font-size: 1.3rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #ffffff;
+  text-shadow: 2px 2px 5px black;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #d5d5d5;
+  height: 90px;
+}
+
+.map-btn1 {
+  background-image: url("../images-webp/maps/map1-btn.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.map-btn2 {
+  background-image: url("../images-webp/maps/map2-btn.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.map-btn3 {
+  background-image: url("../images-webp/maps/map3-btn.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.map-btn4 {
+  background-image: url("../images-webp/maps/map4-btn.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.equipment-top {
+  position: relative;
+}
+.btn-favorite {
+  position: absolute;
+  top: -10px;
+  right: -13px;
+}
+.equipment-fav {
+  position: absolute;
+  top: -9px;
+  right: -6px;
+}
+#dismantleAllBtn {
+  margin-bottom: 10px;
+  /* margin-inline: auto; */
+  width: 30%;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.confirm-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #ffffff;
+  color: #fff;
+  width: 70%;
+  margin: auto;
+}
+
+.confirm-modal .modal-footer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#ticketTimer {
+  position: fixed;
+  left: 6px;
+  top: 130px;
+  padding: 8px 12px;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 20;
+  display: none;
+  text-shadow: 2px 2px 5px black;
+}
+
+.leaderboard-modal .modal-content {
+  background-image: url("../images-webp/index/leader.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #6b4f30;
+  color: #fff;
+  width: 85%;
+  margin: auto;
+}
+
+.bgm-btn {
+  position: fixed;
+  top: 120px;
+  right: 2px;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+.bgm-btn img {
+  width: 32px;
+  height: 32px;
+}
+
+.ref-btn {
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 5px rgb(0, 0, 0);
+  border: 2px solid #4c2c00;
+}
+
+.reff-btn {
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 10px 15px 10px 15px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 5px rgb(101, 101, 101);
+  border: 2px solid #4c2c00;
+  width: 50%;
+  height: 80px;
+}
+
+@keyframes forge-success {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0px gold;
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px gold;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0px gold;
+  }
+}
+
+@keyframes forge-fail {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.forge-success {
+  animation: forge-success 0.6s ease;
+}
+
+.forge-fail {
+  animation: forge-fail 0.4s ease;
+}
+
+.sound-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 85%;
+  margin: auto;
+  text-shadow: 2px 2px 0px black;
+}
+
+.sound-check-btn {
+  margin: auto;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 20px 8px 20px;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 2px 2px 0px rgb(4, 49, 60);
+  border: 2px solid #4c2c00;
+}
+
+.achievement-card {
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #222;
+}
+.achievement-card.unlocked {
+  border-color: gold;
+}
+.achievement-card.claimed {
+  opacity: 0.5;
+}
+.ach-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 100%;
+  margin: auto;
+  text-shadow: 2px 2px 0px black;
+}
+.ach-modal .modal-body {
+  max-height: 70vh; /* 你可以依需要調整為 70vh、50vh 等 */
+  overflow-y: auto;
+}
+
+.effect-modal .modal-content {
+  background-image: url("../images-webp/index/backpackbg.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 80%;
+  margin: auto;
+  text-shadow: 0px 0px 2px black;
+}
+
+.effect-modal .effect-title {
+  font-size: 1rem;
+  color: gold;
+}
+
+.fish-dup-count {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  background-color: #ff3b3b;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 14px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #444;
+  font-size: 15px;
+  color: #fff;
+}
+
+.leaderboard-row .rank {
+  width: 40px;
+  font-weight: bold;
+  color: gold;
+}
+
+.leaderboard-row .name {
+  flex: 1;
+  padding-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderboard-row .level {
+  min-width: 60px;
+  text-align: right;
+}
+
+.ore-img-alert img {
+  width: 54px;
+  height: 54px;
+}
+
+.ore-img-alert strong {
+  color: gold;
+}
+
+/* 成就獎勵按鈕 */
+#openBossBackpackBtn {
+  position: absolute;
+  top: 128px;
+  right: 60px;
+  z-index: 10;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border-radius: 15px;
+  background-color: #d4b389;
+  color: #4c2c00;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 2px solid #4c2c00;
+  width: auto;
+}
+#openBossBackpackBtn img {
+  width: 24px;
+  height: 24px;
+}
+
+.boss-modal .modal-content {
+  background-image: url("../images-webp/index/boss.webp"); /* 可用木紋圖或純色背景 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 4px solid #3d2e1b;
+  color: #fff;
+  width: 100%;
+  margin: auto;
+  text-shadow: 0px 0px 2px black;
+}
+
+.boss-modal .modal-body {
+  max-height: 500px;
+}
+
+.boss-card {
+  background: rgba(29, 29, 29, 0.904);
+  border-radius: 10px;
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.boss-img-wrapper {
+  flex-shrink: 0;
+  padding-right: 30px;
+  padding-left: 5px;
+}
+
+.boss-img-wrapper img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+}
+
+.boss-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.boss-battle-overlay {
+  position: fixed;
+  inset: 0;
+  background: url("../images-webp/index/battle.webp") no-repeat center center /
+    cover;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+}
+
+.boss-hp-wrapper {
+  padding: 1rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.boss-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.boss-hp-bar {
+  width: 80%;
+  height: 20px;
+  background: #222;
+  border: 2px solid #fff;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.boss-hp-fill {
+  background: linear-gradient(to right, red, orange);
+  width: 100%;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.boss-hp-text {
+  color: #fff;
+  margin-top: 0.3rem;
+}
+
+.boss-move-area {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 🐟 BOSS 精靈圖片（保持原定位與翻轉，但把等比縮放抽成變數） */
+.boss-sprite {
+  --scale: 1; /* 等比縮放 */
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(var(--scale-x, 1)) scale(var(--scale)); /* ← 新增 */
+  transform-origin: center;
+  transition: top 0.2s linear, left 0.2s linear, transform 0.2s;
+}
+
+/* 🗯️ BOSS 受擊動畫（縮放 Y 軸） */
+/* 🗯️ 受擊動畫：在目前等比縮放的基礎上做 Y 軸壓縮 → 回彈 */
+.boss-sprite.hit {
+  animation: bossHitYBounce 0.2s ease-in-out;
+}
+
+@keyframes bossHitYBounce {
+  0% {
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1))
+      scale(var(--scale)) scaleY(0.85);
+  }
+  100% {
+    transform: translate(-50%, -50%) scaleX(var(--scale-x, 1))
+      scale(var(--scale)) scaleY(1);
+  }
+}
+
+/* ⏱️ 倒數 UI */
+.boss-countdown-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.boss-countdown-overlay.hide {
+  display: none;
+}
+
+/* 🎬 倒數數字動畫 */
+@keyframes countdownPop {
+  0% {
+    transform: scale(5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.countdown-animate {
+  animation: countdownPop 0.3s ease;
+}
+
+/* ⚔️ 戰鬥主區塊預設隱藏 */
+#bossBattleOverlay {
+  display: none;
+}
+
+.boss-result-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  /* padding: 1rem 2rem; */
+  /* background: rgba(0, 0, 0, 0.7); */
+  /* border: 2px solid white; */
+  /* border-radius: 10px; */
+  z-index: 99;
+  animation: fadeInScale 0.4s ease;
+}
+
+@keyframes fadeInScale {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.boss-result-message.hide {
+  display: none;
+}
+
+.boss-sprite.shrinked {
+  --scale: 0.3;
+}
+
+.boss-sprite.armor {
+  box-shadow: 0 0 10px #aaa, 0 0 30px #ccc inset;
+  filter: grayscale(0.3);
+  border-radius: 50%;
+}
+
+.boss-sprite.superarmor {
+  box-shadow: 0 0 10px #c41b1b, 0 0 30px #ff0000 inset;
+  filter: grayscale(0.3);
+  border-radius: 50%;
+}
+
+@keyframes jamFlash {
+  0% {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.boss-battle-overlay.jammed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  animation: jamFlash 0.3s infinite;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.fight-text {
+  font-size: 1.2rem;
+  color: gold;
+}
+
+.boss-skill-text {
+  z-index: 30;
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 2px 2px 5px black;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.boss-skill-text.show {
+  opacity: 1;
+}
+.boss-skill-text.hide {
+  opacity: 0;
+}
+
+#playerDamage {
+  color: yellow;
+}
