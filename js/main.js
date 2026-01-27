@@ -3404,8 +3404,15 @@ function maybeDropBossReward() {
   const amount = reward.amount();
 
   if (reward.type === "money") {
+
+// 👇 檢查是否有開貪婪藥水
+    let finalAmount = amount;
+    if (battlePotionState.goldActive) {
+        finalAmount *= 2; // 金幣 2 倍
+    }
+
     const current = loadMoney();
-    localStorage.setItem("fishing-money", current + amount);
+    localStorage.setItem("fishing-money", current + finalAmount);
     updateMoneyUI();
     showAlert(`${boss.name} 掉落 ${amount.toLocaleString()} 金幣！`);
   } else if (reward.type === "refineCrystal") {
@@ -3435,6 +3442,13 @@ function maybeDropBossReward() {
 
 function dealBossDamage(amount) {
   if (!isBossFightActive || currentBossHp <= 0) return;
+
+  // 檢查是否有開力量藥水
+  let finalDamage = amount;
+  if (battlePotionState.damageActive) {
+    // 假設你用這個變數存狀態
+    finalDamage = Math.floor(finalDamage * 1.2);
+  }
 
   // ✅ 套用傷害倍率（armor 技能會將 bossDamageMultiplier 設為 0.5）
   const actualDamage = Math.floor(amount * bossDamageMultiplier);
@@ -3816,16 +3830,23 @@ function resumeMapBgm() {
 // 📦 道具寶箱與戰前準備系統
 // ==========================================
 
-const ITEM_CHEST_COST = 100000; // 寶箱價格
+const ITEM_CHEST_COST = 50000; // 寶箱價格
 
 // 道具寶箱內容與機率 (權重)
 const ITEM_CHEST_TABLE = [
-  { type: "crystal", amount: 20, weight: 35, name: "提煉結晶 x20" },
-  { type: "crystal", amount: 60, weight: 30, name: "提煉結晶 x60" },
-  { type: "crystal", amount: 100, weight: 20, name: "提煉結晶 x100" },
-  { type: "potion", key: "time", weight: 5, name: "時間藥水" },
-  { type: "potion", key: "damage", weight: 5, name: "力量藥水" },
-  { type: "potion", key: "gold", weight: 5, name: "貪婪藥水" },
+  { type: "crystal", amount: 10, weight: 10, name: "提煉結晶 x10" },
+  { type: "crystal", amount: 20, weight: 15, name: "提煉結晶 x20" },
+  { type: "crystal", amount: 30, weight: 20, name: "提煉結晶 x30" },
+  { type: "crystal", amount: 40, weight: 15, name: "提煉結晶 x40" },
+  { type: "crystal", amount: 50, weight: 10, name: "提煉結晶 x50" },
+  { type: "crystal", amount: 60, weight: 10, name: "提煉結晶 x60" },
+  { type: "crystal", amount: 70, weight: 9, name: "提煉結晶 x70" },
+  { type: "crystal", amount: 80, weight: 7, name: "提煉結晶 x80" },
+  { type: "crystal", amount: 100, weight: 4, name: "提煉結晶 x100" },
+  { type: "crystal", amount: 300, weight: 1, name: "提煉結晶 x300" },
+  { type: "potion", key: "time", weight: 3, name: "時間藥水，BOSS戰延長10秒" },
+  { type: "potion", key: "damage", weight: 3, name: "力量藥水，傷害x1.2倍" },
+  { type: "potion", key: "gold", weight: 3, name: "貪婪藥水，獲取金幣兩倍" },
 ];
 
 // 購買道具寶箱
@@ -3909,15 +3930,15 @@ document.getElementById("currentMapDisplay").addEventListener("click", () => {
   playSfx(sfxOpen);
   showEfficiencyModal();
 });
-document.getElementById("buyOre1").addEventListener("click", () => {
-  buyRefineCrystal(10, 15000);
-});
-document.getElementById("buyOre10").addEventListener("click", () => {
-  buyRefineCrystal(100, 150000);
-});
-document.getElementById("buyOre100").addEventListener("click", () => {
-  buyRefineCrystal(1000, 1500000);
-});
+// document.getElementById("buyOre1").addEventListener("click", () => {
+//   buyRefineCrystal(10, 15000);
+// });
+// document.getElementById("buyOre10").addEventListener("click", () => {
+//   buyRefineCrystal(100, 150000);
+// });
+// document.getElementById("buyOre100").addEventListener("click", () => {
+//   buyRefineCrystal(1000, 1500000);
+// });
 document.getElementById("openAchievementBtn").addEventListener("click", () => {
   playSfx(sfxOpen);
   renderAchievementList();
@@ -4282,3 +4303,59 @@ function formatRewardText(reward) {
   }
   return parts.join("，");
 }
+
+// ==========================================
+// ℹ️ 寶箱資訊顯示系統
+// ==========================================
+
+// 定義各個寶箱的顯示資料 (HTML 格式)
+const CHEST_INFO_DATA = {
+  normal: `
+    <h6 class="text-warning mb-3">📦 普通寶箱內容</h6>
+    <div class="chest-info-list">
+      <li><span>普通品質裝備</span> <span class="info-rate">80%</span></li>
+      <li><span>高級品質裝備</span> <span class="info-rate">20%</span></li>
+      <li class="mt-2 text-info"><small>※ 隨機附帶 1~2 條能力詞綴</small></li>
+      <li class="text-info"><small>※ 詞綴數值範圍較低</small></li>
+    </div>
+  `,
+  high: `
+    <h6 class="text-warning mb-3">✨ 高級寶箱內容</h6>
+    <div class="chest-info-list">
+      <li><span>普通品質裝備</span> <span class="info-rate">75%</span></li>
+      <li><span>高級品質裝備</span> <span class="info-rate">20%</span></li>
+      <li><span>稀有品質裝備</span> <span class="info-rate">5%</span></li>
+      <li class="mt-2 text-info"><small>※ 隨機附帶 1~3 條能力詞綴</small></li>
+      <li class="text-info"><small>※ 有機率出現高數值詞綴</small></li>
+    </div>
+  `,
+  item: `
+    <h6 class="text-warning mb-3">🎒 道具寶箱內容</h6>
+    <div class="chest-info-list">
+      <li><span>提煉結晶 x10 ~ x50</span> <span class="info-rate">高機率</span></li>
+      <li><span>提煉結晶 x60 ~ x80</span> <span class="info-rate">中機率</span></li>
+      <li><span>提煉結晶 x100</span> <span class="info-rate">4%</span></li>
+      <li><span>提煉結晶 x300</span> <span class="info-rate">1%</span></li>
+      <li class="mt-2 text-danger border-top pt-2">🧪 特殊藥水</li>
+      <li><span>⏱️ 時間藥水 (BOSS戰+10s)</span> <span class="info-rate">3%</span></li>
+      <li><span>⚔️ 力量藥水 (傷害x1.2)</span> <span class="info-rate">3%</span></li>
+      <li><span>💰 貪婪藥水 (金幣x2)</span> <span class="info-rate">3%</span></li>
+    </div>
+  `
+};
+
+// 顯示寶箱資訊視窗
+window.showChestInfo = function(type) {
+    // 播放點擊音效
+    playSfx(sfxOpen); // 或是 sfxClickPlus
+    
+    const modalBody = document.getElementById("chestInfoBody");
+    const content = CHEST_INFO_DATA[type];
+    
+    if (content) {
+        modalBody.innerHTML = content;
+        // 顯示 Modal
+        const modal = new bootstrap.Modal(document.getElementById("chestInfoModal"));
+        modal.show();
+    }
+};

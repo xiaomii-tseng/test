@@ -357,28 +357,39 @@
                 </div>
                 <div class="modal-body">
                     <div class="text-center shop-title">寶箱</div>
-                    <div class="d-flex justify-content-around">
-                        <div>
+                    <div class="d-flex justify-content-around align-items-end">
+                        <div class="position-relative">
                             <div class="chest-animate">
                                 <img class="shop-chest chest1 fnc-anm" src="./images-webp/shop/chest1.webp" alt="">
                             </div>
-                            <div class="text-center">普通寶箱</div>
-                            <div class="text-center">2000 G</div>
+                            <button class="btn btn-sm btn-info-circle position-absolute top-0 end-0"
+                                onclick="showChestInfo('normal')">?</button>
+
+                            <div class="text-center mt-1">普通寶箱</div>
+                            <div class="text-center text-warning">2,000 G</div>
                         </div>
-                        <div>
+
+                        <div class="position-relative">
                             <div class="chest-animate">
                                 <img class="shop-chest chest2 fnc-anm" src="./images-webp/shop/chest2.webp" alt="">
                             </div>
-                            <div class="text-center">高級寶箱</div>
-                            <div class="text-center">30000 G</div>
+                            <button class="btn btn-sm btn-info-circle position-absolute top-0 end-0"
+                                onclick="showChestInfo('high')">?</button>
+
+                            <div class="text-center mt-1">高級寶箱</div>
+                            <div class="text-center text-warning">30,000 G</div>
                         </div>
-                        <div>
+
+                        <div class="position-relative">
                             <div class="chest-animate">
                                 <img id="buyItemChest" class="shop-chest chest3 fnc-anm"
-                                    src="./images-webp/shop/chest2.webp" alt="道具寶箱">
+                                    src="./images-webp/shop/chest3.webp" alt="道具寶箱">
                             </div>
-                            <div class="text-center">道具寶箱</div>
-                            <div class="text-center">100000 G</div>
+                            <button class="btn btn-sm btn-info-circle position-absolute top-0 end-0"
+                                onclick="showChestInfo('item')">?</button>
+
+                            <div class="text-center mt-1">道具寶箱</div>
+                            <div class="text-center text-warning">50,000 G</div>
                         </div>
                     </div>
                     <div class="text-center mt-4 shop-title">通行證</div>
@@ -406,33 +417,6 @@
                             </div>
                             <div>黃金遺址</div>
                             <div>320000 G</div>
-                        </div>
-                    </div>
-                    <div class="text-center mt-4 shop-title">提煉結晶</div>
-                    <div class="d-flex justify-content-around mt-2 mb-4">
-                        <div class="text-center">
-                            <div class="shiny">
-                                <img id="buyOre1" src="./images-webp/icons/ore1.webp" class="shop-ore fnc-anm"
-                                    data-price="1900" />
-                            </div>
-                            <div>10顆</div>
-                            <div>15000 G</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="shiny">
-                                <img id="buyOre10" src="./images-webp/icons/ore1.webp" class="shop-ore fnc-anm"
-                                    data-price="18500" />
-                            </div>
-                            <div>100顆</div>
-                            <div>150000 G</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="shiny">
-                                <img id="buyOre100" src="./images-webp/icons/ore1.webp" class="shop-ore fnc-anm"
-                                    data-price="180000" />
-                            </div>
-                            <div>1000顆</div>
-                            <div>1500000 G</div>
                         </div>
                     </div>
                 </div>
@@ -883,7 +867,21 @@
         </div>
     </div>
 
-
+    <div class="modal fade" id="chestInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered info-modal">
+            <div class="modal-content text-white bg-dark">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="chestInfoTitle">寶箱資訊</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" id="chestInfoBody">
+                </div>
+                <div class="modal-footer border-secondary justify-content-center">
+                    <button type="button" class="mode-btn fnc-anm" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Alert Modal -->
     <div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
